@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { listPublicBanners } from "../controllers/banners.controller.js";
 import {
   getAvailability,
   getDateOptions,
@@ -10,8 +11,10 @@ import { bookingLimiter } from "../middleware/rate-limit.js";
 import { validate } from "../middleware/validate.js";
 import { dayQuery, reservationBody } from "../validators/reservations.validators.js";
 
-// No login needed. Banners join this router in Phase 6.
+// No login needed.
 export const publicRouter = Router();
+
+publicRouter.get("/banners", listPublicBanners);
 
 publicRouter.get("/reservations/date-options", getDateOptions);
 publicRouter.get("/reservations/availability", validate({ query: dayQuery }), getAvailability);

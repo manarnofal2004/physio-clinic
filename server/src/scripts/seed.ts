@@ -3,13 +3,16 @@
 // Run with: pnpm seed
 import type { Types } from "mongoose";
 import { env } from "../config/env.js";
-import type { WorkDay } from "../constants.js";
+import type { ReportProgress, WorkDay } from "../constants.js";
 import { connectDb, disconnectDb } from "../db/connect.js";
+import { Banner } from "../models/banner.model.js";
 import { Patient, type IPatient } from "../models/patient.model.js";
+import { Report } from "../models/report.model.js";
 import { Reservation } from "../models/reservation.model.js";
 import { Therapist } from "../models/therapist.model.js";
 import { User, type IUser } from "../models/user.model.js";
 import { hashPassword } from "../services/auth.service.js";
+import { syncLastVisit } from "../services/reports.service.js";
 import { dateOptions } from "../services/schedule.service.js";
 import { zonedTime } from "../utils/time.js";
 
@@ -98,8 +101,80 @@ async function seed() {
   }
 
   await seedReservations(therapist._id, omar._id);
+  await seedReports(therapist._id, omar._id);
+  await seedBanners();
 
   await disconnectDb();
+}
+
+// About 60 reports spread over the last 12 months, so the dashboard charts have data.
+async function seedReports(linaId: Types.ObjectId, omarId: Types.ObjectId) {
+  if (await Report.exists({})) {
+    console.info("reports already there");
+    return;
+  }
+  const patients = await Patient.find({}, "_id");
+  const progress: ReportProgress[] = [
+    "improving",
+    "improving",
+    "improving",
+    "stable",
+    "stable",
+    "worse",
+  ];
+  const diagnoses = [
+    ["Muscle strain", "Heat therapy and core exercises"],
+    ["Ligament sprain", "Rest, ice and balance training"],
+    ["Joint stiffness", "Mobility exercises and manual therapy"],
+    ["Nerve irritation", "Posture correction and stretching"],
+  ] as const;
+  const now = Date.now();
+  const day = 24 * 60 * 60 * 1000;
+
+  const reports = Array.from({ length: 60 }, (_, i) => {
+    const [diagnosis, treatmentPlan] = diagnoses[i % diagnoses.length]!;
+    return {
+      patientId: patients[i % patients.length]!._id,
+      therapistId: i % 2 === 0 ? linaId : omarId,
+      date: new Date(now - ((i * 6) % 360) * day),
+      diagnosis,
+      treatmentPlan,
+      sessionNotes: i % 3 === 0 ? "Patient reports less pain than last session" : null,
+      progress: progress[i % progress.length]!,
+    };
+  });
+  await Report.insertMany(reports);
+  await Promise.all(patients.map((p) => syncLastVisit(p._id)));
+  console.info(`reports ${reports.length} created`);
+}
+
+async function seedBanners() {
+  if (await Banner.exists({})) {
+    console.info("banners already there");
+    return;
+  }
+  await Banner.insertMany([
+    {
+      type: "announcement",
+      messageEn: "Welcome to our clinic! Book your session online in under a minute.",
+      messageAr: "أهلاً بكم في عيادتنا! احجز جلستك أونلاين بأقل من دقيقة.",
+      order: 1,
+    },
+    {
+      type: "schedule_update",
+      messageEn: "The clinic is closed on Fridays and Saturdays.",
+      messageAr: "العيادة مغلقة يومي الجمعة والسبت.",
+      order: 2,
+    },
+    {
+      type: "announcement",
+      messageEn: "New: sports injury rehabilitation program.",
+      messageAr: "جديد: برنامج إعادة تأهيل إصابات الملاعب.",
+      order: 3,
+      isActive: false,
+    },
+  ]);
+  console.info("banners 3 created");
 }
 
 // A few requests on the next working days: some pending, some accepted. Only when there are none.
