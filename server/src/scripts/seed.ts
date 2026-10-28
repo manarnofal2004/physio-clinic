@@ -1,11 +1,17 @@
 // Creates the first admin plus a sample therapist and patient, each with a login.
 // Safe to run again: records that already exist (by email) are left alone.
 // Run with: pnpm seed
+import type { Types } from "mongoose";
+import { env } from "../config/env.js";
+import type { WorkDay } from "../constants.js";
 import { connectDb, disconnectDb } from "../db/connect.js";
 import { Patient, type IPatient } from "../models/patient.model.js";
+import { Reservation } from "../models/reservation.model.js";
 import { Therapist } from "../models/therapist.model.js";
 import { User, type IUser } from "../models/user.model.js";
 import { hashPassword } from "../services/auth.service.js";
+import { dateOptions } from "../services/schedule.service.js";
+import { zonedTime } from "../utils/time.js";
 
 const ADMIN = {
   fullName: "Clinic Admin",
@@ -59,6 +65,20 @@ async function seed() {
     patientScope: { all: true, patientIds: [] },
   });
 
+  // A second therapist (no login) so two sessions can run at the same time.
+  const omar =
+    (await Therapist.findOne({ fullName: "Dr. Omar Nasser" })) ??
+    (await Therapist.create({
+      fullName: "Dr. Omar Nasser",
+      phone: "0598123987",
+      specialty: "Back and neck",
+      schedule: [0, 1, 2, 3, 4].map((day) => ({
+        day: day as WorkDay,
+        start: "10:00",
+        end: "18:00",
+      })),
+    }));
+
   let created = 0;
   for (const data of SAMPLE_PATIENTS) {
     if (await Patient.exists({ phone: data.phone })) continue;
@@ -77,7 +97,46 @@ async function seed() {
     });
   }
 
+  await seedReservations(therapist._id, omar._id);
+
   await disconnectDb();
+}
+
+// A few requests on the next working days: some pending, some accepted. Only when there are none.
+async function seedReservations(linaId: Types.ObjectId, omarId: Types.ObjectId) {
+  if (await Reservation.exists({})) {
+    console.info("reservations already there");
+    return;
+  }
+  const patientUser = await User.findOne({ email: PATIENT.email });
+  const tz = env.CLINIC_TIMEZONE;
+  const days = (await dateOptions(new Date())).slice(1, 4);
+
+  const samples = days.flatMap((day, i) =>
+    [
+      { fullName: "Sara Odeh", phone: `059700112${i}`, age: 28, time: "09:00", status: "pending" },
+      {
+        fullName: "Omar Barghouti",
+        phone: `059955667${i}`,
+        age: 37,
+        time: "10:00",
+        status: "accepted",
+        therapistId: omarId,
+      },
+      {
+        fullName: "Ahmad Saleh",
+        phone: "0599123456",
+        age: 34,
+        time: "12:30",
+        status: "accepted",
+        therapistId: linaId,
+        userId: patientUser?._id ?? null,
+      },
+    ].map(({ time, ...rest }) => ({ ...rest, scheduledAt: zonedTime(day, time, tz) })),
+  );
+
+  await Reservation.insertMany(samples);
+  console.info(`reservations ${samples.length} created`);
 }
 
 // The first one gets the sample patient login. Phone numbers are unique per sample.

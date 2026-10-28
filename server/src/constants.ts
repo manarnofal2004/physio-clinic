@@ -43,3 +43,12 @@ export type WorkDay = (typeof WORK_DAYS)[number];
 
 export const CLINIC_OPENS = "08:00";
 export const CLINIC_CLOSES = "19:00";
+
+// Booking rules (see docs/api/reservations.md).
+export const SLOT_MINUTES = 15; // a start time every 15 minutes
+export const SESSION_MINUTES = 45; // a therapist is busy 45 minutes from a session's start
+export const BOOKING_DAYS_AHEAD = 30;
+export const MAX_PENDING_PER_PHONE = 2;
+
+export const RESERVATION_STATUSES = ["pending", "accepted", "rejected", "cancelled"] as const;
+export type ReservationStatus = (typeof RESERVATION_STATUSES)[number];
