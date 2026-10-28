@@ -10,6 +10,7 @@ Physiotherapy Clinic Management System: a public website where visitors book app
 ## Prerequisites
 
 - Node.js 20 or later
+- pnpm (`npm install -g pnpm`)
 - MongoDB (local, or a MongoDB Atlas connection string)
 
 ## Setup
@@ -17,29 +18,29 @@ Physiotherapy Clinic Management System: a public website where visitors book app
 ```bash
 git clone https://github.com/manarnofal2004/physio-clinic.git
 cd physio-clinic
-npm install
+pnpm install
 
 # Server
 cd server
-npm install
+pnpm install
 cp .env.example .env   # then fill in the values
-npm run dev
+pnpm dev
 
 # Client (in a second terminal)
 cd client
-npm install
+pnpm install
 cp .env.example .env
-npm run dev
+pnpm dev
 ```
 
 ## Scripts (root)
 
-| Command                | What it does                     |
-| ---------------------- | -------------------------------- |
-| `npm run lint`         | Check the code with ESLint       |
-| `npm run lint:fix`     | Fix ESLint problems that can be  |
-| `npm run format`       | Format every file with Prettier  |
-| `npm run format:check` | Check formatting without writing |
+| Command             | What it does                     |
+| ------------------- | -------------------------------- |
+| `pnpm lint`         | Check the code with ESLint       |
+| `pnpm lint:fix`     | Fix ESLint problems that can be  |
+| `pnpm format`       | Format every file with Prettier  |
+| `pnpm format:check` | Check formatting without writing |
 
 ## Workflow
 

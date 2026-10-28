@@ -2,6 +2,7 @@
   "name": "physio-clinic-server",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@12.14.0",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
