@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { authRouter } from "./auth.routes.js";
+import { bannersRouter } from "./banners.routes.js";
+import { dashboardRouter } from "./dashboard.routes.js";
 import { healthRouter } from "./health.js";
 import { patientsRouter } from "./patients.routes.js";
 import { publicRouter } from "./public.routes.js";
@@ -20,4 +22,6 @@ apiRouter.use("/patients", patientsRouter);
 apiRouter.use("/reports", reportsRouter);
 apiRouter.use("/uploads", uploadsRouter);
 apiRouter.use("/reservations", reservationsRouter);
+apiRouter.use("/banners", bannersRouter);
+apiRouter.use("/dashboard", dashboardRouter);
 apiRouter.use("/public", publicRouter);
