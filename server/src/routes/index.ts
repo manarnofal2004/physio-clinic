@@ -2,7 +2,9 @@ import { Router } from "express";
 import { authRouter } from "./auth.routes.js";
 import { healthRouter } from "./health.js";
 import { patientsRouter } from "./patients.routes.js";
+import { reportsRouter } from "./reports.routes.js";
 import { therapistsRouter } from "./therapists.routes.js";
+import { uploadsRouter } from "./uploads.routes.js";
 import { usersRouter } from "./users.routes.js";
 
 // All API routes are mounted here under /api.
@@ -13,3 +15,5 @@ apiRouter.use("/auth", authRouter);
 apiRouter.use("/users", usersRouter);
 apiRouter.use("/therapists", therapistsRouter);
 apiRouter.use("/patients", patientsRouter);
+apiRouter.use("/reports", reportsRouter);
+apiRouter.use("/uploads", uploadsRouter);
