@@ -1,6 +1,6 @@
 # Reservations
 
-Visitors book a time without logging in; logged-in patients can book too and see their own reservations. Staff accept or reject each request, assign a therapist, and can move it to another time.
+Visitors book a time without logging in; logged-in patients can book too and see their own reservations. A therapist takes a pending reservation for themselves, or the admin assigns one. Patients never know or choose the therapist.
 
 ## Booking rules
 
@@ -8,10 +8,11 @@ The server checks these on every create and every change.
 
 1. **Days:** Sunday to Thursday, from today up to 30 days ahead. Friday and Saturday are closed.
 2. **Times:** a slot every 15 minutes from 08:00 to 19:00, clinic time.
-3. **A slot is free when** it is in the future and at least one active therapist works at that time and has no **accepted** reservation within 45 minutes of it.
-4. **Pending reservations do not block slots.** Only accepting does.
-5. **Taken slots are hidden**, not shown as disabled.
-6. **Spam limits:** one phone number can have at most 2 pending reservations (`PENDING_LIMIT_REACHED`), and booking is rate limited per IP (`TOO_MANY_REQUESTS`).
+3. **A therapist is busy for 45 minutes** from the start of each accepted session. Example: a session at 09:00 blocks that therapist from 09:00 to 09:45; 09:45 is bookable again.
+4. **A slot is free when** it is in the future and at least one active therapist works at that time and is not busy. The clinic has several rooms, so two therapists can have sessions at the same time.
+5. **Pending reservations do not block slots.** Only accepting does.
+6. **Taken slots are hidden**, not shown as disabled.
+7. **Spam limits:** one phone number can have at most 2 pending reservations (`PENDING_LIMIT_REACHED`), and booking is rate limited per IP (`TOO_MANY_REQUESTS`).
 
 ## A reservation
 
@@ -36,8 +37,9 @@ The server checks these on every create and every change.
 ```
 
 - `userId` is `null` for guests.
-- `therapistId` is set by staff when accepting.
+- `therapistId` is set when a therapist takes the reservation or the admin assigns one.
 - `status`: `pending` → `accepted` / `rejected`, or `cancelled`.
+- Patients never see `therapistId` or `adminNotes` (both come back `null` for them).
 
 ## Public endpoints (no login)
 
@@ -117,22 +119,33 @@ GET /api/public/reservations/today
 }
 ```
 
-Shows the sessions running right now. Never includes names or phone numbers.
+Shows the sessions running right now, for example "2 sessions running, ending at 09:45". Never includes names or phone numbers.
 
 ## Logged-in endpoints
 
-| Method | Path                        | Who               | Send                        | Returns                 |
-| ------ | --------------------------- | ----------------- | --------------------------- | ----------------------- |
-| GET    | `/reservations`             | Patient, Staff    | list params + filters below | `Reservation[]` (paged) |
-| GET    | `/reservations/reschedules` | Staff (TENTATIVE) | `?date=YYYY-MM-DD`          | `RescheduleNews[]`      |
-| GET    | `/reservations/:id`         | Owner, Staff      |                             | `Reservation`           |
-| POST   | `/reservations`             | Patient           | `ReservationInput`          | `Reservation` (201)     |
-| PUT    | `/reservations/:id`         | Staff             | `ReservationUpdate`         | `Reservation`           |
+| Method | Path                        | Needs                                 | Send                        | Returns                 |
+| ------ | --------------------------- | ------------------------------------- | --------------------------- | ----------------------- |
+| GET    | `/reservations`             | Patient (own), or `reservations.view` | list params + filters below | `Reservation[]` (paged) |
+| GET    | `/reservations/reschedules` | `reservations.view`                   | `?date=YYYY-MM-DD`          | `RescheduleNews[]`      |
+| GET    | `/reservations/:id`         | Owner, or `reservations.view`         |                             | `Reservation`           |
+| POST   | `/reservations`             | Patient                               | `ReservationInput`          | `Reservation` (201)     |
+| POST   | `/reservations/:id/take`    | `reservations.take`                   | `{ "adminNotes"? }`         | `Reservation`           |
+| PUT    | `/reservations/:id`         | `reservations.manage`                 | `ReservationUpdate`         | `Reservation`           |
 
 - A patient only sees their own reservations. Another patient's id returns `FORBIDDEN`.
-- Filters: `status`, `therapistId`, `from`, `to`. Sort by `scheduledAt`, `createdAt` or `status`.
+- A therapist with `reservations.take` but not `reservations.view` sees pending reservations and their own.
+- Filters: `status`, `therapistId`, `from`, `to`; `mine=true` for the logged-in therapist's own sessions. Sort by `scheduledAt`, `createdAt` or `status`.
 
-### Staff: accept, reject or reschedule
+### Therapist: take a reservation
+
+```
+POST /api/reservations/6730e1.../take
+{ "adminNotes": "First visit, knee" }
+```
+
+Accepts the pending reservation with the logged-in therapist as `therapistId` and sets `reviewedAt`. Fails with `SLOT_UNAVAILABLE` if the therapist is busy or does not work at that time, and `CONFLICT` if it is no longer pending.
+
+### Admin (or `reservations.manage`): accept, reject, assign or reschedule
 
 ```
 PUT /api/reservations/6730e1...
@@ -140,8 +153,8 @@ PUT /api/reservations/6730e1...
 ```
 
 - Changing `status` sets `reviewedAt`.
-- Accepting needs a `therapistId` who is free then (get the list from `GET /therapists/free`), otherwise `SLOT_UNAVAILABLE`.
-- Changing `scheduledAt` reschedules: the same booking rules apply, and the old time is saved in `previousScheduledAt` with `rescheduledAt` set to now.
+- Accepting needs a `therapistId` who is free then (list from `GET /therapists/free`), otherwise `SLOT_UNAVAILABLE`.
+- Changing `scheduledAt` reschedules: the same rules apply, and the old time is saved in `previousScheduledAt` with `rescheduledAt` set to now.
 
 ### Rescheduling news
 
@@ -150,4 +163,4 @@ GET /api/reservations/reschedules?date=2026-11-02
 → [{ "reservationId": "6730e1...", "previousScheduledAt": "...", "scheduledAt": "...", "rescheduledAt": "..." }]
 ```
 
-Reservations moved on that day, for the "rescheduling news" component.
+Reservations moved on that day, for the staff "rescheduling news" component.

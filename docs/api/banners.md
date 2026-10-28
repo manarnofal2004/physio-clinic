@@ -2,13 +2,13 @@
 
 Short messages shown in a scrolling bar at the top of the public site: clinic announcements and schedule updates, in English and Arabic.
 
-| Method | Path              | Who    | Send          | Returns                           |
-| ------ | ----------------- | ------ | ------------- | --------------------------------- |
-| GET    | `/public/banners` | Anyone |               | Active banners, sorted by `order` |
-| GET    | `/banners`        | Admin  | list params   | `Banner[]` (paged)                |
-| POST   | `/banners`        | Admin  | `BannerInput` | `Banner` (201)                    |
-| PUT    | `/banners/:id`    | Admin  | `BannerInput` | `Banner`                          |
-| DELETE | `/banners/:id`    | Admin  |               | `null`                            |
+| Method | Path              | Needs            | Send          | Returns                           |
+| ------ | ----------------- | ---------------- | ------------- | --------------------------------- |
+| GET    | `/public/banners` | Anyone           |               | Active banners, sorted by `order` |
+| GET    | `/banners`        | `banners.manage` | list params   | `Banner[]` (paged)                |
+| POST   | `/banners`        | `banners.manage` | `BannerInput` | `Banner` (201)                    |
+| PUT    | `/banners/:id`    | `banners.manage` | `BannerInput` | `Banner`                          |
+| DELETE | `/banners/:id`    | `banners.manage` |               | `null`                            |
 
 ## A banner
 

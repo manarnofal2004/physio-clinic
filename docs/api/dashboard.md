@@ -1,10 +1,10 @@
 # Dashboard
 
-One endpoint with every number and chart on the admin dashboard.
+One endpoint with every number and chart on the staff dashboard. Numbers only count patients in the user's [patient scope](users.md#patient-scope); hidden patients count only for the admin.
 
-| Method | Path               | Who   | Returns          |
-| ------ | ------------------ | ----- | ---------------- |
-| GET    | `/dashboard/stats` | Staff | `DashboardStats` |
+| Method | Path               | Needs            | Returns          |
+| ------ | ------------------ | ---------------- | ---------------- |
+| GET    | `/dashboard/stats` | `dashboard.view` | `DashboardStats` |
 
 ```json
 {

@@ -1,14 +1,16 @@
 # Therapists
 
-The clinic has several physiotherapists, each with their own working hours. Patients do not choose a therapist; staff assign one when they accept a reservation. Therapists are **not deleted**: set `isActive: false` to stop giving them new sessions.
+The clinic has several physiotherapists, each with their own working hours. Patients never choose a therapist: therapists take reservations themselves, or the admin assigns one. Therapists are **not deleted**: set `isActive: false` to stop giving them new sessions.
 
-| Method | Path               | Who   | Send                                   | Returns               |
-| ------ | ------------------ | ----- | -------------------------------------- | --------------------- |
-| GET    | `/therapists`      | Staff | list params + `isActive?`              | `Therapist[]` (paged) |
-| GET    | `/therapists/free` | Staff | `scheduledAt`, `excludeReservationId?` | `Therapist[]`         |
-| POST   | `/therapists`      | Admin | `TherapistInput`                       | `Therapist` (201)     |
-| GET    | `/therapists/:id`  | Staff |                                        | `Therapist`           |
-| PUT    | `/therapists/:id`  | Admin | `TherapistInput`                       | `Therapist`           |
+A therapist profile is not a login. To let a therapist log in, the admin creates an account linked to the profile ([users.md](users.md#create-an-account)).
+
+| Method | Path               | Needs                 | Send                                   | Returns               |
+| ------ | ------------------ | --------------------- | -------------------------------------- | --------------------- |
+| GET    | `/therapists`      | `reservations.view`   | list params + `isActive?`              | `Therapist[]` (paged) |
+| GET    | `/therapists/free` | `reservations.manage` | `scheduledAt`, `excludeReservationId?` | `Therapist[]`         |
+| POST   | `/therapists`      | Admin                 | `TherapistInput`                       | `Therapist` (201)     |
+| GET    | `/therapists/:id`  | `reservations.view`   |                                        | `Therapist`           |
+| PUT    | `/therapists/:id`  | Admin                 | `TherapistInput`                       | `Therapist`           |
 
 ## A therapist
 
@@ -19,6 +21,7 @@ The clinic has several physiotherapists, each with their own working hours. Pati
   "phone": "0598765432",
   "specialty": "Sports injuries",
   "isActive": true,
+  "hasAccount": true,
   "schedule": [
     { "day": 0, "start": "08:00", "end": "14:00" },
     { "day": 2, "start": "12:00", "end": "19:00" }
@@ -28,8 +31,13 @@ The clinic has several physiotherapists, each with their own working hours. Pati
 }
 ```
 
-- `day`: `0` = Sunday ... `4` = Thursday. The clinic is closed Friday and Saturday.
-- `start` and `end` are clinic time, between `08:00` and `19:00`, and `end` is after `start`.
+| Field       | Rules                                                                                                                             |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `fullName`  | Required, 2-120 chars                                                                                                             |
+| `phone`     | Optional, 6-30 chars                                                                                                              |
+| `specialty` | Optional, max 120                                                                                                                 |
+| `isActive`  | Optional, default `true`                                                                                                          |
+| `schedule`  | Required. `day` `0` (Sunday) to `4` (Thursday); `start` and `end` in clinic time between `08:00` and `19:00`, `end` after `start` |
 
 ## Who is free at a given time
 
@@ -37,7 +45,7 @@ The clinic has several physiotherapists, each with their own working hours. Pati
 GET /api/therapists/free?scheduledAt=2026-11-02T08:00:00.000Z
 ```
 
-Returns active therapists who work at that time and have no **accepted** reservation within 45 minutes of it. Staff use it to fill the therapist select when accepting or rescheduling. When rescheduling, pass `excludeReservationId` so the reservation does not block itself.
+Returns active therapists who work at that time and are not busy: a therapist is busy for **45 minutes** from the start of each accepted session. The admin uses it to fill the therapist select when assigning or rescheduling. When rescheduling, pass `excludeReservationId` so the reservation does not block itself.
 
 ## List
 

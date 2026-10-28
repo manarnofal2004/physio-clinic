@@ -4,20 +4,21 @@ The agreement between `client/` and `server/`: every endpoint, what it takes and
 
 - TypeScript types for every shape: [`shared/api-types.ts`](../../shared/api-types.ts)
 - Change these files in the same PR as any API change, and tell the other developer.
-- **TENTATIVE** marks anything that depends on an [open question](open-questions.md).
+- The supervisor's decisions and the few questions still open: [decisions.md](decisions.md).
 
 ## Sections
 
-| File                                   | Covers                                                 |
-| -------------------------------------- | ------------------------------------------------------ |
-| [auth.md](auth.md)                     | Login, current user                                    |
-| [patients.md](patients.md)             | Patients, patient status, patient accounts, CSV export |
-| [therapists.md](therapists.md)         | Therapists and their working hours                     |
-| [reports.md](reports.md)               | Treatment reports and file uploads                     |
-| [reservations.md](reservations.md)     | Public booking, slot rules, managing reservations      |
-| [banners.md](banners.md)               | Announcement banners                                   |
-| [dashboard.md](dashboard.md)           | Dashboard stats                                        |
-| [open-questions.md](open-questions.md) | Questions for the supervisor and changes from the plan |
+| File                               | Covers                                              |
+| ---------------------------------- | --------------------------------------------------- |
+| [auth.md](auth.md)                 | Login, current user                                 |
+| [users.md](users.md)               | Accounts, privileges and patient scope (admin)      |
+| [patients.md](patients.md)         | Patients, status, hiding, CSV export                |
+| [therapists.md](therapists.md)     | Therapists and their working hours                  |
+| [reports.md](reports.md)           | Treatment reports and file uploads                  |
+| [reservations.md](reservations.md) | Public booking, slot rules, managing reservations   |
+| [banners.md](banners.md)           | Announcement banners                                |
+| [dashboard.md](dashboard.md)       | Dashboard stats                                     |
+| [decisions.md](decisions.md)       | Supervisor's decisions and remaining open questions |
 
 ## Basics
 
@@ -30,12 +31,19 @@ The agreement between `client/` and `server/`: every endpoint, what it takes and
 
 ## Who can call what
 
-| Role               | Can use                                                       |
-| ------------------ | ------------------------------------------------------------- |
-| Visitor (no token) | `/health`, `/auth/login`, everything under `/public`          |
-| Patient            | Their own user and their own reservations                     |
-| Staff              | `admin`, and `therapist` if therapists get logins (TENTATIVE) |
-| Admin              | Everything                                                    |
+| Role                 | Can use                                                                  |
+| -------------------- | ------------------------------------------------------------------------ |
+| Visitor (no account) | `/health`, `/auth/login`, everything under `/public`                     |
+| Patient              | Their own user and their own reservations                                |
+| Therapist            | Only what the admin allows: their **privileges** and **patient scope**   |
+| Admin                | Everything. Only the admin manages users, therapists and hidden patients |
+
+Only the admin creates accounts; nobody signs up. For each therapist the admin picks:
+
+- **Privileges:** what they may do, for example view patients but not edit them.
+- **Patient scope:** which patients they may see: all of them, or a chosen list.
+
+Each section names the privilege an endpoint needs; without it the API returns `FORBIDDEN`. A patient outside the user's scope, or hidden by the admin, returns `NOT_FOUND` as if it did not exist. Details: [users.md](users.md).
 
 ## Response shape
 
@@ -76,22 +84,23 @@ The client shows translated text based on `code`, and puts `details` messages un
 
 ## Error codes
 
-| Code                    | Status | Example                                  |
-| ----------------------- | ------ | ---------------------------------------- |
-| `VALIDATION_ERROR`      | 400    | Phone number too short                   |
-| `INVALID_JSON`          | 400    | Broken request body                      |
-| `FILE_TOO_LARGE`        | 400    | Uploaded file over 5 MB                  |
-| `UNSUPPORTED_FILE_TYPE` | 400    | Uploaded a `.docx`                       |
-| `TOO_MANY_FILES`        | 400    | More than 5 files                        |
-| `INVALID_CREDENTIALS`   | 401    | Wrong email or password                  |
-| `UNAUTHORIZED`          | 401    | No token, or the token expired           |
-| `FORBIDDEN`             | 403    | A patient opens an admin page            |
-| `NOT_FOUND`             | 404    | Patient id does not exist                |
-| `CONFLICT`              | 409    | Email already used                       |
-| `SLOT_UNAVAILABLE`      | 409    | Someone else got that time first         |
-| `PENDING_LIMIT_REACHED` | 409    | Phone already has 2 pending reservations |
-| `TOO_MANY_REQUESTS`     | 429    | Too many login or booking attempts       |
-| `INTERNAL_ERROR`        | 500    | Bug on the server                        |
+| Code                    | Status | Example                                             |
+| ----------------------- | ------ | --------------------------------------------------- |
+| `VALIDATION_ERROR`      | 400    | Phone number too short                              |
+| `INVALID_JSON`          | 400    | Broken request body                                 |
+| `FILE_TOO_LARGE`        | 400    | Uploaded file over 5 MB                             |
+| `UNSUPPORTED_FILE_TYPE` | 400    | Uploaded a `.docx`                                  |
+| `TOO_MANY_FILES`        | 400    | More than 5 files                                   |
+| `INVALID_CREDENTIALS`   | 401    | Wrong email or password                             |
+| `UNAUTHORIZED`          | 401    | No token, or the token expired                      |
+| `FORBIDDEN`             | 403    | A therapist without `patients.edit` edits a patient |
+| `ACCOUNT_DISABLED`      | 403    | Login to an account the admin turned off            |
+| `NOT_FOUND`             | 404    | Patient does not exist, is hidden or out of scope   |
+| `CONFLICT`              | 409    | Email already used                                  |
+| `SLOT_UNAVAILABLE`      | 409    | Someone else got that time first                    |
+| `PENDING_LIMIT_REACHED` | 409    | Phone already has 2 pending reservations            |
+| `TOO_MANY_REQUESTS`     | 429    | Too many login or booking attempts                  |
+| `INTERNAL_ERROR`        | 500    | Bug on the server                                   |
 
 ## Lists
 
@@ -112,7 +121,8 @@ GET /api/patients?page=2&limit=10&sort=-createdAt&search=ahmad
 
 | Name                | Values                                         |
 | ------------------- | ---------------------------------------------- |
-| `Role`              | `admin`, `therapist` (TENTATIVE), `patient`    |
+| `Role`              | `admin`, `therapist`, `patient`                |
+| `Privilege`         | See [users.md](users.md#privileges)            |
 | `Gender`            | `male`, `female`                               |
 | `PatientStatus`     | `active`, `completed`                          |
 | `ReportProgress`    | `improving`, `stable`, `worse`                 |

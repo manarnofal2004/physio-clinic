@@ -2,16 +2,18 @@
 
 A report records one treatment session for a patient: diagnosis, plan, notes, progress and attached files (images or PDFs).
 
-| Method | Path              | Who   | Send                                 | Returns              |
-| ------ | ----------------- | ----- | ------------------------------------ | -------------------- |
-| GET    | `/reports`        | Staff | list params + filters below          | `Report[]` (paged)   |
-| GET    | `/reports/export` | Admin | same params as the list              | CSV file             |
-| POST   | `/reports`        | Staff | `ReportInput`                        | `Report` (201)       |
-| GET    | `/reports/:id`    | Staff |                                      | `Report`             |
-| PUT    | `/reports/:id`    | Staff | `ReportInput`                        | `Report`             |
-| DELETE | `/reports/:id`    | Admin |                                      | `null`               |
-| POST   | `/uploads`        | Staff | `multipart/form-data`, field `files` | `Attachment[]` (201) |
-| GET    | `/uploads/:id`    | Staff |                                      | The file itself      |
+| Method | Path              | Needs          | Send                                 | Returns              |
+| ------ | ----------------- | -------------- | ------------------------------------ | -------------------- |
+| GET    | `/reports`        | `reports.view` | list params + filters below          | `Report[]` (paged)   |
+| GET    | `/reports/export` | `reports.view` | same params as the list              | CSV file             |
+| POST   | `/reports`        | `reports.edit` | `ReportInput`                        | `Report` (201)       |
+| GET    | `/reports/:id`    | `reports.view` |                                      | `Report`             |
+| PUT    | `/reports/:id`    | `reports.edit` | `ReportInput`                        | `Report`             |
+| DELETE | `/reports/:id`    | `reports.edit` |                                      | `null`               |
+| POST   | `/uploads`        | `reports.edit` | `multipart/form-data`, field `files` | `Attachment[]` (201) |
+| GET    | `/uploads/:id`    | `reports.view` |                                      | The file itself      |
+
+Only reports of patients in the user's [patient scope](users.md#patient-scope) are visible; others return `NOT_FOUND`.
 
 ## A report
 
@@ -66,16 +68,16 @@ POST /api/reports
 }
 ```
 
-| Field           | Rules                              |
-| --------------- | ---------------------------------- |
-| `patientId`     | Required, must exist (`NOT_FOUND`) |
-| `therapistId`   | Optional                           |
-| `date`          | Required                           |
-| `diagnosis`     | Required, 2-2000 chars             |
-| `treatmentPlan` | Required, 2-2000 chars             |
-| `sessionNotes`  | Optional, max 5000                 |
-| `progress`      | `improving`, `stable` or `worse`   |
-| `attachmentIds` | Optional, max 5                    |
+| Field           | Rules                                              |
+| --------------- | -------------------------------------------------- |
+| `patientId`     | Required, must exist and be in scope (`NOT_FOUND`) |
+| `therapistId`   | Optional; defaults to the logged-in therapist      |
+| `date`          | Required                                           |
+| `diagnosis`     | Required, 2-2000 chars                             |
+| `treatmentPlan` | Required, 2-2000 chars                             |
+| `sessionNotes`  | Optional, max 5000                                 |
+| `progress`      | `improving`, `stable` or `worse`                   |
+| `attachmentIds` | Optional, max 5                                    |
 
 On `PUT`, `attachmentIds` is the full new list: files left out are deleted. Uploaded files not attached to any report within 24 hours are deleted.
 

@@ -4,13 +4,26 @@
 // - Calendar days are "YYYY-MM-DD" and clock times "HH:mm", both in the clinic
 //   timezone (Asia/Hebron).
 // - Ids are MongoDB ObjectId strings.
-// Items marked TENTATIVE depend on open questions (see the end of the contract).
 
 // ---------- Enums ----------
 // Arrays are exported so zod schemas and select inputs can reuse them.
 
-export const ROLES = ["admin", "therapist", "patient"] as const; // "therapist": TENTATIVE
+export const ROLES = ["admin", "therapist", "patient"] as const;
 export type Role = (typeof ROLES)[number];
+
+// What the admin allows a therapist to do. Admins have all of them.
+export const PRIVILEGES = [
+  "patients.view",
+  "patients.edit",
+  "reports.view",
+  "reports.edit",
+  "reservations.view",
+  "reservations.take",
+  "reservations.manage",
+  "banners.manage",
+  "dashboard.view",
+] as const;
+export type Privilege = (typeof PRIVILEGES)[number];
 
 export const GENDERS = ["male", "female"] as const;
 export type Gender = (typeof GENDERS)[number];
@@ -59,6 +72,7 @@ export const ERROR_CODES = [
   "INVALID_CREDENTIALS",
   "UNAUTHORIZED",
   "FORBIDDEN",
+  "ACCOUNT_DISABLED",
   "NOT_FOUND",
   "CONFLICT",
   "SLOT_UNAVAILABLE",
@@ -96,13 +110,19 @@ export interface ListQuery {
 
 // ---------- Auth and users ----------
 
+// Which patients a user may see: all, or a chosen list.
+export type PatientScope = { all: true } | { all: false; patientIds: string[] };
+
 export interface User {
   id: string;
   fullName: string;
   email: string;
   role: Role;
-  patientId: string | null; // set for role "patient" (TENTATIVE link)
-  therapistId: string | null; // set for role "therapist" (TENTATIVE)
+  isActive: boolean;
+  patientId: string | null; // set for role "patient"
+  therapistId: string | null; // set for role "therapist"
+  privileges: Privilege[]; // admin: all; patient: []
+  patientScope: PatientScope | null; // admin: { all: true }; patient: null
   createdAt: string;
   updatedAt: string;
 }
@@ -117,10 +137,30 @@ export interface LoginResponse {
   user: User;
 }
 
-// Patients cannot self-register: staff create a login for an existing patient.
-export interface CreatePatientAccountRequest {
+// Nobody signs up: the admin creates therapist and patient accounts.
+export interface CreateUserRequest {
+  role: "therapist" | "patient";
+  therapistId?: string; // required for "therapist"
+  patientId?: string; // required for "patient"
+  fullName: string; // 2-120
   email: string;
   password: string; // min 8
+  privileges?: Privilege[]; // therapist only, default []
+  patientScope?: PatientScope; // therapist only, default { all: false, patientIds: [] }
+}
+
+export interface UpdateUserAccessRequest {
+  privileges: Privilege[];
+  patientScope: PatientScope;
+}
+
+export interface UserStatusRequest {
+  isActive: boolean;
+}
+
+export interface UserListQuery extends ListQuery {
+  role?: Role;
+  isActive?: boolean;
 }
 
 // ---------- Patients ----------
@@ -135,6 +175,7 @@ export interface Patient {
   condition: string;
   notes: string | null;
   status: PatientStatus;
+  isHidden: boolean; // hidden patients are visible to the admin only
   lastVisit: string | null; // date of the latest report
   hasAccount: boolean;
   createdAt: string;
@@ -153,10 +194,16 @@ export interface PatientInput {
 
 export interface PatientListQuery extends ListQuery {
   status?: PatientStatus;
+  hidden?: boolean; // admin only
 }
 
 export interface PatientStatusRequest {
   status: PatientStatus;
+}
+
+// Admin only.
+export interface PatientHideRequest {
+  isHidden: boolean;
 }
 
 // ---------- Therapists ----------
@@ -173,6 +220,7 @@ export interface Therapist {
   phone: string | null;
   specialty: string | null;
   isActive: boolean;
+  hasAccount: boolean; // true once the admin creates a login for this therapist
   schedule: WorkingHours[];
   createdAt: string;
   updatedAt: string;
@@ -219,7 +267,7 @@ export interface Report {
 
 export interface ReportInput {
   patientId: string;
-  therapistId?: string;
+  therapistId?: string; // defaults to the logged-in therapist
   date: string;
   diagnosis: string; // 2-2000
   treatmentPlan: string; // 2-2000
@@ -240,14 +288,14 @@ export interface ReportListQuery extends ListQuery {
 export interface Reservation {
   id: string;
   userId: string | null; // null for guest bookings
-  therapistId: string | null; // assigned by staff when accepting
+  therapistId: string | null; // set when a therapist takes it or the admin assigns one; null for patients
   fullName: string;
   phone: string;
   age: number;
   scheduledAt: string;
   status: ReservationStatus;
   notes: string | null;
-  adminNotes: string | null;
+  adminNotes: string | null; // null for patients
   reviewedAt: string | null; // set when status changes
   previousScheduledAt: string | null; // set when staff reschedule
   rescheduledAt: string | null;
@@ -263,7 +311,8 @@ export interface ReservationInput {
   notes?: string; // max 2000
 }
 
-// Staff only. Accepting requires a therapistId that is free at scheduledAt.
+// PUT /reservations/:id, needs "reservations.manage".
+// Accepting requires a therapistId that is free at scheduledAt.
 export interface ReservationUpdate {
   scheduledAt?: string;
   status?: ReservationStatus;
@@ -271,9 +320,16 @@ export interface ReservationUpdate {
   adminNotes?: string; // max 2000
 }
 
+// POST /reservations/:id/take, needs "reservations.take".
+// Accepts a pending reservation for the logged-in therapist.
+export interface TakeReservationRequest {
+  adminNotes?: string; // max 2000
+}
+
 export interface ReservationListQuery extends ListQuery {
   status?: ReservationStatus;
   therapistId?: string;
+  mine?: boolean; // the logged-in therapist's own sessions
   from?: string; // "YYYY-MM-DD"
   to?: string; // "YYYY-MM-DD"
 }
@@ -294,7 +350,7 @@ export interface TodayOverview {
   availableSlotsLeft: number;
 }
 
-// GET /reservations/reschedules?date=YYYY-MM-DD (TENTATIVE)
+// GET /reservations/reschedules?date=YYYY-MM-DD, needs "reservations.view".
 export interface RescheduleNews {
   reservationId: string;
   previousScheduledAt: string;
