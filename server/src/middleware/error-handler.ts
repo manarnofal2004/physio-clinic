@@ -1,31 +1,33 @@
 import type { ErrorRequestHandler, RequestHandler } from "express";
 import { env } from "../config/env.js";
-
-// Error with an HTTP status, thrown from routes and services.
-export class HttpError extends Error {
-  constructor(
-    public readonly status: number,
-    message: string,
-  ) {
-    super(message);
-  }
-}
+import { AppError } from "../utils/app-error.js";
 
 export const notFound: RequestHandler = (req, _res, next) => {
-  next(new HttpError(404, `Route not found: ${req.method} ${req.originalUrl}`));
+  next(new AppError(404, "NOT_FOUND", `Route not found: ${req.method} ${req.originalUrl}`));
 };
 
-// Every error leaves the API in the same shape: { error: { message } }.
+function isJsonSyntaxError(err: unknown): boolean {
+  return err instanceof SyntaxError && "type" in err && err.type === "entity.parse.failed";
+}
+
+// Every error leaves the API in the same shape:
+// { success: false, error: { code, message, details? } }.
 export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
-  const status = err instanceof HttpError ? err.status : 500;
-  if (status === 500) console.error(err);
+  let appError: AppError;
+  if (err instanceof AppError) {
+    appError = err;
+  } else if (isJsonSyntaxError(err)) {
+    appError = new AppError(400, "INVALID_JSON", "Request body is not valid JSON");
+  } else {
+    console.error(err);
+    const message =
+      env.NODE_ENV !== "production" && err instanceof Error ? err.message : "Internal server error";
+    appError = new AppError(500, "INTERNAL_ERROR", message);
+  }
 
-  const message =
-    status === 500 && env.NODE_ENV === "production"
-      ? "Internal server error"
-      : err instanceof Error
-        ? err.message
-        : "Internal server error";
-
-  res.status(status).json({ error: { message } });
+  const { status, code, message, details } = appError;
+  res.status(status).json({
+    success: false,
+    error: details ? { code, message, details } : { code, message },
+  });
 };
