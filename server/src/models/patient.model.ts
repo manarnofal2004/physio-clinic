@@ -1,8 +1,7 @@
 import { Schema, model, type HydratedDocument } from "mongoose";
 import { GENDERS, PATIENT_STATUSES, type Gender, type PatientStatus } from "../constants.js";
 
-// Basic patient record, needed now so patient accounts can link to it.
-// Validators, search indexes and endpoints come in task 3.1.
+// Patients are never deleted: status moves to "completed", and the admin can hide them.
 export interface IPatient {
   fullName: string;
   phone: string;
@@ -35,5 +34,12 @@ const patientSchema = new Schema<IPatient>(
   },
   { timestamps: true },
 );
+
+// Lists always filter on isHidden (and often status), then sort by one of these fields.
+patientSchema.index({ isHidden: 1, status: 1, createdAt: -1 });
+patientSchema.index({ isHidden: 1, fullName: 1 });
+patientSchema.index({ isHidden: 1, lastVisit: -1 });
+patientSchema.index({ isHidden: 1, age: 1 });
+patientSchema.index({ phone: 1 });
 
 export const Patient = model<IPatient>("Patient", patientSchema);

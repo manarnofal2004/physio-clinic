@@ -1,3 +1,4 @@
+import type { Types } from "mongoose";
 import { PRIVILEGES, type Privilege } from "../constants.js";
 import type { UserDocument } from "../models/user.model.js";
 
@@ -20,4 +21,11 @@ export function patientScopeFilter(user: UserDocument) {
   if (user.role === "therapist" && user.patientScope.all) return { isHidden: false };
   const ids = user.role === "therapist" ? user.patientScope.patientIds : [];
   return { _id: { $in: ids }, isHidden: false };
+}
+
+// A therapist with a limited scope can always see the patients they create.
+export async function addPatientToScope(user: UserDocument, patientId: Types.ObjectId) {
+  if (user.role !== "therapist" || user.patientScope.all) return;
+  user.patientScope.patientIds.push(patientId);
+  await user.save();
 }
