@@ -8,7 +8,7 @@ Physiotherapy Clinic Management System: a public website where visitors book app
 - **server/**: Node.js, Express, TypeScript, MongoDB (Mongoose), JWT, Zod
 - **shared/**: TypeScript types for API data, used by both apps
 
-The API contract (every endpoint, request and response) is in [docs/api-contract.md](docs/api-contract.md).
+The API contract (every endpoint, request and response) is in [docs/api/](docs/api/README.md).
 
 ## Prerequisites
 

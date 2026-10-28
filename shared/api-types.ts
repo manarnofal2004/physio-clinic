@@ -1,4 +1,4 @@
-// Shared API types for client and server. See docs/api-contract.md for endpoints.
+// Shared API types for client and server. See docs/api/README.md for endpoints.
 // Rules:
 // - Dates and times are ISO 8601 strings in UTC ("2026-11-01T06:30:00.000Z").
 // - Calendar days are "YYYY-MM-DD" and clock times "HH:mm", both in the clinic
