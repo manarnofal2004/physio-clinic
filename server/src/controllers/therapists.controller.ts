@@ -1,6 +1,7 @@
 import type { RequestHandler } from "express";
 import { Therapist, type TherapistDocument } from "../models/therapist.model.js";
 import { User } from "../models/user.model.js";
+import { freeTherapists } from "../services/schedule.service.js";
 import { AppError } from "../utils/app-error.js";
 import { buildPaginationMeta, getSkip } from "../utils/pagination.js";
 import { sendSuccess } from "../utils/response.js";
@@ -31,6 +32,15 @@ async function hasAccount(therapistId: string): Promise<boolean> {
   return Boolean(await User.exists({ therapistId }));
 }
 
+// Ids of the given therapists that have a login. One query for the whole list.
+async function therapistIdsWithAccount(therapists: TherapistDocument[]): Promise<Set<string>> {
+  const users = await User.find(
+    { therapistId: { $in: therapists.map((t) => t._id) } },
+    "therapistId",
+  );
+  return new Set(users.map((user) => String(user.therapistId)));
+}
+
 export const listTherapists: RequestHandler = async (req, res) => {
   const { page, limit, sort, search, isActive } = req.query as unknown as ListTherapistsQuery;
   const filter = {
@@ -43,14 +53,23 @@ export const listTherapists: RequestHandler = async (req, res) => {
     Therapist.countDocuments(filter),
   ]);
 
-  // One query for all accounts on this page instead of one per therapist.
-  const withAccount = new Set(
-    (await User.find({ therapistId: { $in: therapists.map((t) => t._id) } }, "therapistId")).map(
-      (user) => String(user.therapistId),
-    ),
-  );
+  const withAccount = await therapistIdsWithAccount(therapists);
   const items = therapists.map((t) => toTherapistDto(t, withAccount.has(t.id as string)));
   sendSuccess(res, items, { meta: buildPaginationMeta(page, limit, total) });
+};
+
+// Therapists who can take a session at that moment, for the "assign" select.
+export const listFreeTherapists: RequestHandler = async (req, res) => {
+  const { scheduledAt, excludeReservationId } = req.query as unknown as {
+    scheduledAt: Date;
+    excludeReservationId?: string;
+  };
+  const therapists = await freeTherapists(scheduledAt, excludeReservationId);
+  const withAccount = await therapistIdsWithAccount(therapists);
+  sendSuccess(
+    res,
+    therapists.map((t) => toTherapistDto(t, withAccount.has(t.id as string))),
+  );
 };
 
 export const createTherapist: RequestHandler = async (req, res) => {
