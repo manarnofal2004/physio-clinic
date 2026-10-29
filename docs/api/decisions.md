@@ -27,5 +27,5 @@ Until answered, the contract uses the assumption in brackets.
 
 1. **Rescheduling news:** staff only, or also visitors? Should the patient be told? _(Staff only, no notification.)_
 2. **Patient status:** are `active` and `completed` enough? _(Yes.)_
-3. **The 15-minute margin:** the supervisor said it may be adjustable. Per therapist, or clinic-wide? _(Fixed: slots every 15 minutes, therapists busy 45 minutes.)_
+3. **The 15-minute margin:** the supervisor said it may be adjustable. Per therapist, or clinic-wide? _(Fixed for now: a start every 15 minutes, 45-minute sessions, last start 18:15.)_
 4. **Deployment:** where will the project run?

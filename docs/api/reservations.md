@@ -7,12 +7,13 @@ Visitors book a time without logging in; logged-in patients can book too and see
 The server checks these on every create and every change.
 
 1. **Days:** Sunday to Thursday, from today up to 30 days ahead. Friday and Saturday are closed.
-2. **Times:** a slot every 15 minutes from 08:00 to 19:00, clinic time.
-3. **A therapist is busy for 45 minutes** from the start of each accepted session. Example: a session at 09:00 blocks that therapist from 09:00 to 09:45; 09:45 is bookable again.
+2. **Times:** a start time every 15 minutes from 08:00, clinic time. A session lasts 45 minutes and must end by 19:00, so the last start is 18:15. It must also fit inside the therapist's working hours.
+3. **A therapist is busy for 45 minutes** from the start of each accepted session, and a new session cannot overlap it. Example: a session at 09:00 blocks that therapist for starts from 08:30 to 09:30; 08:15 and 09:45 are bookable.
 4. **A slot is free when** it is in the future and at least one active therapist works at that time and is not busy. The clinic has several rooms, so two therapists can have sessions at the same time.
 5. **Pending reservations do not block slots.** Only accepting does.
 6. **Taken slots are hidden**, not shown as disabled.
-7. **Spam limits:** one phone number can have at most 2 pending reservations (`PENDING_LIMIT_REACHED`), and booking is rate limited per IP (`TOO_MANY_REQUESTS`).
+7. **Spam limits:** one phone number can have at most 2 pending reservations (`PENDING_LIMIT_REACHED`; spaces and dashes in the number are ignored), and booking is limited to 5 requests per hour per IP (`TOO_MANY_REQUESTS`).
+8. **Any time that breaks these rules** (taken, past, off the 15-minute grid, Friday or Saturday, too late, more than 30 days ahead) returns `SLOT_UNAVAILABLE`.
 
 ## A reservation
 
@@ -52,7 +53,7 @@ The server checks these on every create and every change.
 
 ### The booking form flow
 
-**1. Which days can I pick?**
+**1. Which days can I pick?** Sunday to Thursday in the next 30 days, on which at least one therapist works.
 
 ```
 GET /api/public/reservations/date-options
@@ -153,7 +154,7 @@ PUT /api/reservations/6730e1...
 ```
 
 - Changing `status` sets `reviewedAt`.
-- Accepting needs a `therapistId` who is free then (list from `GET /therapists/free`), otherwise `SLOT_UNAVAILABLE`.
+- Accepting needs a `therapistId` (missing: `VALIDATION_ERROR`) who is free then (list from `GET /therapists/free`), otherwise `SLOT_UNAVAILABLE`.
 - Changing `scheduledAt` reschedules: the same rules apply, and the old time is saved in `previousScheduledAt` with `rescheduledAt` set to now.
 
 ### Rescheduling news

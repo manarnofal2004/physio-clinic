@@ -69,6 +69,7 @@ export interface ApiPaginated<T> {
 export const ERROR_CODES = [
   "VALIDATION_ERROR",
   "INVALID_JSON",
+  "PAYLOAD_TOO_LARGE",
   "INVALID_CREDENTIALS",
   "UNAUTHORIZED",
   "FORBIDDEN",
