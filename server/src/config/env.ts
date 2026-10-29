@@ -13,10 +13,13 @@ const envSchema = z
     JWT_SECRET: z.string().min(16),
     JWT_EXPIRES_IN: z.string().default("1d"),
     // One origin, or several separated by commas: only these sites may call the API.
+    // Kept as origins ("http://localhost:5173/" -> "http://localhost:5173"), because that
+    // is what the browser sends, so a trailing slash or path cannot break CORS.
     CLIENT_URL: z
       .string()
       .transform((value) => value.split(",").map((url) => url.trim()))
-      .pipe(z.array(z.url()).min(1)),
+      .pipe(z.array(z.url()).min(1))
+      .transform((urls) => urls.map((url) => new URL(url).origin)),
     CLINIC_TIMEZONE: z.string().default("Asia/Hebron"),
     // Behind a hosting proxy, set to the number of proxies so rate limits see the real IP.
     TRUST_PROXY: z.coerce.number().int().min(0).default(0),
