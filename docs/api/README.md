@@ -12,6 +12,7 @@ The agreement between `client/` and `server/`: every endpoint, what it takes and
 | ---------------------------------- | --------------------------------------------------- |
 | [auth.md](auth.md)                 | Login, current user                                 |
 | [users.md](users.md)               | Accounts, privileges and patient scope (admin)      |
+| [me.md](me.md)                     | Patient portal: own record, reports and files       |
 | [patients.md](patients.md)         | Patients, status, hiding, CSV export                |
 | [therapists.md](therapists.md)     | Therapists and their working hours                  |
 | [reports.md](reports.md)           | Treatment reports and file uploads                  |
