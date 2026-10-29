@@ -48,9 +48,9 @@ The client runs at http://localhost:5173. The server must be running for API cal
 
 ### Environment variables
 
-| Variable       | Description                 | Example                 |
-| -------------- | --------------------------- | ----------------------- |
-| `VITE_API_URL` | Base URL of the backend API | `http://localhost:5000` |
+| Variable            | Description                                   | Example                     |
+| ------------------- | --------------------------------------------- | --------------------------- |
+| `VITE_API_BASE_URL` | Base URL of the backend API, including `/api` | `http://localhost:5000/api` |
 
 Restart `pnpm dev` after changing `.env`. Commit only `.env.example`, never `.env`.
 
