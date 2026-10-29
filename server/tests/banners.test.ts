@@ -47,6 +47,22 @@ describe("banners: management", () => {
     expect((await api.delete(`/api/banners/${id}`).set(bearer(admin.token))).status).toBe(404);
   });
 
+  it("changes only the fields sent with PATCH", async () => {
+    const admin = await createUser();
+    const created = await api.post("/api/banners").set(bearer(admin.token)).send(banner);
+    const id = created.body.data.id as string;
+
+    const off = await api
+      .patch(`/api/banners/${id}`)
+      .set(bearer(admin.token))
+      .send({ isActive: false });
+    const empty = await api.patch(`/api/banners/${id}`).set(bearer(admin.token)).send({});
+
+    expect(off.status).toBe(200);
+    expect(off.body.data).toMatchObject({ isActive: false, order: 0, messageAr: banner.messageAr });
+    expect(empty.status).toBe(400);
+  });
+
   it("limits messages to 300 characters and checks the type", async () => {
     const admin = await createUser();
     const tooLong = await api
