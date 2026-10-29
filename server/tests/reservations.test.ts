@@ -65,16 +65,39 @@ describe("GET /api/public/reservations/date-options", () => {
   });
 });
 
+// The clock times of an availability response, for short assertions.
+async function freeTimes(day: string): Promise<string[]> {
+  const res = await api.get(`/api/public/reservations/availability?date=${day}`);
+  return (res.body.data.slots as { time: string }[]).map((slot) => slot.time);
+}
+
 describe("GET /api/public/reservations/availability", () => {
   it("offers every 15 minutes from 08:00, with the last session ending by 19:00", async () => {
     await therapist("Dr. A");
     const day = futureWorkday();
 
-    const res = await api.get(`/api/public/reservations/availability?date=${day}`);
+    const times = await freeTimes(day);
 
-    expect(res.body.data.slots[0]).toBe("08:00");
-    expect(res.body.data.slots.at(-1)).toBe("18:15");
-    expect(res.body.data.slots).toHaveLength(42);
+    expect(times[0]).toBe("08:00");
+    expect(times.at(-1)).toBe("18:15");
+    expect(times).toHaveLength(42);
+  });
+
+  it("gives each slot its exact moment, which books as is", async () => {
+    await therapist("Dr. A");
+    const day = futureWorkday();
+
+    const res = await api.get(`/api/public/reservations/availability?date=${day}`);
+    const first = res.body.data.slots[0] as { time: string; scheduledAt: string };
+    const booked = await api.post("/api/public/reservations").send({
+      fullName: "Sara Odeh",
+      phone: "0597001122",
+      age: 28,
+      scheduledAt: first.scheduledAt,
+    });
+
+    expect(first).toEqual({ time: "08:00", scheduledAt: at(day, "08:00").toISOString() });
+    expect(booked.status).toBe(201);
   });
 
   it("hides times within 45 minutes of an accepted session, when no other therapist is free", async () => {
@@ -83,8 +106,7 @@ describe("GET /api/public/reservations/availability", () => {
     await accepted(lina._id, at(day, "10:00"));
     await Reservation.create({ ...booking(at(day, "14:00")), status: "pending" });
 
-    const res = await api.get(`/api/public/reservations/availability?date=${day}`);
-    const slots = res.body.data.slots as string[];
+    const slots = await freeTimes(day);
 
     expect(slots).toContain("09:15");
     expect(slots).not.toContain("09:30");
@@ -100,19 +122,15 @@ describe("GET /api/public/reservations/availability", () => {
     const day = futureWorkday();
     await accepted(lina._id, at(day, "10:00"));
 
-    const res = await api.get(`/api/public/reservations/availability?date=${day}`);
-    expect(res.body.data.slots).toContain("10:00");
+    expect(await freeTimes(day)).toContain("10:00");
   });
 
   it("follows each therapist's working hours and returns nothing on Friday", async () => {
     await therapist("Dr. Morning", everyDay("08:00", "12:00"));
     const day = futureWorkday();
 
-    const workday = await api.get(`/api/public/reservations/availability?date=${day}`);
-    const friday = await api.get(`/api/public/reservations/availability?date=${futureFriday()}`);
-
-    expect(workday.body.data.slots.at(-1)).toBe("11:15");
-    expect(friday.body.data.slots).toEqual([]);
+    expect((await freeTimes(day)).at(-1)).toBe("11:15");
+    expect(await freeTimes(futureFriday())).toEqual([]);
   });
 });
 

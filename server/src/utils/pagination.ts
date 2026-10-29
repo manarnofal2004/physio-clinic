@@ -16,6 +16,11 @@ export function listQuerySchema<const F extends readonly [string, ...string[]]>(
   sortFields: F,
   defaultSort = "-createdAt",
 ) {
+  // The default goes through the same check as the user's value, so a default that is
+  // not allowed would reject every request. Fail at startup instead.
+  if (!sortFields.includes(defaultSort.replace(/^-/, ""))) {
+    throw new Error(`Default sort "${defaultSort}" must be one of: ${sortFields.join(", ")}`);
+  }
   return z.object({
     page: z.coerce.number().int().min(1).default(1),
     limit: z.coerce.number().int().min(1).max(100).default(10),
