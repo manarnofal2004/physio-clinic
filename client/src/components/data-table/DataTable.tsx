@@ -45,6 +45,8 @@ export interface DataTableProps<T> {
   rowsPerPageOptions?: number[];
   paginationLabels?: DataTablePaginationLabels;
   ariaLabel?: string;
+  /** Shown inside the table when there are no rows. Pagination is hidden when total is 0. */
+  emptyState?: ReactNode;
 }
 
 export function DataTable<T>({
@@ -63,6 +65,7 @@ export function DataTable<T>({
   rowsPerPageOptions = [10, 25, 50],
   paginationLabels,
   ariaLabel,
+  emptyState,
 }: DataTableProps<T>) {
   const handleSort = (columnId: string) => {
     if (!onSortChange) return;
@@ -99,6 +102,13 @@ export function DataTable<T>({
             </TableRow>
           </TableHead>
           <TableBody>
+            {rows.length === 0 && emptyState && (
+              <TableRow>
+                <TableCell colSpan={columns.length} sx={{ borderBottom: 0 }}>
+                  {emptyState}
+                </TableCell>
+              </TableRow>
+            )}
             {rows.map((row) => (
               <TableRow
                 key={getRowId(row)}
@@ -116,17 +126,19 @@ export function DataTable<T>({
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        component="div"
-        count={total}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        rowsPerPageOptions={rowsPerPageOptions}
-        onPageChange={(_, newPage) => onPageChange(newPage)}
-        onRowsPerPageChange={(event) => onRowsPerPageChange(Number(event.target.value))}
-        labelRowsPerPage={paginationLabels?.rowsPerPage}
-        labelDisplayedRows={paginationLabels?.displayedRows}
-      />
+      {!(total === 0 && emptyState) && (
+        <TablePagination
+          component="div"
+          count={total}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          rowsPerPageOptions={rowsPerPageOptions}
+          onPageChange={(_, newPage) => onPageChange(newPage)}
+          onRowsPerPageChange={(event) => onRowsPerPageChange(Number(event.target.value))}
+          labelRowsPerPage={paginationLabels?.rowsPerPage}
+          labelDisplayedRows={paginationLabels?.displayedRows}
+        />
+      )}
     </Paper>
   );
 }
