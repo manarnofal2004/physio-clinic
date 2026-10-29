@@ -35,7 +35,7 @@ The agreement between `client/` and `server/`: every endpoint, what it takes and
 | Role                 | Can use                                                                  |
 | -------------------- | ------------------------------------------------------------------------ |
 | Visitor (no account) | `/health`, `/auth/login`, everything under `/public`                     |
-| Patient              | Their own user and their own reservations                                |
+| Patient              | Their own record, reports and reservations ([me.md](me.md))              |
 | Therapist            | Only what the admin allows: their **privileges** and **patient scope**   |
 | Admin                | Everything. Only the admin manages users, therapists and hidden patients |
 
