@@ -6,7 +6,7 @@ import { findPatientInScope } from "../services/patients.service.js";
 import {
   contentMatchesType,
   findFile,
-  openFileStream,
+  sendStoredFile,
   storeFile,
   toAttachment,
   toAttachmentDto,
@@ -46,7 +46,7 @@ export const getUpload: RequestHandler = async (req, res) => {
   const file = await findFile(req.params.id as string);
   if (!file) throw new AppError(404, "NOT_FOUND", "File not found");
 
-  const { reportId, uploadedBy, mimeType } = file.metadata;
+  const { reportId, uploadedBy } = file.metadata;
   if (reportId) {
     const report = await Report.findById(reportId, "patientId");
     if (!report) throw new AppError(404, "NOT_FOUND", "File not found");
@@ -54,17 +54,5 @@ export const getUpload: RequestHandler = async (req, res) => {
   } else if (user.role !== "admin" && !uploadedBy.equals(user._id)) {
     throw new AppError(404, "NOT_FOUND", "File not found");
   }
-
-  const asciiName = file.filename.replace(/[^\x20-\x7e]/g, "_").replace(/"/g, "");
-  res.setHeader("Content-Type", mimeType);
-  res.setHeader("Content-Length", String(file.length));
-  res.setHeader(
-    "Content-Disposition",
-    `inline; filename="${asciiName}"; filename*=UTF-8''${encodeURIComponent(file.filename)}`,
-  );
-  res.setHeader("Cache-Control", "private, max-age=3600");
-
-  await new Promise<void>((resolve, reject) => {
-    openFileStream(file._id).on("error", reject).pipe(res).on("finish", resolve);
-  });
+  await sendStoredFile(res, file);
 };

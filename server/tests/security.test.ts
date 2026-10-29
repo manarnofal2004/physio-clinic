@@ -7,6 +7,10 @@ const ID = "6730a1aaaaaaaaaaaaaaaaaa";
 // Every route that needs a login. A new protected route should be added here.
 const PROTECTED: [method: "get" | "post" | "put" | "patch" | "delete", path: string][] = [
   ["get", "/api/auth/me"],
+  ["get", "/api/me/patient"],
+  ["get", "/api/me/reports"],
+  ["get", `/api/me/reports/${ID}`],
+  ["get", `/api/me/files/${ID}`],
   ["get", "/api/users"],
   ["post", "/api/users"],
   ["get", `/api/users/${ID}`],
@@ -55,7 +59,12 @@ describe("security", () => {
 
   it("rejects a patient on every staff route", async () => {
     const patient = await createUser({ role: "patient" });
-    const patientRoutes = new Set(["/api/auth/me", "/api/reservations", `/api/reservations/${ID}`]);
+    const patientRoutes = new Set([
+      "/api/auth/me",
+      "/api/reservations",
+      `/api/reservations/${ID}`,
+      ...PROTECTED.map(([, path]) => path).filter((path) => path.startsWith("/api/me/")),
+    ]);
 
     for (const [method, path] of PROTECTED) {
       if (patientRoutes.has(path)) continue;
