@@ -4,7 +4,7 @@ Physiotherapy Clinic Management System: a public website where visitors book app
 
 ## Tech stack
 
-- **client/**: React, TypeScript, MUI, React Query, React Hook Form, Zod
+- **client/**: React, TypeScript, Vite, MUI, React Router, React Query, Axios, React Hook Form, Zod
 - **server/**: Node.js, Express, TypeScript, MongoDB (Mongoose), JWT, Zod
 
 ## Prerequisites
@@ -41,6 +41,46 @@ pnpm dev
 | `pnpm lint:fix`     | Fix ESLint problems that can be  |
 | `pnpm format`       | Format every file with Prettier  |
 | `pnpm format:check` | Check formatting without writing |
+
+## Client
+
+The client runs at http://localhost:5173. The server must be running for API calls to work.
+
+### Environment variables
+
+| Variable       | Description                 | Example                 |
+| -------------- | --------------------------- | ----------------------- |
+| `VITE_API_URL` | Base URL of the backend API | `http://localhost:5000` |
+
+Restart `pnpm dev` after changing `.env`. Commit only `.env.example`, never `.env`.
+
+### Scripts (client/)
+
+| Command      | What it does                        |
+| ------------ | ----------------------------------- |
+| `pnpm dev`   | Start the dev server                |
+| `pnpm build` | Type-check and build for production |
+| `pnpm lint`  | Check the client code with ESLint   |
+
+### Path aliases
+
+| Alias      | Points to                    |
+| ---------- | ---------------------------- |
+| `@/`       | `client/src/`                |
+| `@shared/` | `shared/` (shared API types) |
+
+Example: `import { apiClient } from '@/lib/api/client'`
+
+### Folder structure
+
+```
+client/src/
+  app/          App providers and router
+  features/     One folder per feature (patients, reports, ...)
+  components/   Reusable UI components
+  lib/          Env config, Axios instance, query client
+  routes/       Route definitions and guards
+```
 
 ## Workflow
 
