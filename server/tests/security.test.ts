@@ -41,6 +41,7 @@ const PROTECTED: [method: "get" | "post" | "put" | "patch" | "delete", path: str
   ["get", "/api/banners"],
   ["post", "/api/banners"],
   ["put", `/api/banners/${ID}`],
+  ["patch", `/api/banners/${ID}`],
   ["delete", `/api/banners/${ID}`],
   ["get", "/api/dashboard/stats"],
 ];
