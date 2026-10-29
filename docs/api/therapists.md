@@ -42,7 +42,7 @@ A therapist profile is not a login. To let a therapist log in, the admin creates
 ## Who is free at a given time
 
 ```
-GET /api/therapists/free?scheduledAt=2026-11-02T08:00:00.000Z
+GET /api/therapists/free?scheduledAt=2026-11-02T06:00:00.000Z
 ```
 
 Returns active therapists whose working hours cover the whole 45-minute session and who are not busy: a therapist is busy for **45 minutes** from the start of each accepted session, and sessions cannot overlap. The admin uses it to fill the therapist select when assigning or rescheduling. When rescheduling, pass `excludeReservationId` so the reservation does not block itself.

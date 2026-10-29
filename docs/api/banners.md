@@ -8,6 +8,7 @@ Short messages shown in a scrolling bar at the top of the public site: clinic an
 | GET    | `/banners`        | `banners.manage` | list params   | `Banner[]` (paged)                |
 | POST   | `/banners`        | `banners.manage` | `BannerInput` | `Banner` (201)                    |
 | PUT    | `/banners/:id`    | `banners.manage` | `BannerInput` | `Banner`                          |
+| PATCH  | `/banners/:id`    | `banners.manage` | `BannerPatch` | `Banner`                          |
 | DELETE | `/banners/:id`    | `banners.manage` |               | `null`                            |
 
 ## A banner
@@ -33,5 +34,5 @@ Short messages shown in a scrolling bar at the top of the public site: clinic an
 | `isActive`  | Optional, default `true`                 |
 | `order`     | Optional, default `0`; lower shows first |
 
-- Turn a banner on or off with `PUT` and `isActive`.
+- `PUT` replaces the whole banner. `PATCH` changes only the fields sent: turn a banner on or off with `PATCH /api/banners/:id` and `{ "isActive": false }`, or move it with `{ "order": 2 }`. An empty body returns `VALIDATION_ERROR`.
 - The admin list sorts by `order` by default; `createdAt` also works.

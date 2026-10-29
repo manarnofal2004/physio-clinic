@@ -25,7 +25,7 @@ The server checks these on every create and every change.
   "fullName": "Sara Odeh",
   "phone": "0597001122",
   "age": 28,
-  "scheduledAt": "2026-11-02T08:00:00.000Z",
+  "scheduledAt": "2026-11-02T06:00:00.000Z",
   "status": "pending",
   "notes": "Knee pain after running",
   "adminNotes": null,
@@ -39,7 +39,7 @@ The server checks these on every create and every change.
 
 - `userId` is `null` for guests.
 - `therapistId` is set when a therapist takes the reservation or the admin assigns one.
-- `status`: `pending` → `accepted` / `rejected`, or `cancelled`.
+- `status`: `pending` → `accepted` / `rejected`, or `cancelled`. Only staff with `reservations.manage` change the status (patients cannot cancel online yet).
 - Patients never see `therapistId` or `adminNotes` (both come back `null` for them).
 
 ## Public endpoints (no login)
@@ -64,8 +64,23 @@ GET /api/public/reservations/date-options
 
 ```
 GET /api/public/reservations/availability?date=2026-11-02
-→ { "success": true, "data": { "date": "2026-11-02", "slots": ["08:00", "08:15", "09:30"] } }
 ```
+
+```json
+{
+  "success": true,
+  "data": {
+    "date": "2026-11-02",
+    "slots": [
+      { "time": "08:00", "scheduledAt": "2026-11-02T06:00:00.000Z" },
+      { "time": "08:15", "scheduledAt": "2026-11-02T06:15:00.000Z" },
+      { "time": "09:30", "scheduledAt": "2026-11-02T07:30:00.000Z" }
+    ]
+  }
+}
+```
+
+Show `time` to the user and send that slot's `scheduledAt` when booking, as is. The client never converts clinic time to UTC itself (the server handles daylight saving).
 
 **3. Book**
 
@@ -75,18 +90,18 @@ POST /api/public/reservations
   "fullName": "Sara Odeh",
   "phone": "0597001122",
   "age": 28,
-  "scheduledAt": "2026-11-02T08:00:00.000Z",
+  "scheduledAt": "2026-11-02T06:00:00.000Z",
   "notes": "Knee pain after running"
 }
 ```
 
-| Field         | Rules                         |
-| ------------- | ----------------------------- |
-| `fullName`    | Required, 2-120 chars         |
-| `phone`       | Required, 6-30 chars          |
-| `age`         | Required, 0-120               |
-| `scheduledAt` | Required, must be a free slot |
-| `notes`       | Optional, max 2000            |
+| Field         | Rules                                       |
+| ------------- | ------------------------------------------- |
+| `fullName`    | Required, 2-120 chars                       |
+| `phone`       | Required, 6-30 chars                        |
+| `age`         | Required, 0-120                             |
+| `scheduledAt` | Required, a `scheduledAt` from availability |
+| `notes`       | Optional, max 2000                          |
 
 Returns the reservation with `status: "pending"`. If the slot was taken in the meantime: `SLOT_UNAVAILABLE`. If a valid token is sent, the reservation is linked to that user.
 
@@ -124,18 +139,19 @@ Shows the sessions running right now, for example "2 sessions running, ending at
 
 ## Logged-in endpoints
 
-| Method | Path                        | Needs                                 | Send                        | Returns                 |
-| ------ | --------------------------- | ------------------------------------- | --------------------------- | ----------------------- |
-| GET    | `/reservations`             | Patient (own), or `reservations.view` | list params + filters below | `Reservation[]` (paged) |
-| GET    | `/reservations/reschedules` | `reservations.view`                   | `?date=YYYY-MM-DD`          | `RescheduleNews[]`      |
-| GET    | `/reservations/:id`         | Owner, or `reservations.view`         |                             | `Reservation`           |
-| POST   | `/reservations`             | Patient                               | `ReservationInput`          | `Reservation` (201)     |
-| POST   | `/reservations/:id/take`    | `reservations.take`                   | `{ "adminNotes"? }`         | `Reservation`           |
-| PUT    | `/reservations/:id`         | `reservations.manage`                 | `ReservationUpdate`         | `Reservation`           |
+| Method | Path                        | Needs                               | Send                        | Returns                 |
+| ------ | --------------------------- | ----------------------------------- | --------------------------- | ----------------------- |
+| GET    | `/reservations`             | Patient (own), or staff (see below) | list params + filters below | `Reservation[]` (paged) |
+| GET    | `/reservations/reschedules` | `reservations.view`                 | `?date=YYYY-MM-DD`          | `RescheduleNews[]`      |
+| GET    | `/reservations/:id`         | Owner, or staff (see below)         |                             | `Reservation`           |
+| POST   | `/reservations`             | Patient                             | `ReservationInput`          | `Reservation` (201)     |
+| POST   | `/reservations/:id/take`    | `reservations.take`                 | `{ "adminNotes"? }`         | `Reservation`           |
+| PUT    | `/reservations/:id`         | `reservations.manage`               | `ReservationUpdate`         | `Reservation`           |
 
 - A patient only sees their own reservations. Another patient's id returns `FORBIDDEN`.
-- A therapist with `reservations.take` but not `reservations.view` sees pending reservations and their own.
-- Filters: `status`, `therapistId`, `from`, `to`; `mine=true` for the logged-in therapist's own sessions. Sort by `scheduledAt`, `createdAt` or `status`.
+- What staff see: `reservations.view` or `reservations.manage` → every reservation; only `reservations.take` → pending requests and their own sessions. Anything else returns `FORBIDDEN`.
+- Logged-in patients book with `POST /reservations` (same body as the public form). `POST /public/reservations` with a patient token also works and links the request to them.
+- Filters: `status`, `therapistId`, `from`, `to` (clinic days, both included); `mine=true` for the logged-in therapist's own sessions. Sort by `scheduledAt`, `createdAt` or `status`.
 
 ### Therapist: take a reservation
 

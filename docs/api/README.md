@@ -83,6 +83,8 @@ Every response is one of three shapes.
 
 The client shows translated text based on `code`, and puts `details` messages under the matching form field. `message` is for developers.
 
+`details[].field` is the part of the request plus the path inside it, joined with dots: `body.phone`, `body.schedule.0.start`, `query.page`, `params.id`. For a form, drop the `body.` prefix to get the field name (`schedule.0.start` is the start time of the first row).
+
 ## Error codes
 
 | Code                    | Status | Example                                             |
@@ -118,6 +120,18 @@ GET /api/patients?page=2&limit=10&sort=-createdAt&search=ahmad
 | `limit`  | `10`         | Items per page, max 100                                   |
 | `sort`   | `-createdAt` | Field to sort by; `-` in front means newest/largest first |
 | `search` | none         | Text to look for (each section lists the searched fields) |
+
+Date filters `from` and `to` are clinic days (`YYYY-MM-DD`), both included.
+
+## Downloads
+
+Files (`/uploads/:id`, `/me/files/:id`) and CSV exports (`/patients/export`, `/reports/export`) need the `Authorization` header like every other call, so a plain `<img src>` or `<a href>` cannot load them. Fetch them with the API client as a blob, then show or save it:
+
+```ts
+const { data } = await apiClient.get(`/uploads/${id}`, { responseType: "blob" });
+const url = URL.createObjectURL(data); // <img src={url}> or a download link
+// later: URL.revokeObjectURL(url)
+```
 
 ## Fixed values (enums)
 

@@ -13,6 +13,8 @@ A report records one treatment session for a patient: diagnosis, plan, notes, pr
 | POST   | `/uploads`        | `reports.edit` | `multipart/form-data`, field `files` | `Attachment[]` (201) |
 | GET    | `/uploads/:id`    | `reports.view` |                                      | The file itself      |
 
+Files and CSV exports also need the token, so a plain `<img src>` or `<a href>` will not work: see [Downloads](README.md#downloads).
+
 Only reports of patients in the user's [patient scope](users.md#patient-scope) are visible; others return `NOT_FOUND`.
 
 ## A report

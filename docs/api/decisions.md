@@ -19,6 +19,7 @@ What the supervisor decided (written answers on 2026-10-27, Zoom on 2026-10-28) 
 | Files stored in MongoDB GridFS                                                                                   | [reports.md](reports.md)                                        |
 | Banners: clinic announcements and schedule updates                                                               | [banners.md](banners.md)                                        |
 | Landing page shows the sessions running now                                                                      | [reservations.md](reservations.md#todays-overview-landing-page) |
+| Patients log in to see their own information (admin creates the account so they can)                             | [me.md](me.md)                                                  |
 | Rescheduling news component                                                                                      | [reservations.md](reservations.md#rescheduling-news)            |
 
 ## Still open

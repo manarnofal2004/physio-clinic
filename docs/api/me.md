@@ -25,4 +25,4 @@ Same `Report` objects as [reports.md](reports.md#a-report), newest first by defa
 
 ## My files
 
-`GET /api/me/files/:id` downloads a file attached to one of the patient's reports (use `attachments[].id` from a report). Images and PDFs open in the browser. Any other file returns `NOT_FOUND`.
+`GET /api/me/files/:id` downloads a file attached to one of the patient's reports (use `attachments[].id` from a report). Fetch it with the token and show it as a blob ([Downloads](README.md#downloads)). Any other file returns `NOT_FOUND`.

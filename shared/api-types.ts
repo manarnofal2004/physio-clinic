@@ -108,6 +108,7 @@ export interface ListQuery {
   sort?: string; // field name, "-" prefix for descending: "-createdAt"
   search?: string;
 }
+// Date filters ("from", "to") are clinic days "YYYY-MM-DD", both included.
 
 // ---------- Auth and users ----------
 
@@ -139,16 +140,20 @@ export interface LoginResponse {
 }
 
 // Nobody signs up: the admin creates therapist and patient accounts.
-export interface CreateUserRequest {
-  role: "therapist" | "patient";
-  therapistId?: string; // required for "therapist"
-  patientId?: string; // required for "patient"
+interface NewAccount {
   fullName: string; // 2-120
   email: string;
   password: string; // min 8
-  privileges?: Privilege[]; // therapist only, default []
-  patientScope?: PatientScope; // therapist only, default { all: false, patientIds: [] }
 }
+
+export type CreateUserRequest =
+  | (NewAccount & {
+      role: "therapist";
+      therapistId: string;
+      privileges?: Privilege[]; // default []
+      patientScope?: PatientScope; // default { all: false, patientIds: [] }
+    })
+  | (NewAccount & { role: "patient"; patientId: string });
 
 export interface UpdateUserAccessRequest {
   privileges: Privilege[];
@@ -233,6 +238,16 @@ export interface TherapistInput {
   specialty?: string; // max 120
   isActive?: boolean; // default true
   schedule: WorkingHours[];
+}
+
+export interface TherapistListQuery extends ListQuery {
+  isActive?: boolean;
+}
+
+// GET /therapists/free
+export interface FreeTherapistsQuery {
+  scheduledAt: string; // a slot's scheduledAt
+  excludeReservationId?: string; // when rescheduling, so it does not block itself
 }
 
 // ---------- Uploads (stored in MongoDB GridFS) ----------
@@ -337,9 +352,14 @@ export interface ReservationListQuery extends ListQuery {
 
 // GET /public/reservations/availability?date=YYYY-MM-DD
 // Only free slots are returned; taken slots are left out, not flagged.
+export interface Slot {
+  time: string; // "08:00", clinic time, to show the user
+  scheduledAt: string; // the exact moment (UTC), to send back when booking
+}
+
 export interface Availability {
   date: string;
-  slots: string[]; // ["08:00", "08:15", ...]
+  slots: Slot[];
 }
 
 // GET /public/reservations/today. No personal data is exposed.
@@ -379,6 +399,9 @@ export interface BannerInput {
   isActive?: boolean; // default true
   order?: number; // default 0
 }
+
+// PATCH /banners/:id: only the fields to change (at least one).
+export type BannerPatch = Partial<BannerInput>;
 
 // ---------- Dashboard ----------
 
