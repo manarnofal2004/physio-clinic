@@ -6,18 +6,26 @@ interface LandingSectionProps {
   id: string; // the navbar links to "/#id"
   title?: string;
   intro?: string;
-  tinted?: boolean; // stone background, used to separate neighbouring sections
+  tinted?: boolean; // pale olive background, used to separate neighbouring sections
+  wash?: boolean; // stone background, the same as the hero
   children: ReactNode;
 }
 
 // Shared frame for landing sections: full-width band, content kept to 1200px.
-export const LandingSection = ({ id, title, intro, tinted, children }: LandingSectionProps) => (
+export const LandingSection = ({
+  id,
+  title,
+  intro,
+  tinted,
+  wash,
+  children,
+}: LandingSectionProps) => (
   <Box
     component="section"
     id={id}
     aria-labelledby={title ? `${id}-title` : undefined}
     sx={{
-      bgcolor: tinted ? "action.selected" : "transparent",
+      bgcolor: tinted ? "action.selected" : wash ? "background.wash" : "transparent",
       py: { xs: 7, md: 11 },
       px: { xs: 2, md: 4 },
       scrollMarginTop: NAVBAR_HEIGHT, // stay below the sticky navbar
