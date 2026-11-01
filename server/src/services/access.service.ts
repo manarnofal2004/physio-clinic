@@ -1,3 +1,4 @@
+import type { Types } from "mongoose";
 import { PRIVILEGES, type Privilege } from "../constants.js";
 import type { UserDocument } from "../models/user.model.js";
 
@@ -15,9 +16,23 @@ export function hasPrivileges(user: UserDocument, required: readonly Privilege[]
 
 // Mongo filter limiting patient queries to what the user may see:
 // the admin sees everyone; others only patients in scope that are not hidden.
+// A patient's scope is their own record. Patients have no privileges, so this only
+// matters on the /me routes.
 export function patientScopeFilter(user: UserDocument) {
   if (user.role === "admin") return {};
   if (user.role === "therapist" && user.patientScope.all) return { isHidden: false };
-  const ids = user.role === "therapist" ? user.patientScope.patientIds : [];
+  const ids =
+    user.role === "therapist"
+      ? user.patientScope.patientIds
+      : user.patientId
+        ? [user.patientId]
+        : [];
   return { _id: { $in: ids }, isHidden: false };
+}
+
+// A therapist with a limited scope can always see the patients they create.
+export async function addPatientToScope(user: UserDocument, patientId: Types.ObjectId) {
+  if (user.role !== "therapist" || user.patientScope.all) return;
+  user.patientScope.patientIds.push(patientId);
+  await user.save();
 }

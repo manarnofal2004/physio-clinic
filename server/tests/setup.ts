@@ -20,7 +20,8 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  const collections = Object.values(mongoose.connection.collections);
+  // Every collection, including the GridFS ones that have no model.
+  const collections = (await mongoose.connection.db?.collections()) ?? [];
   await Promise.all(collections.map((collection) => collection.deleteMany({})));
 });
 
