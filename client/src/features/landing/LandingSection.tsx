@@ -26,14 +26,14 @@ export const LandingSection = ({
     aria-labelledby={title ? `${id}-title` : undefined}
     sx={{
       bgcolor: tinted ? "action.selected" : wash ? "background.wash" : "transparent",
-      py: { xs: 7, md: 11 },
+      py: { xs: 6, md: 8 },
       px: { xs: 2, md: 4 },
       scrollMarginTop: NAVBAR_HEIGHT, // stay below the sticky navbar
     }}
   >
     <Box sx={{ maxWidth: 1200, mx: "auto" }}>
       {title && (
-        <Box sx={{ maxWidth: 640, mb: { xs: 5, md: 7 } }}>
+        <Box sx={{ maxWidth: 640, mb: { xs: 4, md: 5 } }}>
           <Typography id={`${id}-title`} variant="h2">
             {title}
           </Typography>

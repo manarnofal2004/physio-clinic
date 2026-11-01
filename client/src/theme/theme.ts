@@ -13,8 +13,8 @@ const colors = {
     primary: "#4f6a2a",
     primaryDark: "#3a4f1e",
     tint: "#e3ead6", // tinted areas and selected states
-    wash: "#f7f2e9", // very light beige: hero, services and the admin sidebar
-    paper: "#ffffff",
+    wash: "#f5eee3", // light beige: the page background, hero, services, admin sidebar
+    paper: "#ffffff", // cards, menus and dialogs stay white on the beige
     text: "#1f2a1a",
     textMuted: "#5d6656",
     line: "#d9ddd2",
@@ -66,7 +66,7 @@ export const createAppTheme = (
         primary: { main: c.primary, dark: c.primaryDark },
         secondary: { main: c.primaryDark },
         warning: { main: c.warning },
-        background: { default: c.paper, paper: c.paper, wash: c.wash },
+        background: { default: mode === "light" ? c.wash : c.paper, paper: c.paper, wash: c.wash },
         text: { primary: c.text, secondary: c.textMuted },
         divider: c.line,
         action: {
