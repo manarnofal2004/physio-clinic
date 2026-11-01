@@ -74,6 +74,7 @@ export const ServicesSection = () => {
       id="services"
       title={t("landing.services.title")}
       intro={t("landing.services.intro")}
+      compact
     >
       <Box
         role="tablist"
