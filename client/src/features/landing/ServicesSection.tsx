@@ -36,6 +36,7 @@ export const ServicesSection = () => {
   const theme = useTheme();
   const isRtl = theme.direction === "rtl";
   const panelColor = theme.palette.primary.dark;
+  const hoverColor = theme.palette.action.selected;
   const [selected, setSelected] = useState(0);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -54,9 +55,9 @@ export const ServicesSection = () => {
     tabRefs.current[next]?.focus();
   };
 
-  // A square outside the tab's bottom corner, filled with the panel colour except
+  // A square outside the tab's bottom corner, filled with the tab's colour except
   // for a quarter circle, which draws the inward curve.
-  const shoulder = (side: "start" | "end") => {
+  const shoulder = (side: "start" | "end", color: string) => {
     const atLeft = (side === "start") !== isRtl;
     return {
       content: '""',
@@ -65,7 +66,8 @@ export const ServicesSection = () => {
       [side === "start" ? "insetInlineStart" : "insetInlineEnd"]: -RADIUS,
       width: RADIUS,
       height: RADIUS,
-      background: `radial-gradient(circle at ${atLeft ? "0 0" : "100% 0"}, transparent ${RADIUS}px, ${panelColor} ${RADIUS + 0.5}px)`,
+      background: `radial-gradient(circle at ${atLeft ? "0 0" : "100% 0"}, transparent ${RADIUS}px, ${color} ${RADIUS + 0.5}px)`,
+      transition: "opacity 200ms",
     };
   };
 
@@ -112,10 +114,21 @@ export const ServicesSection = () => {
                 borderRadius: `${RADIUS}px ${RADIUS}px 0 0`,
                 color: isSelected ? "common.white" : "text.secondary",
                 bgcolor: isSelected ? panelColor : "transparent",
-                transition: "color 150ms, background-color 150ms",
-                "&:hover": { color: isSelected ? "common.white" : "text.primary" },
+                transition: "color 200ms, background-color 200ms",
                 "&:focus-visible": { outline: 2, outlineColor: "primary.main" },
-                ...(isSelected && { "&::before": shoulder("start"), "&::after": shoulder("end") }),
+                // Selected: the tab and its shoulders take the panel colour.
+                // Others: on hover the same folder shape appears in pale olive,
+                // a preview that says "click to open this one".
+                "&::before": shoulder("start", isSelected ? panelColor : hoverColor),
+                "&::after": shoulder("end", isSelected ? panelColor : hoverColor),
+                ...(!isSelected && {
+                  "&::before, &::after": { opacity: 0 },
+                  "&:hover": {
+                    bgcolor: hoverColor,
+                    color: "text.primary",
+                    "&::before, &::after": { opacity: 1 },
+                  },
+                }),
               }}
             >
               {t(key(item.id))}
