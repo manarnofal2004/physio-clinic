@@ -36,6 +36,42 @@ export function zonedTime(day: string, time: string, timeZone: string): Date {
   return corrected === offset ? guess : new Date(naive.getTime() - corrected * 60_000);
 }
 
+// The clinic day and clock time of a UTC moment: 06:00Z -> { day: "2026-11-02", time: "08:00" }.
+export function clinicDayAndTime(date: Date, timeZone: string): { day: string; time: string } {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    hourCycle: "h23",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).formatToParts(date);
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((p) => p.type === type)?.value ?? "";
+  return {
+    day: `${part("year")}-${part("month")}-${part("day")}`,
+    time: `${part("hour")}:${part("minute")}`,
+  };
+}
+
+// 0 = Sunday ... 6 = Saturday, for a "YYYY-MM-DD" day.
+export function weekdayOf(day: string): number {
+  return new Date(`${day}T12:00:00Z`).getUTCDay();
+}
+
+// "08:15" <-> 495
+export function toMinutes(time: string): number {
+  const [hours = 0, minutes = 0] = time.split(":").map(Number);
+  return hours * 60 + minutes;
+}
+
+export function fromMinutes(total: number): string {
+  const hours = String(Math.floor(total / 60)).padStart(2, "0");
+  const minutes = String(total % 60).padStart(2, "0");
+  return `${hours}:${minutes}`;
+}
+
 export function addDays(day: string, days: number): string {
   const date = new Date(`${day}T00:00:00Z`);
   date.setUTCDate(date.getUTCDate() + days);

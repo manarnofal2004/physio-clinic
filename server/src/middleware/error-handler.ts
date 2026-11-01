@@ -6,8 +6,9 @@ export const notFound: RequestHandler = (req, _res, next) => {
   next(new AppError(404, "NOT_FOUND", `Route not found: ${req.method} ${req.originalUrl}`));
 };
 
-function isJsonSyntaxError(err: unknown): boolean {
-  return err instanceof SyntaxError && "type" in err && err.type === "entity.parse.failed";
+// Errors from express.json() carry a "type" such as "entity.parse.failed" or "entity.too.large".
+function bodyParserType(err: unknown): string | null {
+  return err instanceof Error && "type" in err && typeof err.type === "string" ? err.type : null;
 }
 
 // MongoDB rejects a second document with the same unique value (email, account link).
@@ -19,10 +20,15 @@ function isDuplicateKeyError(err: unknown): boolean {
 // { success: false, error: { code, message, details? } }.
 export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   let appError: AppError;
+  const bodyError = bodyParserType(err);
   if (err instanceof AppError) {
     appError = err;
-  } else if (isJsonSyntaxError(err)) {
+  } else if (bodyError === "entity.parse.failed") {
     appError = new AppError(400, "INVALID_JSON", "Request body is not valid JSON");
+  } else if (bodyError === "entity.too.large") {
+    appError = new AppError(413, "PAYLOAD_TOO_LARGE", "Request body is too large");
+  } else if (bodyError) {
+    appError = new AppError(400, "VALIDATION_ERROR", "Request body could not be read");
   } else if (isDuplicateKeyError(err)) {
     appError = new AppError(409, "CONFLICT", "This value is already in use");
   } else {

@@ -2,18 +2,27 @@ import { Router } from "express";
 import {
   createTherapist,
   getTherapist,
+  listFreeTherapists,
   listTherapists,
   updateTherapist,
 } from "../controllers/therapists.controller.js";
 import { authenticate, authorize, requirePrivilege } from "../middleware/auth.js";
 import { validate } from "../middleware/validate.js";
 import { idParams } from "../validators/common.js";
+import { freeTherapistsQuery } from "../validators/reservations.validators.js";
 import { listTherapistsQuery, therapistBody } from "../validators/therapists.validators.js";
 
-// GET /therapists/free comes with the slot scheduling service (task 5.2).
 export const therapistsRouter = Router();
 
 therapistsRouter.use(authenticate);
+
+// Before "/:id" so "free" is not read as an id.
+therapistsRouter.get(
+  "/free",
+  requirePrivilege("reservations.manage"),
+  validate({ query: freeTherapistsQuery }),
+  listFreeTherapists,
+);
 
 therapistsRouter.get(
   "/",

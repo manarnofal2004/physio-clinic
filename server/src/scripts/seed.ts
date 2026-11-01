@@ -1,11 +1,20 @@
 // Creates the first admin plus a sample therapist and patient, each with a login.
 // Safe to run again: records that already exist (by email) are left alone.
 // Run with: pnpm seed
+import type { Types } from "mongoose";
+import { env } from "../config/env.js";
+import type { ReportProgress, WorkDay } from "../constants.js";
 import { connectDb, disconnectDb } from "../db/connect.js";
+import { Banner } from "../models/banner.model.js";
 import { Patient, type IPatient } from "../models/patient.model.js";
+import { Report } from "../models/report.model.js";
+import { Reservation } from "../models/reservation.model.js";
 import { Therapist } from "../models/therapist.model.js";
 import { User, type IUser } from "../models/user.model.js";
 import { hashPassword } from "../services/auth.service.js";
+import { syncLastVisit } from "../services/reports.service.js";
+import { dateOptions } from "../services/schedule.service.js";
+import { zonedTime } from "../utils/time.js";
 
 const ADMIN = {
   fullName: "Clinic Admin",
@@ -59,6 +68,20 @@ async function seed() {
     patientScope: { all: true, patientIds: [] },
   });
 
+  // A second therapist (no login) so two sessions can run at the same time.
+  const omar =
+    (await Therapist.findOne({ fullName: "Dr. Omar Nasser" })) ??
+    (await Therapist.create({
+      fullName: "Dr. Omar Nasser",
+      phone: "0598123987",
+      specialty: "Back and neck",
+      schedule: [0, 1, 2, 3, 4].map((day) => ({
+        day: day as WorkDay,
+        start: "10:00",
+        end: "18:00",
+      })),
+    }));
+
   let created = 0;
   for (const data of SAMPLE_PATIENTS) {
     if (await Patient.exists({ phone: data.phone })) continue;
@@ -77,7 +100,118 @@ async function seed() {
     });
   }
 
+  await seedReservations(therapist._id, omar._id);
+  await seedReports(therapist._id, omar._id);
+  await seedBanners();
+
   await disconnectDb();
+}
+
+// About 60 reports spread over the last 12 months, so the dashboard charts have data.
+async function seedReports(linaId: Types.ObjectId, omarId: Types.ObjectId) {
+  if (await Report.exists({})) {
+    console.info("reports already there");
+    return;
+  }
+  const patients = await Patient.find({}, "_id");
+  const progress: ReportProgress[] = [
+    "improving",
+    "improving",
+    "improving",
+    "stable",
+    "stable",
+    "worse",
+  ];
+  const diagnoses = [
+    ["Muscle strain", "Heat therapy and core exercises"],
+    ["Ligament sprain", "Rest, ice and balance training"],
+    ["Joint stiffness", "Mobility exercises and manual therapy"],
+    ["Nerve irritation", "Posture correction and stretching"],
+  ] as const;
+  const now = Date.now();
+  const day = 24 * 60 * 60 * 1000;
+
+  const reports = Array.from({ length: 60 }, (_, i) => {
+    const [diagnosis, treatmentPlan] = diagnoses[i % diagnoses.length]!;
+    return {
+      patientId: patients[i % patients.length]!._id,
+      therapistId: i % 2 === 0 ? linaId : omarId,
+      date: new Date(now - ((i * 6) % 360) * day),
+      diagnosis,
+      treatmentPlan,
+      sessionNotes: i % 3 === 0 ? "Patient reports less pain than last session" : null,
+      progress: progress[i % progress.length]!,
+    };
+  });
+  await Report.insertMany(reports);
+  await Promise.all(patients.map((p) => syncLastVisit(p._id)));
+  console.info(`reports ${reports.length} created`);
+}
+
+async function seedBanners() {
+  if (await Banner.exists({})) {
+    console.info("banners already there");
+    return;
+  }
+  await Banner.insertMany([
+    {
+      type: "announcement",
+      messageEn: "Welcome to our clinic! Book your session online in under a minute.",
+      messageAr: "أهلاً بكم في عيادتنا! احجز جلستك أونلاين بأقل من دقيقة.",
+      order: 1,
+    },
+    {
+      type: "schedule_update",
+      messageEn: "The clinic is closed on Fridays and Saturdays.",
+      messageAr: "العيادة مغلقة يومي الجمعة والسبت.",
+      order: 2,
+    },
+    {
+      type: "announcement",
+      messageEn: "New: sports injury rehabilitation program.",
+      messageAr: "جديد: برنامج إعادة تأهيل إصابات الملاعب.",
+      order: 3,
+      isActive: false,
+    },
+  ]);
+  console.info("banners 3 created");
+}
+
+// A few requests on the next working days: some pending, some accepted. Only when there are none.
+async function seedReservations(linaId: Types.ObjectId, omarId: Types.ObjectId) {
+  if (await Reservation.exists({})) {
+    console.info("reservations already there");
+    return;
+  }
+  const patientUser = await User.findOne({ email: PATIENT.email });
+  const tz = env.CLINIC_TIMEZONE;
+  const days = (await dateOptions(new Date())).slice(1, 4);
+
+  const samples = days.flatMap((day, i) =>
+    [
+      { fullName: "Sara Odeh", phone: `059700112${i}`, age: 28, time: "09:00", status: "pending" },
+      {
+        fullName: "Omar Barghouti",
+        phone: `059955667${i}`,
+        age: 37,
+        time: "10:00",
+        status: "accepted",
+        therapistId: omarId,
+      },
+      {
+        fullName: "Ahmad Saleh",
+        phone: "0599123456",
+        age: 34,
+        time: "12:30",
+        status: "accepted",
+        therapistId: linaId,
+        userId: patientUser?._id ?? null,
+      },
+    ].map(({ time, ...rest }) => ({ ...rest, scheduledAt: zonedTime(day, time, tz) })),
+  );
+
+  await Reservation.insertMany(samples);
+  console.info(`reservations ${samples.length} created`);
 }
 
 // The first one gets the sample patient login. Phone numbers are unique per sample.
