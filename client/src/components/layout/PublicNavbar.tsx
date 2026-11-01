@@ -48,7 +48,7 @@ export const PublicNavbar = () => {
       color="inherit"
       sx={{ display: "flex", alignItems: "center", gap: 1.25 }}
     >
-      <Box component="img" src="/logo-mark.png" alt="" sx={{ width: 34, height: 34 }} />
+      <Box component="img" src="/logo-mark.png" alt="" sx={{ width: 40, height: 40 }} />
       <Typography
         component="span"
         sx={{ fontSize: "1.25rem", fontWeight: 700, color: "primary.main" }}
