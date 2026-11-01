@@ -20,6 +20,7 @@ import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import type { Translation } from "@/i18n/locales/en";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { NAVBAR_HEIGHT } from "./navbarHeight";
 import { ThemeToggle } from "./ThemeToggle";
 
 // Sections of the landing page (6.8 and 6.9 give them these ids).
@@ -47,10 +48,10 @@ export const PublicNavbar = () => {
       color="inherit"
       sx={{ display: "flex", alignItems: "center", gap: 1.25 }}
     >
-      <Box component="img" src="/logo-mark.png" alt="" sx={{ width: 40, height: 40 }} />
+      <Box component="img" src="/logo-mark.png" alt="" sx={{ width: 34, height: 34 }} />
       <Typography
         component="span"
-        sx={{ fontSize: "1.35rem", fontWeight: 700, color: "primary.main" }}
+        sx={{ fontSize: "1.25rem", fontWeight: 700, color: "primary.main" }}
       >
         {t("brand.name")}
       </Typography>
@@ -75,7 +76,7 @@ export const PublicNavbar = () => {
       color="inherit"
       sx={{ borderBottom: 1, borderColor: "divider", bgcolor: "background.default" }}
     >
-      <Toolbar sx={{ gap: 3, px: { md: 4 }, minHeight: { xs: 64, md: 72 } }}>
+      <Toolbar sx={{ gap: 3, px: { md: 4 }, minHeight: NAVBAR_HEIGHT }}>
         {brand}
 
         {isDesktop && (

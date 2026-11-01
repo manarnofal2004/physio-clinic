@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Box, Typography } from "@mui/material";
+import { NAVBAR_HEIGHT } from "@/components/layout/navbarHeight";
 
 interface LandingSectionProps {
   id: string; // the navbar links to "/#id"
@@ -19,7 +20,7 @@ export const LandingSection = ({ id, title, intro, tinted, children }: LandingSe
       bgcolor: tinted ? "action.selected" : "transparent",
       py: { xs: 7, md: 11 },
       px: { xs: 2, md: 4 },
-      scrollMarginTop: { xs: 64, md: 72 }, // stay below the sticky navbar
+      scrollMarginTop: NAVBAR_HEIGHT, // stay below the sticky navbar
     }}
   >
     <Box sx={{ maxWidth: 1200, mx: "auto" }}>
