@@ -22,6 +22,7 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 import { NAVBAR_HEIGHT } from "./navbarHeight";
 import { useColorMode } from "@/theme/colorModeContext";
 import { ThemeToggle } from "./ThemeToggle";
+import { useActiveSection } from "./useActiveSection";
 
 // Sections of the landing page (6.8 and 6.9 give them these ids).
 const sections: { id: string; labelKey: keyof Translation["nav"] }[] = [
@@ -32,6 +33,8 @@ const sections: { id: string; labelKey: keyof Translation["nav"] }[] = [
   { id: "contact", labelKey: "contact" },
 ];
 
+const sectionIds = sections.map((section) => section.id);
+
 const BOOKING_ID = "booking";
 
 export const PublicNavbar = () => {
@@ -40,6 +43,7 @@ export const PublicNavbar = () => {
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"), { noSsr: true });
   const [menuOpen, setMenuOpen] = useState(false);
   const { mode } = useColorMode();
+  const active = useActiveSection(sectionIds);
   const location = useLocation();
 
   // On the home page the logo scrolls back to the top (and clears "#services" etc.);
@@ -106,8 +110,28 @@ export const PublicNavbar = () => {
                 key={section.id}
                 href={`/#${section.id}`}
                 underline="none"
-                color="text.secondary"
-                sx={{ "&:hover": { color: "primary.main" } }}
+                aria-current={section.id === active ? "location" : undefined}
+                sx={{
+                  position: "relative",
+                  py: 0.5,
+                  color: "text.secondary",
+                  transition: "color 150ms",
+                  "&:hover": { color: "primary.main" },
+                  // The current section: olive text with a short honey line under it.
+                  "&::after": {
+                    content: '""',
+                    position: "absolute",
+                    insetInline: 0,
+                    bottom: -2,
+                    height: 2,
+                    borderRadius: 1,
+                    bgcolor: "warning.main",
+                    transform: "scaleX(0)",
+                    transition: "transform 200ms ease-out",
+                  },
+                  "&[aria-current]": { color: "primary.main", fontWeight: 700 },
+                  "&[aria-current]::after": { transform: "scaleX(1)" },
+                }}
               >
                 {t(`nav.${section.labelKey}`)}
               </Link>
@@ -150,6 +174,8 @@ export const PublicNavbar = () => {
               key={section.id}
               component="a"
               href={`/#${section.id}`}
+              selected={section.id === active}
+              aria-current={section.id === active ? "location" : undefined}
               onClick={() => setMenuOpen(false)}
             >
               <ListItemText primary={t(`nav.${section.labelKey}`)} />
