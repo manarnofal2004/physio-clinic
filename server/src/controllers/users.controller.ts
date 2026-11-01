@@ -2,7 +2,7 @@ import type { RequestHandler } from "express";
 import { Types } from "mongoose";
 import { Patient } from "../models/patient.model.js";
 import { Therapist } from "../models/therapist.model.js";
-import { User, type UserDocument } from "../models/user.model.js";
+import { User, type PatientScope, type UserDocument } from "../models/user.model.js";
 import { hashPassword } from "../services/auth.service.js";
 import { toUserDto } from "../services/user-dto.js";
 import { AppError } from "../utils/app-error.js";
@@ -14,6 +14,13 @@ import type {
   ListUsersQuery,
   UpdateAccessBody,
 } from "../validators/users.validators.js";
+
+// The API's { all: true } | { all: false, patientIds } as the model stores it.
+function toStoredScope(scope: UpdateAccessBody["patientScope"]): PatientScope {
+  return scope.all
+    ? { all: true, patientIds: [] }
+    : { all: false, patientIds: scope.patientIds.map((id) => new Types.ObjectId(id)) };
+}
 
 async function findUserOr404(id: string): Promise<UserDocument> {
   const user = await User.findById(id);
@@ -75,12 +82,7 @@ export const createUser: RequestHandler = async (req, res) => {
     [link.field]: link.id,
     ...(body.role === "therapist" && {
       privileges: body.privileges,
-      patientScope: body.patientScope.all
-        ? { all: true, patientIds: [] }
-        : {
-            all: false,
-            patientIds: body.patientScope.patientIds.map((id) => new Types.ObjectId(id)),
-          },
+      patientScope: toStoredScope(body.patientScope),
     }),
   });
   sendSuccess(res, toUserDto(user), { status: 201 });
@@ -98,9 +100,7 @@ export const updateUserAccess: RequestHandler = async (req, res) => {
 
   const { privileges, patientScope } = req.body as UpdateAccessBody;
   user.privileges = privileges;
-  user.patientScope = patientScope.all
-    ? { all: true, patientIds: [] }
-    : { all: false, patientIds: patientScope.patientIds.map((id) => new Types.ObjectId(id)) };
+  user.patientScope = toStoredScope(patientScope);
   await user.save();
   sendSuccess(res, toUserDto(user));
 };
