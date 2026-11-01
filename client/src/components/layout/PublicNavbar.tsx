@@ -11,7 +11,6 @@ import {
   ListItemText,
   Stack,
   Toolbar,
-  Typography,
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -21,6 +20,7 @@ import { Link as RouterLink, useLocation } from "react-router-dom";
 import type { Translation } from "@/i18n/locales/en";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { NAVBAR_HEIGHT } from "./navbarHeight";
+import { useColorMode } from "@/theme/colorModeContext";
 import { ThemeToggle } from "./ThemeToggle";
 
 // Sections of the landing page (6.8 and 6.9 give them these ids).
@@ -39,6 +39,7 @@ export const PublicNavbar = () => {
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"), { noSsr: true });
   const [menuOpen, setMenuOpen] = useState(false);
+  const { mode } = useColorMode();
   const location = useLocation();
 
   // On the home page the logo scrolls back to the top (and clears "#services" etc.);
@@ -60,20 +61,14 @@ export const PublicNavbar = () => {
       onClick={backToTop}
       sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
     >
-      <Box component="img" src="/logo-mark.svg" alt="" sx={{ width: 34, height: 42 }} />
-      <Typography
-        component="span"
-        // The name is set in its own display font, so it reads as part of the logo.
-        sx={{
-          fontFamily: '"Marhey", serif',
-          fontSize: "1.6rem",
-          fontWeight: 700,
-          lineHeight: 1,
-          color: "primary.main",
-        }}
-      >
-        {t("brand.name")}
-      </Typography>
+      {/* The full logo (mark, Arabic name and "SANAD"); dark mode uses a copy whose
+          deep olive parts are light olive, so it stays readable on the dark bar. */}
+      <Box
+        component="img"
+        src={mode === "dark" ? "/logo-full-dark.png" : "/logo-full.png"}
+        alt={t("brand.name")}
+        sx={{ height: 46, width: "auto", display: "block" }}
+      />
     </Link>
   );
 
