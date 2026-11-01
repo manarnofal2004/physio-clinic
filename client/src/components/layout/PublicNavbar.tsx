@@ -15,7 +15,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Menu as MenuIcon, X as CloseIcon } from "lucide-react";
+import { CloseIcon, MenuIcon } from "@/components/icons/icons";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import type { Translation } from "@/i18n/locales/en";
@@ -75,9 +75,7 @@ export const PublicNavbar = () => {
       color="inherit"
       sx={{ borderBottom: 1, borderColor: "divider", bgcolor: "background.default" }}
     >
-      <Toolbar
-        sx={{ maxWidth: 1200, width: "100%", mx: "auto", gap: 3, minHeight: { xs: 64, md: 72 } }}
-      >
+      <Toolbar sx={{ gap: 3, px: { md: 4 }, minHeight: { xs: 64, md: 72 } }}>
         {brand}
 
         {isDesktop && (
