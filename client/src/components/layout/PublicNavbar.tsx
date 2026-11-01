@@ -46,7 +46,7 @@ export const PublicNavbar = () => {
       to="/"
       underline="none"
       color="inherit"
-      sx={{ display: "flex", alignItems: "center", gap: 1.25 }}
+      sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
     >
       <Box component="img" src="/logo-mark.png" alt="" sx={{ width: 40, height: 40 }} />
       <Typography
