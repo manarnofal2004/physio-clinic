@@ -15,7 +15,7 @@ interface Service {
   text: ServiceKey;
 }
 
-const ICON_SIZE = 24;
+const ICON_SIZE = 20;
 
 const services: Service[] = [
   {
@@ -67,15 +67,21 @@ export const ServicesSection = () => {
           p: 0,
           listStyle: "none",
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "repeat(3, 1fr)" },
-          gap: 3,
+          // All six fit in one row on wide screens, so the section fits on one screen.
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "1fr 1fr",
+            md: "repeat(3, 1fr)",
+            lg: "repeat(6, 1fr)",
+          },
+          gap: 2,
         }}
       >
         {services.map((service) => (
           <Box
             component="li"
             key={service.title}
-            sx={{ bgcolor: "background.paper", borderRadius: 4, p: 1.25 }}
+            sx={{ bgcolor: "background.paper", borderRadius: 3, p: 1 }}
           >
             <Box sx={{ position: "relative" }}>
               {service.image ? (
@@ -102,10 +108,10 @@ export const ServicesSection = () => {
                 aria-hidden
                 sx={{
                   position: "absolute",
-                  insetInlineStart: 16,
-                  bottom: -26,
-                  width: 52,
-                  height: 52,
+                  insetInlineStart: 12,
+                  bottom: -22,
+                  width: 44,
+                  height: 44,
                   borderRadius: "50%",
                   display: "grid",
                   placeItems: "center",
@@ -119,11 +125,11 @@ export const ServicesSection = () => {
                 {service.icon}
               </Box>
             </Box>
-            <Box sx={{ px: 1.5, pt: 5, pb: 2 }}>
-              <Typography variant="h5" component="h3">
+            <Box sx={{ px: 1, pt: 4, pb: 1.5 }}>
+              <Typography variant="h6" component="h3" sx={{ lineHeight: 1.3 }}>
                 {t(`landing.services.${service.title}`)}
               </Typography>
-              <Typography color="text.secondary" sx={{ mt: 1 }}>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
                 {t(`landing.services.${service.text}`)}
               </Typography>
             </Box>
