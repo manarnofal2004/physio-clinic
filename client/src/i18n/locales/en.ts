@@ -35,7 +35,9 @@ export const en = {
   },
   landing: {
     hero: {
-      title: "Physiotherapy that gets you moving again",
+      // The headline is two lines; the second one is set in italic.
+      title: "Physiotherapy that",
+      titleEmphasis: "gets you moving again",
       subtitle:
         "Back pain, sports injuries and recovery after surgery. Every session is one-to-one with a physiotherapist, and you can book online without an account.",
       book: "Book a session",

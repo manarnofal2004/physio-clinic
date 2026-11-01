@@ -85,7 +85,12 @@ export const HeroSection = () => {
       >
         <Box sx={{ width: { md: "44%" } }}>
           <Typography variant="h1" sx={{ fontSize: { xs: "2.4rem", md: "3.25rem" } }}>
-            {t("landing.hero.title")}
+            {t("landing.hero.title")}{" "}
+            {/* Second line in italic. Arabic has no true italic (a slanted Arabic
+                font looks broken), so there it stays upright. */}
+            <Box component="em" sx={{ display: "block", fontStyle: isRtl ? "normal" : "italic" }}>
+              {t("landing.hero.titleEmphasis")}
+            </Box>
           </Typography>
           <Typography
             color="text.secondary"

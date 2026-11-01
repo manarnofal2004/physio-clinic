@@ -40,6 +40,8 @@ declare module "@mui/material/styles" {
 }
 
 const font = '"Tajawal", system-ui, sans-serif';
+// Headings: Redaction 10 has no Arabic letters, so Arabic text uses Tajawal.
+const headingFont = '"Redaction 10", "Tajawal", serif';
 
 export const createAppTheme = (
   mode: PaletteMode,
@@ -48,7 +50,8 @@ export const createAppTheme = (
 ) => {
   const c = colors[mode];
   const heading = (fontSize: string) => ({
-    fontWeight: 500,
+    fontFamily: headingFont,
+    fontWeight: 400,
     fontSize,
     // Arabic letters join, so they need more line height and no negative tracking.
     lineHeight: direction === "rtl" ? 1.3 : 1.15,
