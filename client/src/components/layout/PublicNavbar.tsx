@@ -85,7 +85,7 @@ export const PublicNavbar = () => {
             aria-label={t("nav.sections")}
             direction="row"
             spacing={3}
-            sx={{ mx: "auto" }}
+            sx={{ marginInlineStart: 3 }}
           >
             {sections.map((section) => (
               <Link
