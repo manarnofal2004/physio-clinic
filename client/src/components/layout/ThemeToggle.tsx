@@ -1,5 +1,5 @@
 import { IconButton, Tooltip } from "@mui/material";
-import { Moon, Sun } from "@phosphor-icons/react";
+import { Moon, Sun } from "lucide-react";
 import { useColorMode } from "@/theme/colorModeContext";
 
 export const ThemeToggle = () => {

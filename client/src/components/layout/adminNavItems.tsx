@@ -1,13 +1,13 @@
 import type { ReactNode } from "react";
 import {
-  CalendarDots,
-  ClipboardText,
+  CalendarDays,
+  ClipboardList,
+  LayoutDashboard,
   Megaphone,
-  SquaresFour,
   Stethoscope,
-  UserGear,
+  UserCog,
   Users,
-} from "@phosphor-icons/react";
+} from "lucide-react";
 
 export interface AdminNavItem {
   label: string;
@@ -16,11 +16,11 @@ export interface AdminNavItem {
 }
 
 export const adminNavItems: AdminNavItem[] = [
-  { label: "Dashboard", path: "/admin", icon: <SquaresFour /> },
+  { label: "Dashboard", path: "/admin", icon: <LayoutDashboard /> },
   { label: "Patients", path: "/admin/patients", icon: <Users /> },
-  { label: "Reports", path: "/admin/reports", icon: <ClipboardText /> },
-  { label: "Reservations", path: "/admin/reservations", icon: <CalendarDots /> },
+  { label: "Reports", path: "/admin/reports", icon: <ClipboardList /> },
+  { label: "Reservations", path: "/admin/reservations", icon: <CalendarDays /> },
   { label: "Therapists", path: "/admin/therapists", icon: <Stethoscope /> },
-  { label: "Users", path: "/admin/users", icon: <UserGear /> },
+  { label: "Users", path: "/admin/users", icon: <UserCog /> },
   { label: "Banners", path: "/admin/banners", icon: <Megaphone /> },
 ];

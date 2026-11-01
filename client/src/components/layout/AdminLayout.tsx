@@ -13,7 +13,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { List as MenuIcon } from "@phosphor-icons/react";
+import { Menu as MenuIcon } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
 import { adminNavItems } from "./adminNavItems";

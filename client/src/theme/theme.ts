@@ -69,13 +69,6 @@ export const createAppTheme = (mode: PaletteMode, direction: Direction = "ltr") 
       button: { textTransform: "none", fontWeight: 400, letterSpacing: 0, fontSize: "1rem" },
     },
     components: {
-      // Icons (Phosphor, duotone): the outline follows the text colour and the soft
-      // fill layer is honey, so every icon in the app shares one two-tone look.
-      MuiCssBaseline: {
-        styleOverrides: {
-          '.app-icon path[opacity="0.2"]': { fill: c.warning, opacity: 0.3 },
-        },
-      },
       MuiButton: {
         defaultProps: { disableElevation: true },
         styleOverrides: { root: { paddingInline: 16 } },
