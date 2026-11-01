@@ -15,8 +15,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import CloseIcon from "@mui/icons-material/Close";
-import MenuIcon from "@mui/icons-material/Menu";
+import { List as MenuIcon, X as CloseIcon } from "@phosphor-icons/react";
 import { Link as RouterLink } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
 
