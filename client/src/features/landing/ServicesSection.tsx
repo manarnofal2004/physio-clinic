@@ -58,6 +58,7 @@ export const ServicesSection = () => {
   // A square outside the tab's bottom corner, filled with the tab's colour except
   // for a quarter circle, which draws the inward curve.
   const shoulder = (side: "start" | "end", color: string) => {
+    // The RTL style plugin does not mirror gradient positions, so pick the side here.
     const atLeft = (side === "start") !== isRtl;
     return {
       content: '""',
@@ -85,7 +86,7 @@ export const ServicesSection = () => {
         sx={{
           display: "flex",
           gap: 0.5,
-          px: { xs: 2.5, md: 5 },
+          px: { xs: 3, md: 6 }, // keeps the first tab's curve off the panel's round corner
           overflowX: "auto",
           scrollbarWidth: "none",
         }}
@@ -144,7 +145,7 @@ export const ServicesSection = () => {
         sx={{
           bgcolor: panelColor,
           color: "common.white",
-          borderRadius: 6,
+          borderRadius: 3, // 24px: small enough that the tab shoulders sit on the straight edge
           p: { xs: 3, md: 7 },
           display: "grid",
           gridTemplateColumns: { md: "1fr 1fr" },
