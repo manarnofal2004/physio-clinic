@@ -1,5 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import "@/theme/fonts";
 import { AppProviders } from "@/app/AppProviders";
 import { AppRouter } from "@/app/AppRouter";
 
