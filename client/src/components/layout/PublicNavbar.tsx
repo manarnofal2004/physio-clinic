@@ -63,7 +63,14 @@ export const PublicNavbar = () => {
       <Box component="img" src="/logo-mark.svg" alt="" sx={{ width: 34, height: 42 }} />
       <Typography
         component="span"
-        sx={{ fontSize: "1.25rem", fontWeight: 700, color: "primary.main" }}
+        // The name is set in its own display font, so it reads as part of the logo.
+        sx={{
+          fontFamily: '"Marhey", serif',
+          fontSize: "1.6rem",
+          fontWeight: 700,
+          lineHeight: 1,
+          color: "primary.main",
+        }}
       >
         {t("brand.name")}
       </Typography>
