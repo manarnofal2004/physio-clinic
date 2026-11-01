@@ -4,7 +4,7 @@ import { createTheme, type Direction, type PaletteMode } from "@mui/material/sty
 // The clinic's look: "olive and stone" colours with a layout inspired by jane.app.
 // - stone grey is the "air" (sidebar, tinted areas); one olive green marks everything you can press
 // - honey marks waiting states (pending reservations)
-// - one font, Redaction 10, for headings, text and controls (Tajawal for Arabic)
+// - one font, Redaction, for headings, text and controls (Tajawal for Arabic)
 // - no boxes: content is grouped by space, type and thin lines, not by bordered or shadowed cards
 // - quiet buttons: regular weight, 8px corners
 const colors = {
@@ -39,8 +39,8 @@ declare module "@mui/material/styles" {
   }
 }
 
-// Redaction 10 has no Arabic letters, so Arabic text falls back to Tajawal.
-const font = '"Redaction 10", "Tajawal", serif';
+// Redaction has no Arabic letters, so Arabic text falls back to Tajawal.
+const font = '"Redaction", "Tajawal", serif';
 
 export const createAppTheme = (
   mode: PaletteMode,

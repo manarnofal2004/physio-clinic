@@ -17,7 +17,7 @@ importers:
       '@emotion/styled':
         specifier: ^11.14.1
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(react@19.3.1)
-      '@fontsource/redaction-10':
+      '@fontsource/redaction':
         specifier: ^5.3.0
         version: 5.3.0
       '@fontsource/tajawal':
@@ -278,8 +278,8 @@ packages:
     resolution: {integrity: sha512-IkO+/KEUvwbVpiURZg+P7zF74z5Jxe0UgJxVni+RtoHQ6IZieXaO02kmadomap/q+l6bc/jdPGGqTjhuZnuz1Q==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  '@fontsource/redaction-10@5.3.0':
-    resolution: {integrity: sha512-EukjMqtXDt9hSlOSRTNR6+bmHuYtOpbXrCGTJlw3H85754amhN4zH4sZ75Jr3wkSLR3Jp5PEDcXSkMpu9F05BQ==}
+  '@fontsource/redaction@5.3.0':
+    resolution: {integrity: sha512-mlVA74kHfyjLPjX2j+93w/0leZAQ4aouFbx6LR8fbfqpaDRFidQnpFbpb+0wVY/MS/k3IbTjQgPjdVI8ymllzw==}
 
   '@fontsource/tajawal@5.3.0':
     resolution: {integrity: sha512-R2GUdHHAebeZ+CyYvulaSECfZe3BWbNjEWX3TXG0Csnx4RADO/zyqk6Y//NYdSx5n74zRJh9HTvd61mpX/UzZQ==}
@@ -1707,7 +1707,7 @@ snapshots:
       '@eslint/core': 1.2.1
       levn: 0.4.1
 
-  '@fontsource/redaction-10@5.3.0': {}
+  '@fontsource/redaction@5.3.0': {}
 
   '@fontsource/tajawal@5.3.0': {}
 
