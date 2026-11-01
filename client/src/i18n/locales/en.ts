@@ -42,7 +42,7 @@ export const en = {
       howItWorks: "How it works",
       hours: "Sunday to Thursday, 8:00 to 19:00",
       session: "45-minute sessions",
-      imageAlt: "A physiotherapist helping a patient with a knee exercise",
+      imageAlt: "A physiotherapist examining a patient's knee",
     },
     services: {
       title: "What we treat",
