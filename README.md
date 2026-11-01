@@ -9,7 +9,7 @@ Physiotherapy Clinic Management System: a public website where visitors book app
 
 ## Prerequisites
 
-- Node.js 20 or later
+- Node.js 20.19+ (or 22.13+ / 24+), required by ESLint 10
 - pnpm (`npm install -g pnpm`)
 - MongoDB (local, or a MongoDB Atlas connection string)
 
