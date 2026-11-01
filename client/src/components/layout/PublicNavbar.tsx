@@ -16,22 +16,25 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Menu as MenuIcon, X as CloseIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
+import type { Translation } from "@/i18n/locales/en";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 
 // Sections of the landing page (6.8 and 6.9 give them these ids).
-// Labels move to translation keys in 1.8.
-const sections = [
-  { id: "services", label: "Services" },
-  { id: "how-it-works", label: "How it works" },
-  { id: "gallery", label: "Gallery" },
-  { id: "faq", label: "FAQ" },
-  { id: "contact", label: "Contact" },
+const sections: { id: string; labelKey: keyof Translation["nav"] }[] = [
+  { id: "services", labelKey: "services" },
+  { id: "how-it-works", labelKey: "howItWorks" },
+  { id: "gallery", labelKey: "gallery" },
+  { id: "faq", labelKey: "faq" },
+  { id: "contact", labelKey: "contact" },
 ];
 
 const BOOKING_ID = "booking";
 
 export const PublicNavbar = () => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"), { noSsr: true });
   const [menuOpen, setMenuOpen] = useState(false);
@@ -49,20 +52,20 @@ export const PublicNavbar = () => {
         component="span"
         sx={{ fontSize: "1.35rem", fontWeight: 700, color: "primary.main" }}
       >
-        Sanad
+        {t("brand.name")}
       </Typography>
     </Link>
   );
 
   const bookButton = (
     <Button variant="contained" href={`/#${BOOKING_ID}`} onClick={() => setMenuOpen(false)}>
-      Book a session
+      {t("nav.book")}
     </Button>
   );
 
   const loginButton = (
     <Button component={RouterLink} to="/login" color="inherit" onClick={() => setMenuOpen(false)}>
-      Log in
+      {t("nav.logIn")}
     </Button>
   );
 
@@ -80,7 +83,7 @@ export const PublicNavbar = () => {
         {isDesktop && (
           <Stack
             component="nav"
-            aria-label="Page sections"
+            aria-label={t("nav.sections")}
             direction="row"
             spacing={3}
             sx={{ mx: "auto" }}
@@ -93,18 +96,19 @@ export const PublicNavbar = () => {
                 color="text.secondary"
                 sx={{ "&:hover": { color: "primary.main" } }}
               >
-                {section.label}
+                {t(`nav.${section.labelKey}`)}
               </Link>
             ))}
           </Stack>
         )}
 
         <Stack direction="row" spacing={1} sx={{ alignItems: "center", marginInlineStart: "auto" }}>
+          <LanguageSwitcher />
           <ThemeToggle />
           {isDesktop && loginButton}
           {isDesktop && bookButton}
           {!isDesktop && (
-            <IconButton edge="end" onClick={() => setMenuOpen(true)} aria-label="Open menu">
+            <IconButton edge="end" onClick={() => setMenuOpen(true)} aria-label={t("nav.openMenu")}>
               <MenuIcon />
             </IconButton>
           )}
@@ -113,7 +117,7 @@ export const PublicNavbar = () => {
 
       {/* Mobile: the same links and actions in a side panel. */}
       <Drawer
-        anchor={theme.direction === "rtl" ? "left" : "right"}
+        anchor="right"
         open={!isDesktop && menuOpen}
         onClose={() => setMenuOpen(false)}
         slotProps={{ paper: { sx: { width: 280, p: 2 } } }}
@@ -123,11 +127,11 @@ export const PublicNavbar = () => {
           sx={{ alignItems: "center", justifyContent: "space-between", mb: 1 }}
         >
           {brand}
-          <IconButton onClick={() => setMenuOpen(false)} aria-label="Close menu">
+          <IconButton onClick={() => setMenuOpen(false)} aria-label={t("nav.closeMenu")}>
             <CloseIcon />
           </IconButton>
         </Stack>
-        <List component="nav" aria-label="Page sections">
+        <List component="nav" aria-label={t("nav.sections")}>
           {sections.map((section) => (
             <ListItemButton
               key={section.id}
@@ -135,7 +139,7 @@ export const PublicNavbar = () => {
               href={`/#${section.id}`}
               onClick={() => setMenuOpen(false)}
             >
-              <ListItemText primary={section.label} />
+              <ListItemText primary={t(`nav.${section.labelKey}`)} />
             </ListItemButton>
           ))}
         </List>
