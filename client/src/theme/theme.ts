@@ -13,7 +13,7 @@ const colors = {
     primary: "#4f6a2a",
     primaryDark: "#3a4f1e",
     tint: "#e3ead6", // tinted areas and selected states
-    wash: "#eef0ea", // sidebar and page-level tint
+    wash: "#f7f2e9", // very light beige: hero, services and the admin sidebar
     paper: "#ffffff",
     text: "#1f2a1a",
     textMuted: "#5d6656",

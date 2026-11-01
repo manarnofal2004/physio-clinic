@@ -1,7 +1,6 @@
-import { Box, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { Box, ButtonBase, Typography } from "@mui/material";
 import { Activity, Bone, Brain, Dumbbell, Hand, PersonStanding } from "lucide-react";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { Translation } from "@/i18n/locales/en";
 import { LandingSection } from "./LandingSection";
@@ -10,7 +9,7 @@ type ServiceKey = keyof Translation["landing"]["services"];
 
 interface Service {
   icon: ReactNode;
-  image?: string; // a service without a photo yet shows a pale olive area instead
+  image: string;
   title: ServiceKey;
   text: ServiceKey;
 }
@@ -30,8 +29,18 @@ const services: Service[] = [
     title: "sports",
     text: "sportsText",
   },
-  { icon: <Activity size={ICON_SIZE} />, title: "surgery", text: "surgeryText" },
-  { icon: <Bone size={ICON_SIZE} />, title: "joints", text: "jointsText" },
+  {
+    icon: <Activity size={ICON_SIZE} />,
+    image: "/images/services/surgery.webp",
+    title: "surgery",
+    text: "surgeryText",
+  },
+  {
+    icon: <Bone size={ICON_SIZE} />,
+    image: "/images/services/joints.webp",
+    title: "joints",
+    text: "jointsText",
+  },
   {
     icon: <Brain size={ICON_SIZE} />,
     image: "/images/services/neuro.webp",
@@ -46,12 +55,14 @@ const services: Service[] = [
   },
 ];
 
-// One card per service: a photo inset at the top, an olive badge with the
-// service's icon overlapping the photo's lower edge, then the title and one line.
+// Expanding panels: every service is visible as a photo; the open one widens to show
+// its title and description, and clicking another panel opens that one instead.
+// Wide screens lay the panels side by side, phones stack them (open one grows taller).
+const EASE = "cubic-bezier(0.2, 0.7, 0.2, 1)";
+
 export const ServicesSection = () => {
   const { t } = useTranslation();
-  const theme = useTheme();
-  const paper = theme.palette.background.paper;
+  const [open, setOpen] = useState(0);
 
   return (
     <LandingSection
@@ -66,75 +77,129 @@ export const ServicesSection = () => {
           m: 0,
           p: 0,
           listStyle: "none",
-          display: "grid",
-          // All six fit in one row on wide screens, so the section fits on one screen.
-          gridTemplateColumns: {
-            xs: "1fr",
-            sm: "1fr 1fr",
-            md: "repeat(3, 1fr)",
-            lg: "repeat(6, 1fr)",
-          },
-          gap: 2,
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          gap: 1.5,
+          height: { md: 460 },
         }}
       >
-        {services.map((service) => (
-          <Box
-            component="li"
-            key={service.title}
-            sx={{ bgcolor: "background.paper", borderRadius: 3, p: 1 }}
-          >
-            <Box sx={{ position: "relative" }}>
-              {service.image ? (
+        {services.map((service, index) => {
+          const isOpen = index === open;
+          return (
+            <Box
+              component="li"
+              key={service.title}
+              sx={{
+                position: "relative",
+                minWidth: 0,
+                flexGrow: { md: isOpen ? 5 : 1 },
+                flexBasis: { md: 0 },
+                height: { xs: isOpen ? 320 : 84, md: "auto" },
+                borderRadius: 4,
+                overflow: "hidden",
+                transition: `flex-grow 500ms ${EASE}, height 500ms ${EASE}`,
+                "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+              }}
+            >
+              <ButtonBase
+                onClick={() => setOpen(index)}
+                aria-expanded={isOpen}
+                sx={{
+                  position: "absolute",
+                  inset: 0,
+                  display: "block",
+                  textAlign: "start",
+                  "&:focus-visible": {
+                    outline: 3,
+                    outlineColor: "primary.main",
+                    outlineOffset: -3,
+                  },
+                }}
+              >
                 <Box
                   component="img"
                   src={service.image}
                   alt=""
                   loading="lazy"
-                  width={800}
-                  height={600}
                   sx={{
-                    display: "block",
+                    position: "absolute",
+                    inset: 0,
                     width: "100%",
-                    height: "auto",
-                    aspectRatio: "4 / 3",
+                    height: "100%",
                     objectFit: "cover",
-                    borderRadius: 3,
+                    transform: isOpen ? "scale(1)" : "scale(1.08)",
+                    transition: `transform 700ms ${EASE}`,
                   }}
                 />
-              ) : (
-                <Box sx={{ aspectRatio: "4 / 3", borderRadius: 3, bgcolor: "action.selected" }} />
-              )}
-              <Box
-                aria-hidden
-                sx={{
-                  position: "absolute",
-                  insetInlineStart: 12,
-                  bottom: -22,
-                  width: 44,
-                  height: 44,
-                  borderRadius: "50%",
-                  display: "grid",
-                  placeItems: "center",
-                  bgcolor: "primary.main",
-                  color: "primary.contrastText",
-                  border: `4px solid ${paper}`,
-                  // The icon follows the badge's text colour, not the global honey.
-                  "& svg": { stroke: "currentColor" },
-                }}
-              >
-                {service.icon}
-              </Box>
+                {/* Darkens the lower part so the white text stays readable. */}
+                <Box
+                  sx={{
+                    position: "absolute",
+                    inset: 0,
+                    background: isOpen
+                      ? "linear-gradient(to top, rgba(22, 30, 14, 0.85) 0%, rgba(22, 30, 14, 0.35) 45%, transparent 70%)"
+                      : "rgba(22, 30, 14, 0.35)",
+                    transition: `background 500ms ${EASE}`,
+                  }}
+                />
+
+                <Box
+                  sx={{
+                    position: "absolute",
+                    insetInline: 0,
+                    bottom: 0,
+                    p: { xs: 2, md: 2.5 },
+                    display: "flex",
+                    flexDirection: { xs: "row", md: isOpen ? "row" : "column" },
+                    alignItems: { xs: "center", md: isOpen ? "flex-end" : "center" },
+                    gap: 1.5,
+                    color: "common.white",
+                  }}
+                >
+                  <Box
+                    aria-hidden
+                    sx={{
+                      flexShrink: 0,
+                      width: 44,
+                      height: 44,
+                      borderRadius: "50%",
+                      display: "grid",
+                      placeItems: "center",
+                      bgcolor: "primary.main",
+                      "& svg": { stroke: "#fff" },
+                    }}
+                  >
+                    {service.icon}
+                  </Box>
+                  <Box sx={{ minWidth: 0 }}>
+                    <Typography
+                      component="h3"
+                      sx={{
+                        fontSize: { xs: "1.1rem", md: "1.35rem" },
+                        fontWeight: 700,
+                        lineHeight: 1.25,
+                        // Closed panels on wide screens are too narrow for the title.
+                        display: { xs: "block", md: isOpen ? "block" : "none" },
+                      }}
+                    >
+                      {t(`landing.services.${service.title}`)}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        mt: 0.5,
+                        maxWidth: "30em",
+                        opacity: 0.9,
+                        display: isOpen ? "block" : "none",
+                      }}
+                    >
+                      {t(`landing.services.${service.text}`)}
+                    </Typography>
+                  </Box>
+                </Box>
+              </ButtonBase>
             </Box>
-            <Box sx={{ px: 1, pt: 4, pb: 1.5 }}>
-              <Typography variant="h6" component="h3" sx={{ lineHeight: 1.3 }}>
-                {t(`landing.services.${service.title}`)}
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
-                {t(`landing.services.${service.text}`)}
-              </Typography>
-            </Box>
-          </Box>
-        ))}
+          );
+        })}
       </Box>
     </LandingSection>
   );
