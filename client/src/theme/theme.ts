@@ -1,11 +1,10 @@
 import { arSD, enUS } from "@mui/material/locale";
 import { createTheme, type Direction, type PaletteMode } from "@mui/material/styles";
-import { arabicFontFaces } from "./arabicFont";
 
 // The clinic's look: "olive and stone" colours with a layout inspired by jane.app.
 // - stone grey is the "air" (sidebar, tinted areas); one olive green marks everything you can press
 // - honey marks waiting states (pending reservations)
-// - one font, Redaction, for headings, text and controls (Lateef for Arabic)
+// - one font, Redaction, for headings, text and controls (Marhey for Arabic)
 // - no boxes: content is grouped by space, type and thin lines, not by bordered or shadowed cards
 // - quiet buttons: regular weight, 8px corners
 const colors = {
@@ -43,8 +42,8 @@ declare module "@mui/material/styles" {
   }
 }
 
-// Redaction has no Arabic letters, so Arabic text falls back to Lateef.
-const font = '"Redaction", "Lateef", serif';
+// Redaction has no Arabic letters, so Arabic text falls back to Marhey.
+const font = '"Redaction", "Marhey", serif';
 
 export const createAppTheme = (
   mode: PaletteMode,
@@ -94,7 +93,6 @@ export const createAppTheme = (
         button: { textTransform: "none", fontWeight: 400, letterSpacing: 0, fontSize: "1rem" },
       },
       components: {
-        MuiCssBaseline: { styleOverrides: arabicFontFaces },
         MuiButton: {
           defaultProps: { disableElevation: true },
           styleOverrides: { root: { paddingInline: 16 } },

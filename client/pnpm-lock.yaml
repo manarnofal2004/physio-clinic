@@ -17,9 +17,6 @@ importers:
       '@emotion/styled':
         specifier: ^11.14.1
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(react@19.3.1)
-      '@fontsource/lateef':
-        specifier: ^5.3.0
-        version: 5.3.0
       '@fontsource/marhey':
         specifier: ^5.3.0
         version: 5.3.0
@@ -280,9 +277,6 @@ packages:
   '@eslint/plugin-kit@0.7.3':
     resolution: {integrity: sha512-IkO+/KEUvwbVpiURZg+P7zF74z5Jxe0UgJxVni+RtoHQ6IZieXaO02kmadomap/q+l6bc/jdPGGqTjhuZnuz1Q==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
-
-  '@fontsource/lateef@5.3.0':
-    resolution: {integrity: sha512-GdLQqylMupFHukxvMdppJNYeYmg/EwiKNqVbe67N+USixebnRxTUhD5JxRolIjU8aYoL3RhtdOJL58NLaQTsIA==}
 
   '@fontsource/marhey@5.3.0':
     resolution: {integrity: sha512-5v/maubwegrZ419c308p2/hzbAKeGuOhCCm3P3HF6JZf+RnX0NYFE8EqJ0wrSYvTtp9LE3T6m7pwwTIvU6hCyw==}
@@ -1712,8 +1706,6 @@ snapshots:
     dependencies:
       '@eslint/core': 1.2.1
       levn: 0.4.1
-
-  '@fontsource/lateef@5.3.0': {}
 
   '@fontsource/marhey@5.3.0': {}
 
