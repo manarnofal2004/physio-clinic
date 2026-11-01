@@ -35,13 +35,15 @@ export const en = {
   },
   landing: {
     hero: {
-      title: "Move without pain, one session at a time",
+      title: "Physiotherapy that gets you moving again",
       subtitle:
-        "Sanad is a physiotherapy clinic for back pain, sports injuries and recovery after surgery. Book a session online in a minute, no account needed.",
+        "Back pain, sports injuries and recovery after surgery. Every session is one-to-one with a physiotherapist, and you can book online without an account.",
       book: "Book a session",
-      howItWorks: "How it works",
-      hours: "Sunday to Thursday, 8:00 to 19:00",
-      session: "45-minute sessions",
+      howItWorks: "How booking works",
+      hoursLabel: "Opening hours",
+      hours: "Sunday–Thursday, 8:00–19:00",
+      sessionLabel: "Each session",
+      session: "45 minutes, one-to-one",
       imageAlt: "A physiotherapist examining a patient's knee",
     },
     services: {

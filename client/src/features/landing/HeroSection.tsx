@@ -1,29 +1,29 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { CalendarDays, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 // The photo fills the far half of the hero. Its edge facing the text is a soft
 // S-shaped wave, drawn as an SVG clip path in 0..1 units so it scales with the box.
 // Arabic needs the mirror image (wave on the other side), so x becomes 1 - x.
-const WAVE_LTR = "M0.2,0 C0.04,0.16 0.03,0.36 0.13,0.52 C0.23,0.68 0.2,0.86 0.07,1 L1,1 L1,0 Z";
-const WAVE_RTL = "M0.8,0 C0.96,0.16 0.97,0.36 0.87,0.52 C0.77,0.68 0.8,0.86 0.93,1 L0,1 L0,0 Z";
+const WAVE_LTR = "M0.1,0 C0.02,0.16 0.01,0.36 0.07,0.52 C0.13,0.68 0.11,0.86 0.04,1 L1,1 L1,0 Z";
+const WAVE_RTL = "M0.9,0 C0.98,0.16 0.99,0.36 0.93,0.52 C0.87,0.68 0.89,0.86 0.96,1 L0,1 L0,0 Z";
 
 export const HeroSection = () => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const wave = theme.direction === "rtl" ? WAVE_RTL : WAVE_LTR;
+  const isRtl = theme.direction === "rtl";
+  const wave = isRtl ? WAVE_RTL : WAVE_LTR;
 
-  const facts = [
-    { icon: <CalendarDays size={20} />, text: t("landing.hero.hours") },
-    { icon: <Clock size={20} />, text: t("landing.hero.session") },
+  const details = [
+    { label: t("landing.hero.hoursLabel"), value: t("landing.hero.hours") },
+    { label: t("landing.hero.sessionLabel"), value: t("landing.hero.session") },
   ];
 
   return (
     <Box
       component="section"
       id="top"
-      sx={{ position: "relative", overflow: "hidden", minHeight: { md: 580 } }}
+      sx={{ position: "relative", overflow: "hidden", bgcolor: "background.wash" }}
     >
       <svg width="0" height="0" aria-hidden style={{ position: "absolute" }}>
         <clipPath id="hero-wave" clipPathUnits="objectBoundingBox">
@@ -39,7 +39,7 @@ export const HeroSection = () => {
           top: 0,
           bottom: 0,
           insetInlineEnd: 0,
-          width: "50%",
+          width: "52%",
         }}
       >
         <Box
@@ -64,6 +64,8 @@ export const HeroSection = () => {
             width: "100%",
             height: "100%",
             objectFit: "cover",
+            // Keep the therapist (left of the photo) clear of the wave in both directions.
+            objectPosition: isRtl ? "35% 50%" : "20% 50%",
             clipPath: "url(#hero-wave)",
           }}
         />
@@ -75,49 +77,60 @@ export const HeroSection = () => {
           maxWidth: 1200,
           mx: "auto",
           px: { xs: 2, md: 4 },
-          py: { xs: 7, md: 12 },
+          py: { xs: 7, md: 10 },
+          minHeight: { md: 600 },
+          display: "flex",
+          alignItems: "center",
         }}
       >
-        <Box sx={{ maxWidth: { md: "46%" } }}>
-          <Typography
-            variant="h1"
-            sx={{ fontSize: { xs: "2.25rem", md: "3.25rem" }, lineHeight: 1.1 }}
-          >
+        <Box sx={{ width: { md: "44%" } }}>
+          <Typography variant="h1" sx={{ fontSize: { xs: "2.4rem", md: "3.25rem" } }}>
             {t("landing.hero.title")}
           </Typography>
           <Typography
             color="text.secondary"
-            sx={{ mt: 3, fontSize: { xs: "1.0625rem", md: "1.2rem" } }}
+            sx={{ mt: 3, fontSize: "1.15rem", lineHeight: 1.7, maxWidth: "34em" }}
           >
             {t("landing.hero.subtitle")}
           </Typography>
 
-          <Stack direction="row" sx={{ mt: 5, gap: 1.5, flexWrap: "wrap" }}>
-            <Button variant="contained" size="large" href="/#booking">
+          <Stack direction="row" sx={{ mt: 5, gap: 1, flexWrap: "wrap" }}>
+            <Button variant="contained" size="large" href="/#booking" sx={{ px: 3.5, py: 1.25 }}>
               {t("landing.hero.book")}
             </Button>
-            <Button size="large" href="/#how-it-works">
+            <Button size="large" href="/#how-it-works" sx={{ px: 2.5, py: 1.25 }}>
               {t("landing.hero.howItWorks")}
             </Button>
           </Stack>
 
-          <Stack
-            component="ul"
-            direction={{ xs: "column", sm: "row" }}
-            sx={{ mt: 5, p: 0, gap: { xs: 1.5, sm: 4 }, listStyle: "none" }}
+          {/* Practical details a visitor checks before booking, as a small
+              label/value list under a thin line. */}
+          <Box
+            component="dl"
+            sx={{
+              mt: { xs: 6, md: 8 },
+              mb: 0,
+              pt: 3,
+              borderTop: 1,
+              borderColor: "divider",
+              display: "grid",
+              gridTemplateColumns: { sm: "auto auto" },
+              justifyContent: "start",
+              rowGap: 3,
+              columnGap: 6,
+            }}
           >
-            {facts.map((fact) => (
-              <Stack
-                component="li"
-                key={fact.text}
-                direction="row"
-                sx={{ alignItems: "center", gap: 1, color: "text.secondary" }}
-              >
-                {fact.icon}
-                {fact.text}
-              </Stack>
+            {details.map((detail) => (
+              <div key={detail.label}>
+                <Typography component="dt" variant="body2" color="text.secondary">
+                  {detail.label}
+                </Typography>
+                <Typography component="dd" sx={{ m: 0, mt: 0.5, fontWeight: 500 }}>
+                  {detail.value}
+                </Typography>
+              </div>
             ))}
-          </Stack>
+          </Box>
         </Box>
       </Box>
     </Box>

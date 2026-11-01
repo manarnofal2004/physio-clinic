@@ -32,6 +32,13 @@ const colors = {
   },
 } as const;
 
+// Adds the stone "wash" colour to the palette, used as bgcolor: "background.wash".
+declare module "@mui/material/styles" {
+  interface TypeBackground {
+    wash: string;
+  }
+}
+
 const font = '"Tajawal", system-ui, sans-serif';
 
 export const createAppTheme = (
@@ -43,8 +50,9 @@ export const createAppTheme = (
   const heading = (fontSize: string) => ({
     fontWeight: 500,
     fontSize,
-    lineHeight: 1.15,
-    letterSpacing: "-0.01em",
+    // Arabic letters join, so they need more line height and no negative tracking.
+    lineHeight: direction === "rtl" ? 1.3 : 1.15,
+    letterSpacing: direction === "rtl" ? 0 : "-0.01em",
   });
 
   // The second argument translates MUI's own texts (e.g. "Rows per page" in tables).
@@ -56,7 +64,7 @@ export const createAppTheme = (
         primary: { main: c.primary, dark: c.primaryDark },
         secondary: { main: c.primaryDark },
         warning: { main: c.warning },
-        background: { default: c.paper, paper: c.paper },
+        background: { default: c.paper, paper: c.paper, wash: c.wash },
         text: { primary: c.text, secondary: c.textMuted },
         divider: c.line,
         action: {
