@@ -2,6 +2,7 @@
 export type ErrorCode =
   | "VALIDATION_ERROR"
   | "INVALID_JSON"
+  | "PAYLOAD_TOO_LARGE"
   | "INVALID_CREDENTIALS"
   | "UNAUTHORIZED"
   | "FORBIDDEN"

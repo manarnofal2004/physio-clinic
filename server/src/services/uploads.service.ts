@@ -1,4 +1,5 @@
 import { Readable } from "node:stream";
+import type { Response } from "express";
 import mongoose, { Types } from "mongoose";
 import type { UploadMimeType } from "../constants.js";
 import type { ReportAttachment } from "../models/report.model.js";
@@ -99,8 +100,21 @@ export function findFile(id: string): Promise<StoredFile | null> {
   return files().findOne({ _id: new Types.ObjectId(id) });
 }
 
-export function openFileStream(id: Types.ObjectId) {
-  return bucket().openDownloadStream(id);
+// Streams a stored file to the browser, shown inline (images and PDFs open in a tab).
+// Call only after checking the user may see it.
+export async function sendStoredFile(res: Response, file: StoredFile): Promise<void> {
+  const asciiName = file.filename.replace(/[^\x20-\x7e]/g, "_").replace(/"/g, "");
+  res.setHeader("Content-Type", file.metadata.mimeType);
+  res.setHeader("Content-Length", String(file.length));
+  res.setHeader(
+    "Content-Disposition",
+    `inline; filename="${asciiName}"; filename*=UTF-8''${encodeURIComponent(file.filename)}`,
+  );
+  res.setHeader("Cache-Control", "private, max-age=3600");
+
+  await new Promise<void>((resolve, reject) => {
+    bucket().openDownloadStream(file._id).on("error", reject).pipe(res).on("finish", resolve);
+  });
 }
 
 // Files to attach must exist and be unused, or already belong to this report.
