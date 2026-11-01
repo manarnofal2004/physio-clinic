@@ -50,5 +50,9 @@ export const SESSION_MINUTES = 45; // a therapist is busy 45 minutes from a sess
 export const BOOKING_DAYS_AHEAD = 30;
 export const MAX_PENDING_PER_PHONE = 2;
 
+export const BANNER_TYPES = ["announcement", "schedule_update"] as const;
+export type BannerType = (typeof BANNER_TYPES)[number];
+export const BANNER_MESSAGE_MAX = 300;
+
 export const RESERVATION_STATUSES = ["pending", "accepted", "rejected", "cancelled"] as const;
 export type ReservationStatus = (typeof RESERVATION_STATUSES)[number];

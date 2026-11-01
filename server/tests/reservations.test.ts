@@ -89,14 +89,12 @@ describe("GET /api/public/reservations/availability", () => {
 
     const res = await api.get(`/api/public/reservations/availability?date=${day}`);
     const first = res.body.data.slots[0] as { time: string; scheduledAt: string };
-    const booked = await api
-      .post("/api/public/reservations")
-      .send({
-        fullName: "Sara Odeh",
-        phone: "0597001122",
-        age: 28,
-        scheduledAt: first.scheduledAt,
-      });
+    const booked = await api.post("/api/public/reservations").send({
+      fullName: "Sara Odeh",
+      phone: "0597001122",
+      age: 28,
+      scheduledAt: first.scheduledAt,
+    });
 
     expect(first).toEqual({ time: "08:00", scheduledAt: at(day, "08:00").toISOString() });
     expect(booked.status).toBe(201);

@@ -13,8 +13,6 @@ const patientScope = z.discriminatedUnion("all", [
   z.object({ all: z.literal(false), patientIds: z.array(objectId).max(5000) }),
 ]);
 
-export type PatientScopeInput = z.infer<typeof patientScope>;
-
 const accountFields = { fullName, email, password };
 
 export const createUserBody = z.discriminatedUnion("role", [

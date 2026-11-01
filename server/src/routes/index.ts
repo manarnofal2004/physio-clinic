@@ -1,6 +1,9 @@
 import { Router } from "express";
 import { authRouter } from "./auth.routes.js";
+import { bannersRouter } from "./banners.routes.js";
+import { dashboardRouter } from "./dashboard.routes.js";
 import { healthRouter } from "./health.js";
+import { meRouter } from "./me.routes.js";
 import { patientsRouter } from "./patients.routes.js";
 import { publicRouter } from "./public.routes.js";
 import { reportsRouter } from "./reports.routes.js";
@@ -14,10 +17,13 @@ export const apiRouter = Router();
 
 apiRouter.use("/health", healthRouter);
 apiRouter.use("/auth", authRouter);
+apiRouter.use("/me", meRouter);
 apiRouter.use("/users", usersRouter);
 apiRouter.use("/therapists", therapistsRouter);
 apiRouter.use("/patients", patientsRouter);
 apiRouter.use("/reports", reportsRouter);
 apiRouter.use("/uploads", uploadsRouter);
 apiRouter.use("/reservations", reservationsRouter);
+apiRouter.use("/banners", bannersRouter);
+apiRouter.use("/dashboard", dashboardRouter);
 apiRouter.use("/public", publicRouter);
