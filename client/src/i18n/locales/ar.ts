@@ -43,6 +43,7 @@ export const ar: Translation = {
       howItWorks: "كيف نعمل",
       hours: "من الأحد إلى الخميس، 8:00 حتى 19:00",
       session: "مدة الجلسة 45 دقيقة",
+      imageAlt: "أخصائي علاج طبيعي يساعد مريضاً في تمرين للركبة",
     },
     services: {
       title: "ماذا نعالج",

@@ -3,6 +3,9 @@ import { CalendarDays, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { LandingSection } from "./LandingSection";
 
+// Uneven corner radii give the bubble its organic, hand-drawn outline.
+const BUBBLE = "58% 42% 50% 50% / 44% 50% 50% 56%";
+
 export const HeroSection = () => {
   const { t } = useTranslation();
 
@@ -13,7 +16,7 @@ export const HeroSection = () => {
 
   return (
     <LandingSection id="top">
-      <Stack direction="row" sx={{ alignItems: "center", gap: 6 }}>
+      <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between", gap: 6 }}>
         <Box sx={{ flex: 1, maxWidth: 680 }}>
           <Typography
             variant="h1"
@@ -56,13 +59,41 @@ export const HeroSection = () => {
           </Stack>
         </Box>
 
-        {/* The logo mark as a quiet illustration; hidden on small screens. */}
+        {/* The illustration sits in a soft "bubble": an organic rounded shape on a
+            pale olive layer that peeks out behind it. Hidden on small screens. */}
         <Box
-          component="img"
-          src="/logo-mark.png"
-          alt=""
-          sx={{ display: { xs: "none", md: "block" }, width: 300, opacity: 0.9 }}
-        />
+          sx={{
+            display: { xs: "none", md: "block" },
+            flexShrink: 0,
+            width: { md: 380, lg: 440 },
+            position: "relative",
+          }}
+        >
+          <Box
+            aria-hidden
+            sx={{
+              position: "absolute",
+              inset: 0,
+              transform: "translate(-18px, 14px) rotate(-4deg)",
+              bgcolor: "action.selected",
+              borderRadius: BUBBLE,
+            }}
+          />
+          <Box
+            component="img"
+            src="/images/hero.webp"
+            alt={t("landing.hero.imageAlt")}
+            width={960}
+            height={1200}
+            sx={{
+              position: "relative",
+              display: "block",
+              width: "100%",
+              height: "auto",
+              borderRadius: BUBBLE,
+            }}
+          />
+        </Box>
       </Stack>
     </LandingSection>
   );
