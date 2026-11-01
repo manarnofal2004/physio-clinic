@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type MouseEvent } from "react";
 import {
   AppBar,
   Box,
@@ -17,7 +17,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 import { Menu as MenuIcon, X as CloseIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import type { Translation } from "@/i18n/locales/en";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { NAVBAR_HEIGHT } from "./navbarHeight";
@@ -39,6 +39,17 @@ export const PublicNavbar = () => {
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"), { noSsr: true });
   const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+
+  // On the home page the logo scrolls back to the top (and clears "#services" etc.);
+  // on other pages it is a normal link home.
+  const backToTop = (event: MouseEvent) => {
+    setMenuOpen(false);
+    if (location.pathname !== "/") return;
+    event.preventDefault();
+    window.history.replaceState(null, "", "/");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const brand = (
     <Link
@@ -46,6 +57,7 @@ export const PublicNavbar = () => {
       to="/"
       underline="none"
       color="inherit"
+      onClick={backToTop}
       sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
     >
       <Box component="img" src="/logo-mark.png" alt="" sx={{ width: 40, height: 40 }} />

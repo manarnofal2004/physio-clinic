@@ -19,6 +19,7 @@ const colors = {
     textMuted: "#5d6656",
     line: "#d9ddd2",
     warning: "#9a6b1f", // pending and waiting states
+    panel: "#5f7a45", // softer olive for large coloured panels (services)
   },
   dark: {
     primary: "#a9c27a",
@@ -30,6 +31,7 @@ const colors = {
     textMuted: "#a3ad98",
     line: "#2c3426",
     warning: "#e0b45f",
+    panel: "#2e3a22",
   },
 } as const;
 
@@ -37,6 +39,7 @@ const colors = {
 declare module "@mui/material/styles" {
   interface TypeBackground {
     wash: string;
+    panel: string;
   }
 }
 
@@ -66,7 +69,12 @@ export const createAppTheme = (
         primary: { main: c.primary, dark: c.primaryDark },
         secondary: { main: c.primaryDark },
         warning: { main: c.warning },
-        background: { default: mode === "light" ? c.wash : c.paper, paper: c.paper, wash: c.wash },
+        background: {
+          default: mode === "light" ? c.wash : c.paper,
+          paper: c.paper,
+          wash: c.wash,
+          panel: c.panel,
+        },
         text: { primary: c.text, secondary: c.textMuted },
         divider: c.line,
         action: {

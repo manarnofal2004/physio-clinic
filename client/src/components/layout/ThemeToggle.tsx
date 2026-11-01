@@ -1,5 +1,5 @@
 import { IconButton, Tooltip } from "@mui/material";
-import { Moon, Sun } from "lucide-react";
+import { SunMoon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useColorMode } from "@/theme/colorModeContext";
 
@@ -11,7 +11,7 @@ export const ThemeToggle = () => {
   return (
     <Tooltip title={label}>
       <IconButton color="inherit" onClick={toggleColorMode} aria-label={label}>
-        {mode === "dark" ? <Sun /> : <Moon />}
+        <SunMoon />
       </IconButton>
     </Tooltip>
   );

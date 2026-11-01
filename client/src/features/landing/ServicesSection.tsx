@@ -5,6 +5,7 @@ import { useRef, useState, type KeyboardEvent } from "react";
 import { useTranslation } from "react-i18next";
 import type { Translation } from "@/i18n/locales/en";
 import { LandingSection } from "./LandingSection";
+import { WaveClipPath } from "./wave";
 
 type ServiceKey = keyof Translation["landing"]["services"];
 type ServiceId = "backNeck" | "sports" | "surgery" | "joints" | "neuro" | "manual";
@@ -35,7 +36,7 @@ export const ServicesSection = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const isRtl = theme.direction === "rtl";
-  const panelColor = theme.palette.primary.dark;
+  const panelColor = theme.palette.background.panel;
   const hoverColor = theme.palette.action.selected;
   const [selected, setSelected] = useState(0);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -86,7 +87,9 @@ export const ServicesSection = () => {
         sx={{
           display: "flex",
           gap: 0.5,
-          px: { xs: 3, md: 6 }, // keeps the first tab's curve off the panel's round corner
+          // Leaves a straight stretch between the panel's round corner and the first
+          // tab's curve, so the two curves never touch.
+          px: { xs: 4, md: 9 },
           overflowX: "auto",
           scrollbarWidth: "none",
         }}
@@ -108,9 +111,9 @@ export const ServicesSection = () => {
               sx={{
                 position: "relative",
                 flexShrink: 0,
-                px: { xs: 2.5, md: 2.75 },
+                px: { xs: 2.5, md: 2.25 },
                 py: 1.75,
-                fontSize: "1rem",
+                fontSize: "0.98rem",
                 fontFamily: "inherit",
                 borderRadius: `${RADIUS}px ${RADIUS}px 0 0`,
                 color: isSelected ? "common.white" : "text.secondary",
@@ -146,14 +149,23 @@ export const ServicesSection = () => {
           bgcolor: panelColor,
           color: "common.white",
           borderRadius: 3, // 24px: small enough that the tab shoulders sit on the straight edge
-          p: { xs: 3, md: 7 },
-          display: "grid",
-          gridTemplateColumns: { md: "1fr 1fr" },
-          gap: { xs: 4, md: 8 },
-          alignItems: "center",
+          position: "relative",
+          overflow: "hidden", // the photo takes the panel's rounded corners
+          minHeight: { md: 440 },
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <div>
+        <Box
+          sx={{
+            p: { xs: 3, md: 5 },
+            width: { md: "48%" },
+            minHeight: { md: 440 },
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
           <Typography variant="h3" component="h3">
             {t(key(service.id))}
           </Typography>
@@ -181,6 +193,7 @@ export const ServicesSection = () => {
             href="/#booking"
             sx={{
               mt: 5,
+              alignSelf: "flex-start",
               px: 3.5,
               bgcolor: "background.wash",
               color: "primary.dark",
@@ -189,24 +202,39 @@ export const ServicesSection = () => {
           >
             {t("landing.services.book")}
           </Button>
-        </div>
+        </Box>
 
+        {/* The photo fills the far half of the panel up to its edges, with the same
+            wave as the hero on the side facing the text. Phones show it full width
+            under the text instead. */}
         <Box
-          key={service.id}
-          component="img"
-          src={service.image}
-          alt=""
           sx={{
-            display: "block",
-            width: "100%",
-            aspectRatio: "4 / 3",
-            objectFit: "cover",
-            borderRadius: 4,
-            animation: "serviceFade 300ms ease-out",
-            "@keyframes serviceFade": { from: { opacity: 0 }, to: { opacity: 1 } },
-            "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+            position: { md: "absolute" },
+            top: 0,
+            bottom: 0,
+            insetInlineEnd: 0,
+            width: { md: "52%" },
+            height: { xs: 240, sm: 320, md: "auto" },
           }}
-        />
+        >
+          <WaveClipPath id="service-wave" isRtl={isRtl} />
+          <Box
+            key={service.id}
+            component="img"
+            src={service.image}
+            alt=""
+            sx={{
+              display: "block",
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              clipPath: { md: "url(#service-wave)" },
+              animation: "serviceFade 300ms ease-out",
+              "@keyframes serviceFade": { from: { opacity: 0 }, to: { opacity: 1 } },
+              "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+            }}
+          />
+        </Box>
       </Box>
     </LandingSection>
   );

@@ -1,18 +1,14 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
+import { WaveClipPath } from "./wave";
 
-// The photo fills the far half of the hero. Its edge facing the text is a soft
-// S-shaped wave, drawn as an SVG clip path in 0..1 units so it scales with the box.
-// Arabic needs the mirror image (wave on the other side), so x becomes 1 - x.
-const WAVE_LTR = "M0.1,0 C0.02,0.16 0.01,0.36 0.07,0.52 C0.13,0.68 0.11,0.86 0.04,1 L1,1 L1,0 Z";
-const WAVE_RTL = "M0.9,0 C0.98,0.16 0.99,0.36 0.93,0.52 C0.87,0.68 0.89,0.86 0.96,1 L0,1 L0,0 Z";
+// The photo fills the far half of the hero, with a wave on the edge facing the text.
 
 export const HeroSection = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const isRtl = theme.direction === "rtl";
-  const wave = isRtl ? WAVE_RTL : WAVE_LTR;
 
   const details = [
     { label: t("landing.hero.hoursLabel"), value: t("landing.hero.hours") },
@@ -25,11 +21,7 @@ export const HeroSection = () => {
       id="top"
       sx={{ position: "relative", overflow: "hidden", bgcolor: "background.wash" }}
     >
-      <svg width="0" height="0" aria-hidden style={{ position: "absolute" }}>
-        <clipPath id="hero-wave" clipPathUnits="objectBoundingBox">
-          <path d={wave} />
-        </clipPath>
-      </svg>
+      <WaveClipPath id="hero-wave" isRtl={isRtl} />
 
       {/* Photo with a pale olive band following the wave just outside it. */}
       <Box
