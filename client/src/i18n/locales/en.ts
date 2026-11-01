@@ -50,7 +50,6 @@ export const en = {
     },
     services: {
       title: "What we treat",
-      intro: "Every plan starts with an assessment and is built around your goals.",
       backNeck: "Back and neck pain",
       backNeckText: "Posture, disc problems and long-standing pain.",
       sports: "Sports injuries",

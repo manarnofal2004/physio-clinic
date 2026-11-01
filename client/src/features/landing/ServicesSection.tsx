@@ -74,12 +74,7 @@ export const ServicesSection = () => {
   };
 
   return (
-    <LandingSection
-      id="services"
-      title={t("landing.services.title")}
-      intro={t("landing.services.intro")}
-      compact
-    >
+    <LandingSection id="services" title={t("landing.services.title")} compact>
       <Box
         role="tablist"
         aria-label={t("landing.services.title")}
@@ -166,33 +161,57 @@ export const ServicesSection = () => {
             justifyContent: "center",
           }}
         >
-          <Typography variant="h3" component="h3">
+          <Typography variant="h3" component="h3" sx={{ fontSize: { xs: "1.9rem", md: "2.3rem" } }}>
             {t(key(service.id))}
           </Typography>
-          <Typography sx={{ mt: 2, fontSize: "1.1rem", lineHeight: 1.7, opacity: 0.9 }}>
+          <Typography
+            sx={{ mt: 1.5, fontSize: "1.1rem", lineHeight: 1.7, opacity: 0.85, maxWidth: "30em" }}
+          >
             {t(key(service.id, "Text"))}
           </Typography>
-          <Box
-            component="ul"
-            sx={{ mt: 4, mb: 0, p: 0, listStyle: "none", display: "grid", gap: 2 }}
-          >
+
+          {/* What this service covers: a short list split by hairlines, each point
+              marked with a small outlined check. */}
+          <Box component="ul" sx={{ mt: 3.5, mb: 0, p: 0, listStyle: "none", maxWidth: 440 }}>
             {(["1", "2", "3"] as const).map((n) => (
               <Box
                 component="li"
                 key={n}
-                sx={{ display: "flex", alignItems: "center", gap: 1.5, fontSize: "1.05rem" }}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1.75,
+                  py: 1.5,
+                  fontSize: "1.05rem",
+                  borderTop: "1px solid rgba(255, 255, 255, 0.18)",
+                  "&:last-of-type": { borderBottom: "1px solid rgba(255, 255, 255, 0.18)" },
+                }}
               >
-                <Check size={20} color="currentColor" />
+                <Box
+                  aria-hidden
+                  sx={{
+                    flexShrink: 0,
+                    width: 26,
+                    height: 26,
+                    borderRadius: "50%",
+                    border: "1px solid rgba(255, 255, 255, 0.55)",
+                    display: "grid",
+                    placeItems: "center",
+                  }}
+                >
+                  <Check size={14} strokeWidth={2.25} color="currentColor" />
+                </Box>
                 {t(key(service.id, n))}
               </Box>
             ))}
           </Box>
+
           <Button
             variant="contained"
             size="large"
             href="/#booking"
             sx={{
-              mt: 5,
+              mt: 4,
               alignSelf: "flex-start",
               px: 3.5,
               bgcolor: "background.wash",
@@ -209,21 +228,36 @@ export const ServicesSection = () => {
             under the text instead. */}
         <Box
           sx={{
-            position: { md: "absolute" },
             top: 0,
             bottom: 0,
             insetInlineEnd: 0,
+            position: { xs: "relative", md: "absolute" },
             width: { md: "52%" },
             height: { xs: 240, sm: 320, md: "auto" },
           }}
         >
           <WaveClipPath id="service-wave" isRtl={isRtl} />
+          {/* A lighter band following the wave just outside the photo, as in the hero. */}
+          <Box
+            aria-hidden
+            sx={{
+              display: { xs: "none", md: "block" },
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              insetInlineEnd: 0,
+              width: "calc(100% + 26px)",
+              bgcolor: "rgba(255, 255, 255, 0.22)",
+              clipPath: "url(#service-wave)",
+            }}
+          />
           <Box
             key={service.id}
             component="img"
             src={service.image}
             alt=""
             sx={{
+              position: "relative",
               display: "block",
               width: "100%",
               height: "100%",

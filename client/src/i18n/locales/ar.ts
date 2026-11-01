@@ -50,7 +50,6 @@ export const ar: Translation = {
     },
     services: {
       title: "ماذا نعالج",
-      intro: "كل خطة علاج تبدأ بتقييم وتُبنى حول أهدافك.",
       backNeck: "آلام الظهر والرقبة",
       backNeckText: "مشاكل القوام والديسك والآلام المزمنة.",
       sports: "إصابات الرياضة",
