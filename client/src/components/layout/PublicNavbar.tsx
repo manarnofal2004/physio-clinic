@@ -60,7 +60,7 @@ export const PublicNavbar = () => {
       onClick={backToTop}
       sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
     >
-      <Box component="img" src="/logo-mark.svg" alt="" sx={{ width: 40, height: 40 }} />
+      <Box component="img" src="/logo-mark.svg" alt="" sx={{ width: 34, height: 42 }} />
       <Typography
         component="span"
         sx={{ fontSize: "1.25rem", fontWeight: 700, color: "primary.main" }}
