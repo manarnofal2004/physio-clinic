@@ -13,7 +13,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { MenuIcon } from "@/components/icons/icons";
+import { Menu as MenuIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { NavLink, Outlet } from "react-router-dom";
 import { LanguageSwitcher } from "./LanguageSwitcher";

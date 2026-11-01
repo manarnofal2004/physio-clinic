@@ -15,7 +15,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { CloseIcon, MenuIcon } from "@/components/icons/icons";
+import { Menu as MenuIcon, X as CloseIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import type { Translation } from "@/i18n/locales/en";

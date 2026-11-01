@@ -76,10 +76,6 @@ export const createAppTheme = (
         button: { textTransform: "none", fontWeight: 400, letterSpacing: 0, fontSize: "1rem" },
       },
       components: {
-        // Icons (components/icons): the accent part of each icon is honey.
-        MuiCssBaseline: {
-          styleOverrides: { ".sanad-icon .icon-accent": { color: c.warning } },
-        },
         MuiButton: {
           defaultProps: { disableElevation: true },
           styleOverrides: { root: { paddingInline: 16 } },

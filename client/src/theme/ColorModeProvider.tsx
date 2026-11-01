@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { CssBaseline, ThemeProvider, type PaletteMode } from "@mui/material";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
+import { LucideProvider } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { prefixer } from "stylis";
 import rtlPlugin from "stylis-plugin-rtl";
@@ -52,7 +53,10 @@ export const ColorModeProvider = ({ children }: { children: ReactNode }) => {
       <CacheProvider value={direction === "rtl" ? rtlCache : ltrCache}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          {children}
+          {/* Every Lucide icon in the app: thin honey outline, one size. */}
+          <LucideProvider size={22} strokeWidth={1.75} color={theme.palette.warning.main}>
+            {children}
+          </LucideProvider>
         </ThemeProvider>
       </CacheProvider>
     </ColorModeContext.Provider>
