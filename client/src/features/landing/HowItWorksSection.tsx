@@ -17,9 +17,9 @@ const steps: { title: StepKey; text: StepKey; top: number; x: number; side: "sta
 
 // The spine drawing (258 x 1400) shrinks on short screens so the section fits one
 // screen; its width follows its height.
-const SPINE_HEIGHT = "min(600px, calc(100svh - 300px))";
+const SPINE_HEIGHT = "min(780px, calc(100svh - 215px))";
 const SPINE_WIDTH = `calc(${SPINE_HEIGHT} * 258 / 1400)`;
-const LINE = 64; // length of the line from the spine to the text
+const LINE = 90; // length of the line from the spine to the text
 
 // The three steps hang off a drawn spine in the middle of the section, alternating
 // sides. On phones the spine is hidden and the steps stack with a thin line.
@@ -33,14 +33,14 @@ export const HowItWorksSection = () => {
     <Box
       aria-hidden
       sx={{
-        width: 40,
-        height: 40,
+        width: 54,
+        height: 54,
         borderRadius: "50%",
         bgcolor: "warning.main",
         color: "common.white",
         display: "grid",
         placeItems: "center",
-        fontSize: "1rem",
+        fontSize: "1.2rem",
         flexShrink: 0,
         boxShadow: (th) => `0 0 0 5px ${th.palette.background.default}`,
       }}
@@ -54,13 +54,13 @@ export const HowItWorksSection = () => {
       <Typography
         variant="h4"
         component="h3"
-        sx={{ fontSize: { xs: "1.5rem", md: "1.7rem" }, lineHeight: 1.2 }}
+        sx={{ fontSize: { xs: "1.7rem", md: "2.5rem" }, lineHeight: 1.15 }}
       >
         {t(`landing.how.${step.title}`)}
       </Typography>
       <Typography
         color="text.secondary"
-        sx={{ mt: 1.25, fontSize: "1rem", lineHeight: 1.75, maxWidth: 330 }}
+        sx={{ mt: 1.5, fontSize: { xs: "1.05rem", md: "1.2rem" }, lineHeight: 1.7, maxWidth: 420 }}
       >
         {t(`landing.how.${step.text}`)}
       </Typography>
@@ -111,15 +111,15 @@ export const HowItWorksSection = () => {
               sx={{
                 position: "absolute",
                 top: `${step.top}%`,
-                transform: "translateY(-20px)",
+                transform: "translateY(-27px)",
                 display: "flex",
                 alignItems: "flex-start",
                 flexDirection: atStart ? "row-reverse" : "row",
                 // The marker's centre sits on the spine; the text runs away from it.
                 ...(atStart
-                  ? { insetInlineEnd: `calc(50% - ${offset} - 20px)` }
-                  : { insetInlineStart: `calc(50% + ${offset} - 20px)` }),
-                width: "calc(50% - 20px)",
+                  ? { insetInlineEnd: `calc(50% - ${offset} - 27px)` }
+                  : { insetInlineStart: `calc(50% + ${offset} - 27px)` }),
+                width: "calc(50% - 27px)",
               }}
             >
               {marker(index)}
@@ -127,13 +127,13 @@ export const HowItWorksSection = () => {
                 aria-hidden
                 sx={{
                   width: LINE,
-                  mt: "19px",
+                  mt: "26px",
                   borderTop: 1.5,
                   borderColor: "warning.main",
                   flexShrink: 0,
                 }}
               />
-              <Box sx={{ px: 2, mt: "4px", maxWidth: 380 }}>{stepText(step)}</Box>
+              <Box sx={{ px: 2.5, mt: "2px", maxWidth: 480 }}>{stepText(step)}</Box>
             </Box>
           );
         })}
