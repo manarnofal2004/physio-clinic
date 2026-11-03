@@ -21,7 +21,7 @@ const photos: { key: PhotoKey; src: string }[] = [
 
 // Height of the large photo on wide screens: the screen minus the heading above and
 // the caption under it.
-const FEATURE_HEIGHT = "calc(100svh - 276px)";
+const FEATURE_HEIGHT = "calc(100svh - 286px)";
 
 // One large photo with its name and a line about the place, and the other photos as
 // a list beside it: picking one (or the arrows) shows it large. The photos keep
@@ -53,9 +53,8 @@ export const GallerySection = () => {
           gap: { xs: 2.5, md: 4 },
         }}
       >
-        {/* The large photo and its caption. The frame keeps the photos' 3:2 shape, so
-            nothing is cut off; it is as tall as the screen allows. */}
-        <Box sx={{ width: { md: `min(100%, calc(${FEATURE_HEIGHT} * 1.5))` } }}>
+        {/* The large photo and its caption, as tall as the screen allows. */}
+        <Box>
           <Box
             key={photo.key}
             component="img"
@@ -64,7 +63,8 @@ export const GallerySection = () => {
             sx={{
               display: "block",
               width: "100%",
-              aspectRatio: "3 / 2",
+              height: { xs: "auto", md: FEATURE_HEIGHT },
+              aspectRatio: { xs: "3 / 2", md: "auto" },
               objectFit: "cover",
               borderRadius: 4,
               animation: "galleryFade 350ms ease-out",
@@ -152,8 +152,11 @@ export const GallerySection = () => {
                   alt=""
                   loading="lazy"
                   sx={{
-                    width: { xs: "100%", md: 120 },
+                    // On wide screens the five thumbnails share the photo's height.
+                    width: { xs: "100%", md: "auto" },
+                    height: { md: `min(84px, calc((${FEATURE_HEIGHT} + 40px) / 5 - 30px))` },
                     aspectRatio: "3 / 2",
+                    flexShrink: 0,
                     objectFit: "cover",
                     borderRadius: 2,
                     opacity: isActive ? 1 : 0.8,
