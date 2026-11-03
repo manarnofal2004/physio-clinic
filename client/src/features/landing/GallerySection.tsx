@@ -9,18 +9,18 @@ import { LandingSection } from "./LandingSection";
 type PhotoKey = "reception" | "treatment" | "handsOn" | "exercise" | "waiting";
 type GalleryKey = keyof Translation["landing"]["gallery"];
 
-// `focus` keeps the important part of tall photos in view when they are shown wide.
-const photos: { key: PhotoKey; src: string; focus?: string }[] = [
+// All photos are wide (3:2), so the large frame shows each one whole.
+const photos: { key: PhotoKey; src: string }[] = [
   { key: "reception", src: "/images/gallery/reception.webp" },
   { key: "treatment", src: "/images/gallery/treatment.webp" },
-  { key: "handsOn", src: "/images/gallery/hands-on.webp", focus: "50% 22%" },
+  { key: "handsOn", src: "/images/gallery/hands-on.webp" },
   { key: "exercise", src: "/images/gallery/exercise.webp" },
   { key: "waiting", src: "/images/gallery/waiting.webp" },
 ];
 
 // Height of the large photo on wide screens: the screen minus the heading above and
 // the caption under it.
-const FEATURE_HEIGHT = "calc(100svh - 330px)";
+const FEATURE_HEIGHT = "calc(100svh - 300px)";
 
 // One large photo with its name and a line about the place, and the other photos as
 // a list beside it: picking one (or the arrows) shows it large. The photos keep
@@ -64,7 +64,6 @@ export const GallerySection = () => {
               width: "100%",
               height: { xs: 300, sm: 420, md: FEATURE_HEIGHT },
               objectFit: "cover",
-              objectPosition: photo.focus ?? "50% 50%",
               borderRadius: 4,
               animation: "galleryFade 350ms ease-out",
               "@keyframes galleryFade": { from: { opacity: 0.4 }, to: { opacity: 1 } },
