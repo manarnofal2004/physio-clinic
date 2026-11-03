@@ -1,24 +1,27 @@
 import type { ReactNode } from "react";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import PeopleIcon from "@mui/icons-material/People";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import EventIcon from "@mui/icons-material/Event";
-import CampaignIcon from "@mui/icons-material/Campaign";
-import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
+import type { Translation } from "@/i18n/locales/en";
+import {
+  CalendarDays,
+  ClipboardList,
+  LayoutDashboard,
+  Megaphone,
+  Stethoscope,
+  UserCog,
+  Users,
+} from "lucide-react";
 
 export interface AdminNavItem {
-  label: string;
+  labelKey: keyof Translation["admin"]; // text comes from the "admin" translations
   path: string;
   icon: ReactNode;
 }
 
 export const adminNavItems: AdminNavItem[] = [
-  { label: "Dashboard", path: "/admin", icon: <DashboardIcon /> },
-  { label: "Patients", path: "/admin/patients", icon: <PeopleIcon /> },
-  { label: "Reports", path: "/admin/reports", icon: <AssignmentIcon /> },
-  { label: "Reservations", path: "/admin/reservations", icon: <EventIcon /> },
-  { label: "Therapists", path: "/admin/therapists", icon: <MedicalServicesIcon /> },
-  { label: "Users", path: "/admin/users", icon: <ManageAccountsIcon /> },
-  { label: "Banners", path: "/admin/banners", icon: <CampaignIcon /> },
+  { labelKey: "dashboard", path: "/admin", icon: <LayoutDashboard /> },
+  { labelKey: "patients", path: "/admin/patients", icon: <Users /> },
+  { labelKey: "reports", path: "/admin/reports", icon: <ClipboardList /> },
+  { labelKey: "reservations", path: "/admin/reservations", icon: <CalendarDays /> },
+  { labelKey: "therapists", path: "/admin/therapists", icon: <Stethoscope /> },
+  { labelKey: "users", path: "/admin/users", icon: <UserCog /> },
+  { labelKey: "banners", path: "/admin/banners", icon: <Megaphone /> },
 ];

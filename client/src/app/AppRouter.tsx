@@ -1,16 +1,14 @@
-import { Typography } from "@mui/material";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { AdminLayout } from "@/components/layout/AdminLayout";
 import { PublicLayout } from "@/components/layout/PublicLayout";
+import { LandingPage } from "@/features/landing/LandingPage";
 import { NotFoundPage } from "@/routes/NotFoundPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <PublicLayout />,
-    children: [
-      { index: true, element: <Typography variant="h5">Physiotherapy Clinic</Typography> },
-    ],
+    children: [{ index: true, element: <LandingPage /> }],
   },
   { path: "/admin", element: <AdminLayout />, children: [] },
   { path: "*", element: <NotFoundPage /> },

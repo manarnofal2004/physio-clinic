@@ -1,16 +1,17 @@
 import { IconButton, Tooltip } from "@mui/material";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import LightModeIcon from "@mui/icons-material/LightMode";
+import { SunMoon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useColorMode } from "@/theme/colorModeContext";
 
 export const ThemeToggle = () => {
+  const { t } = useTranslation();
   const { mode, toggleColorMode } = useColorMode();
-  const label = mode === "dark" ? "Switch to light mode" : "Switch to dark mode";
+  const label = mode === "dark" ? t("settings.lightMode") : t("settings.darkMode");
 
   return (
     <Tooltip title={label}>
       <IconButton color="inherit" onClick={toggleColorMode} aria-label={label}>
-        {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
+        <SunMoon />
       </IconButton>
     </Tooltip>
   );

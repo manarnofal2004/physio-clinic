@@ -13,14 +13,17 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import MenuIcon from "@mui/icons-material/Menu";
+import { Menu as MenuIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { NavLink, Outlet } from "react-router-dom";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 import { adminNavItems } from "./adminNavItems";
 
 const DRAWER_WIDTH = 260;
 
 export const AdminLayout = () => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -31,10 +34,10 @@ export const AdminLayout = () => {
     <Box>
       <Toolbar>
         <Typography variant="h6" noWrap>
-          Physio Clinic
+          {t("brand.name")}
         </Typography>
       </Toolbar>
-      <List component="nav" aria-label="Admin navigation">
+      <List component="nav" aria-label={t("admin.navigation")}>
         {adminNavItems.map((item) => (
           <ListItemButton
             key={item.path}
@@ -45,7 +48,7 @@ export const AdminLayout = () => {
             sx={{ "&.active": { bgcolor: "action.selected", color: "primary.main" } }}
           >
             <ListItemIcon sx={{ color: "inherit" }}>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.label} />
+            <ListItemText primary={t(`admin.${item.labelKey}`)} />
           </ListItemButton>
         ))}
       </List>
@@ -57,7 +60,7 @@ export const AdminLayout = () => {
       <Box component="aside" sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { md: 0 } }}>
         <Drawer
           variant={isDesktop ? "permanent" : "temporary"}
-          anchor={theme.direction === "rtl" ? "right" : "left"}
+          anchor="left"
           open={isDesktop || mobileOpen}
           onClose={closeMobile}
           ModalProps={{ keepMounted: true }}
@@ -74,12 +77,13 @@ export const AdminLayout = () => {
               <IconButton
                 edge="start"
                 onClick={() => setMobileOpen(true)}
-                aria-label="Open navigation menu"
+                aria-label={t("nav.openMenu")}
               >
                 <MenuIcon />
               </IconButton>
             )}
             <Box sx={{ flexGrow: 1 }} />
+            <LanguageSwitcher />
             <ThemeToggle />
           </Toolbar>
         </AppBar>

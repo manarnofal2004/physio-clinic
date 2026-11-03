@@ -1,0 +1,192 @@
+import { useState, type MouseEvent } from "react";
+import {
+  AppBar,
+  Box,
+  Button,
+  Drawer,
+  IconButton,
+  Link,
+  List,
+  ListItemButton,
+  ListItemText,
+  Stack,
+  Toolbar,
+  useMediaQuery,
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import { Menu as MenuIcon, X as CloseIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Link as RouterLink, useLocation } from "react-router-dom";
+import type { Translation } from "@/i18n/locales/en";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { NAVBAR_HEIGHT } from "./navbarHeight";
+import { useColorMode } from "@/theme/colorModeContext";
+import { ThemeToggle } from "./ThemeToggle";
+import { useActiveSection } from "./useActiveSection";
+
+// Sections of the landing page (6.8 and 6.9 give them these ids).
+const sections: { id: string; labelKey: keyof Translation["nav"] }[] = [
+  { id: "services", labelKey: "services" },
+  { id: "how-it-works", labelKey: "howItWorks" },
+  { id: "gallery", labelKey: "gallery" },
+  { id: "faq", labelKey: "faq" },
+  { id: "contact", labelKey: "contact" },
+];
+
+const sectionIds = sections.map((section) => section.id);
+
+const BOOKING_ID = "booking";
+
+export const PublicNavbar = () => {
+  const { t } = useTranslation();
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up("md"), { noSsr: true });
+  const [menuOpen, setMenuOpen] = useState(false);
+  const { mode } = useColorMode();
+  const active = useActiveSection(sectionIds);
+  const location = useLocation();
+
+  // On the home page the logo scrolls back to the top (and clears "#services" etc.);
+  // on other pages it is a normal link home.
+  const backToTop = (event: MouseEvent) => {
+    setMenuOpen(false);
+    if (location.pathname !== "/") return;
+    event.preventDefault();
+    window.history.replaceState(null, "", "/");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const brand = (
+    <Link
+      component={RouterLink}
+      to="/"
+      underline="none"
+      color="inherit"
+      onClick={backToTop}
+      sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+    >
+      {/* The full logo (mark, Arabic name and "SANAD"); dark mode uses a copy whose
+          deep olive parts are light olive, so it stays readable on the dark bar. */}
+      <Box
+        component="img"
+        src={mode === "dark" ? "/logo-full-dark.png" : "/logo-full.png"}
+        alt={t("brand.name")}
+        sx={{ height: 46, width: "auto", display: "block" }}
+      />
+    </Link>
+  );
+
+  const bookButton = (
+    <Button variant="contained" href={`/#${BOOKING_ID}`} onClick={() => setMenuOpen(false)}>
+      {t("nav.book")}
+    </Button>
+  );
+
+  const loginButton = (
+    <Button component={RouterLink} to="/login" color="inherit" onClick={() => setMenuOpen(false)}>
+      {t("nav.logIn")}
+    </Button>
+  );
+
+  return (
+    <AppBar
+      position="sticky"
+      color="inherit"
+      sx={{ borderBottom: 1, borderColor: "divider", bgcolor: "background.default" }}
+    >
+      <Toolbar sx={{ gap: 3, px: { md: 4 }, minHeight: NAVBAR_HEIGHT }}>
+        {brand}
+
+        {isDesktop && (
+          <Stack
+            component="nav"
+            aria-label={t("nav.sections")}
+            direction="row"
+            spacing={3}
+            sx={{ marginInlineStart: 3 }}
+          >
+            {sections.map((section) => (
+              <Link
+                key={section.id}
+                href={`/#${section.id}`}
+                underline="none"
+                aria-current={section.id === active ? "location" : undefined}
+                sx={{
+                  position: "relative",
+                  py: 0.5,
+                  color: "text.secondary",
+                  transition: "color 150ms",
+                  "&:hover": { color: "primary.main" },
+                  // The current section: olive text with a short honey line under it.
+                  "&::after": {
+                    content: '""',
+                    position: "absolute",
+                    insetInline: 0,
+                    bottom: -2,
+                    height: 2,
+                    borderRadius: 1,
+                    bgcolor: "warning.main",
+                    transform: "scaleX(0)",
+                    transition: "transform 200ms ease-out",
+                  },
+                  "&[aria-current]": { color: "primary.main", fontWeight: 700 },
+                  "&[aria-current]::after": { transform: "scaleX(1)" },
+                }}
+              >
+                {t(`nav.${section.labelKey}`)}
+              </Link>
+            ))}
+          </Stack>
+        )}
+
+        <Stack direction="row" spacing={1} sx={{ alignItems: "center", marginInlineStart: "auto" }}>
+          <LanguageSwitcher />
+          <ThemeToggle />
+          {isDesktop && loginButton}
+          {isDesktop && bookButton}
+          {!isDesktop && (
+            <IconButton edge="end" onClick={() => setMenuOpen(true)} aria-label={t("nav.openMenu")}>
+              <MenuIcon />
+            </IconButton>
+          )}
+        </Stack>
+      </Toolbar>
+
+      {/* Mobile: the same links and actions in a side panel. */}
+      <Drawer
+        anchor="right"
+        open={!isDesktop && menuOpen}
+        onClose={() => setMenuOpen(false)}
+        slotProps={{ paper: { sx: { width: 280, p: 2 } } }}
+      >
+        <Stack
+          direction="row"
+          sx={{ alignItems: "center", justifyContent: "space-between", mb: 1 }}
+        >
+          {brand}
+          <IconButton onClick={() => setMenuOpen(false)} aria-label={t("nav.closeMenu")}>
+            <CloseIcon />
+          </IconButton>
+        </Stack>
+        <List component="nav" aria-label={t("nav.sections")}>
+          {sections.map((section) => (
+            <ListItemButton
+              key={section.id}
+              component="a"
+              href={`/#${section.id}`}
+              selected={section.id === active}
+              aria-current={section.id === active ? "location" : undefined}
+              onClick={() => setMenuOpen(false)}
+            >
+              <ListItemText primary={t(`nav.${section.labelKey}`)} />
+            </ListItemButton>
+          ))}
+        </List>
+        <Stack spacing={1} sx={{ mt: 2 }}>
+          {bookButton}
+          {loginButton}
+        </Stack>
+      </Drawer>
+    </AppBar>
+  );
+};
