@@ -6,10 +6,10 @@ import {
   Megaphone,
   Users,
 } from "lucide-react";
-import type { AdminNavItem } from "@/components/layout/adminNavItems";
+import type { PanelNavItem } from "@/components/layout/panelNavItem";
 
 // A page without a privilege is open to every therapist.
-export const therapistNavItems: AdminNavItem[] = [
+export const therapistNavItems: PanelNavItem[] = [
   { labelKey: "home", path: "/therapist", icon: <House /> },
   {
     labelKey: "dashboard",

@@ -21,8 +21,8 @@ export const ar: Translation = {
     openMenu: "فتح القائمة",
     closeMenu: "إغلاق القائمة",
   },
-  admin: {
-    navigation: "قائمة الإدارة",
+  panel: {
+    navigation: "قائمة اللوحة",
     home: "الرئيسية",
     dashboard: "لوحة التحكم",
     patients: "المرضى",

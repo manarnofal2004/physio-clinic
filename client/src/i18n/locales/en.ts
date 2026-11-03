@@ -19,8 +19,8 @@ export const en = {
     openMenu: "Open menu",
     closeMenu: "Close menu",
   },
-  admin: {
-    navigation: "Admin navigation",
+  panel: {
+    navigation: "Panel navigation",
     home: "Home",
     dashboard: "Dashboard",
     patients: "Patients",
