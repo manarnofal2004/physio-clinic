@@ -49,7 +49,12 @@ export const GallerySection = () => {
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "1fr 280px" },
+          // The photo column is exactly as wide as a 3:2 photo of the full height, so
+          // the photo is never cut; the list takes the rest.
+          gridTemplateColumns: {
+            xs: "1fr",
+            md: `min(calc(${FEATURE_HEIGHT} * 1.5), calc(100% - 300px)) 1fr`,
+          },
           gap: { xs: 2.5, md: 4 },
         }}
       >
@@ -63,8 +68,7 @@ export const GallerySection = () => {
             sx={{
               display: "block",
               width: "100%",
-              height: { xs: "auto", md: FEATURE_HEIGHT },
-              aspectRatio: { xs: "3 / 2", md: "auto" },
+              aspectRatio: "3 / 2",
               objectFit: "cover",
               borderRadius: 4,
               animation: "galleryFade 350ms ease-out",
