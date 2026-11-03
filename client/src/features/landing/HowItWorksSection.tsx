@@ -70,6 +70,8 @@ export const HowItWorksSection = () => {
             display: "grid",
             placeItems: "center",
             flexShrink: 0,
+            // Lifted a little so the circle lines up with the number beside it.
+            mt: "-6px",
           }}
         >
           {step.icon}
