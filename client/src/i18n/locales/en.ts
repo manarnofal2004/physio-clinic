@@ -104,6 +104,8 @@ export const en = {
       waiting: "Waiting area",
       open: "Open photo",
       close: "Close photo",
+      previous: "Previous photo",
+      next: "Next photo",
     },
     faq: {
       title: "Questions people ask",

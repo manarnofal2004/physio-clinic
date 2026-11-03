@@ -102,6 +102,8 @@ export const ar: Translation = {
       waiting: "قاعة الانتظار",
       open: "عرض الصورة",
       close: "إغلاق الصورة",
+      previous: "الصورة السابقة",
+      next: "الصورة التالية",
     },
     faq: {
       title: "أسئلة يطرحها الناس",
