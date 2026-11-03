@@ -4,6 +4,9 @@ export const en = {
     name: "Sanad",
     fullName: "Sanad Physiotherapy",
   },
+  common: {
+    loading: "Loading",
+  },
   nav: {
     sections: "Page sections",
     services: "Services",

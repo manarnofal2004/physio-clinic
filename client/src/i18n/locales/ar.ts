@@ -6,6 +6,9 @@ export const ar: Translation = {
     name: "سَنَد",
     fullName: "سَنَد للعلاج الطبيعي",
   },
+  common: {
+    loading: "جارٍ التحميل",
+  },
   nav: {
     sections: "أقسام الصفحة",
     services: "خدماتنا",

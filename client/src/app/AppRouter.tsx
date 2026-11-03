@@ -1,6 +1,7 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { AdminLayout } from "@/components/layout/AdminLayout";
 import { PublicLayout } from "@/components/layout/PublicLayout";
+import { RequireAuth } from "@/features/auth/RequireAuth";
 import { LandingPage } from "@/features/landing/LandingPage";
 import { NotFoundPage } from "@/routes/NotFoundPage";
 
@@ -10,7 +11,10 @@ const router = createBrowserRouter([
     element: <PublicLayout />,
     children: [{ index: true, element: <LandingPage /> }],
   },
-  { path: "/admin", element: <AdminLayout />, children: [] },
+  {
+    element: <RequireAuth roles={["admin", "therapist"]} />,
+    children: [{ path: "/admin", element: <AdminLayout />, children: [] }],
+  },
   { path: "*", element: <NotFoundPage /> },
 ]);
 
