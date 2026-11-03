@@ -46,7 +46,7 @@ export const GallerySection = () => {
             xs: '"a a" "b e" "c c" "d d"',
             md: '"a b e" "a b e" "c c d"',
           },
-          gridAutoRows: { xs: 200, md: 190 },
+          gridAutoRows: { xs: 200, md: "clamp(110px, calc((100svh - 400px) / 3), 190px)" },
         }}
       >
         {photos.map((photo) => (

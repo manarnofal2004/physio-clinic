@@ -15,8 +15,10 @@ const steps: { title: StepKey; text: StepKey; top: number; x: number; side: "sta
   { title: "visitTitle", text: "visitText", top: 80, x: 36, side: "start" },
 ];
 
-const SPINE_HEIGHT = 640;
-const SPINE_WIDTH = 118; // the drawing is 258 x 1400
+// The spine drawing (258 x 1400) shrinks on short screens so the section fits one
+// screen; its width follows its height.
+const SPINE_HEIGHT = "min(620px, calc(100svh - 230px))";
+const SPINE_WIDTH = `calc(${SPINE_HEIGHT} * 258 / 1400)`;
 const LINE = 64; // length of the line from the spine to the text
 
 // The three steps hang off a drawn spine in the middle of the section, alternating
@@ -87,8 +89,8 @@ export const HowItWorksSection = () => {
           }}
         />
         {steps.map((step, index) => {
-          // Distance of the spine point from the middle of the section, in px.
-          const offset = ((step.x - 50) / 100) * SPINE_WIDTH;
+          // Distance of the spine point from the middle of the section.
+          const offset = `(${SPINE_WIDTH} * ${(step.x - 50) / 100})`;
           const atStart = step.side === "start";
           return (
             <Box
@@ -103,8 +105,8 @@ export const HowItWorksSection = () => {
                 flexDirection: atStart ? "row-reverse" : "row",
                 // The marker's centre sits on the spine; the text runs away from it.
                 ...(atStart
-                  ? { insetInlineEnd: `calc(50% - ${offset}px - 20px)` }
-                  : { insetInlineStart: `calc(50% + ${offset}px - 20px)` }),
+                  ? { insetInlineEnd: `calc(50% - ${offset} - 20px)` }
+                  : { insetInlineStart: `calc(50% + ${offset} - 20px)` }),
                 width: "calc(50% - 20px)",
               }}
             >

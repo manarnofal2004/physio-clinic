@@ -1,6 +1,7 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
+import { SCREEN_HEIGHT } from "@/components/layout/navbarHeight";
 import { WaveClipPath } from "./wave";
 
 // The photo fills the far half of the hero, with a wave on the edge facing the text.
@@ -70,7 +71,7 @@ export const HeroSection = () => {
           mx: "auto",
           px: { xs: 2, md: 4 },
           py: { xs: 7, md: 10 },
-          minHeight: { md: 600 },
+          minHeight: { md: SCREEN_HEIGHT },
           display: "flex",
           alignItems: "center",
         }}
