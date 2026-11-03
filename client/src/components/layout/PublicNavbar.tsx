@@ -63,16 +63,34 @@ export const PublicNavbar = () => {
       underline="none"
       color="inherit"
       onClick={backToTop}
-      sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+      aria-label={t("brand.name")}
+      sx={{ display: "flex", alignItems: "center", gap: 1 }}
     >
-      {/* The full logo (mark, Arabic name and "SANAD"); dark mode uses a copy whose
-          deep olive parts are light olive, so it stays readable on the dark bar. */}
+      {/* The mark (an S of vertebrae on a honey arc); dark mode uses a lighter copy
+          so it stays readable on the dark bar. */}
       <Box
         component="img"
-        src={mode === "dark" ? "/logo-full-dark.png" : "/logo-full.png"}
-        alt={t("brand.name")}
-        sx={{ height: 46, width: "auto", display: "block" }}
+        src={mode === "dark" ? "/logo-mark-dark.png" : "/logo-mark.png"}
+        alt=""
+        sx={{ height: 44, width: "auto", display: "block" }}
       />
+      {/* The name is set in the site fonts (not part of the image) so the Arabic
+          is always spelled correctly. Both names show in either language. */}
+      <Box aria-hidden sx={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
+        <Box
+          component="span"
+          sx={{ fontWeight: 700, fontSize: "1.3rem", letterSpacing: "0.08em", color: "primary.main" }}
+        >
+          SANAD
+        </Box>
+        <Box
+          component="span"
+          lang="ar"
+          sx={{ fontSize: "1.25rem", lineHeight: 1.1, color: "warning.main", textAlign: "center" }}
+        >
+          سَنَد
+        </Box>
+      </Box>
     </Link>
   );
 
