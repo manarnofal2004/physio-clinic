@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { Privilege } from "@shared/api-types";
 import type { Translation } from "@/i18n/locales/en";
 import {
   CalendarDays,
@@ -14,6 +15,7 @@ export interface AdminNavItem {
   labelKey: keyof Translation["admin"]; // text comes from the "admin" translations
   path: string;
   icon: ReactNode;
+  privilege?: Privilege; // the panel hides this link from users without it
 }
 
 export const adminNavItems: AdminNavItem[] = [

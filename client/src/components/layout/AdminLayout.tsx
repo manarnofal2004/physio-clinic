@@ -18,11 +18,11 @@ import { useTranslation } from "react-i18next";
 import { NavLink, Outlet } from "react-router-dom";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
-import { adminNavItems } from "./adminNavItems";
+import { adminNavItems, type AdminNavItem } from "./adminNavItems";
 
 const DRAWER_WIDTH = 260;
 
-export const AdminLayout = () => {
+export const AdminLayout = ({ navItems = adminNavItems }: { navItems?: AdminNavItem[] }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
@@ -38,12 +38,12 @@ export const AdminLayout = () => {
         </Typography>
       </Toolbar>
       <List component="nav" aria-label={t("admin.navigation")}>
-        {adminNavItems.map((item) => (
+        {navItems.map((item) => (
           <ListItemButton
             key={item.path}
             component={NavLink}
             to={item.path}
-            end={item.path === "/admin"}
+            end={item.path === "/admin" || item.path === "/therapist"}
             onClick={closeMobile}
             sx={{ "&.active": { bgcolor: "action.selected", color: "primary.main" } }}
           >
