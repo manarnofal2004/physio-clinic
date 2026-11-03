@@ -9,6 +9,7 @@ interface LandingSectionProps {
   tinted?: boolean; // pale olive background, used to separate neighbouring sections
   wash?: boolean; // stone background, the same as the hero
   compact?: boolean; // less space above the heading and between heading and content
+  alignTop?: boolean; // keep the heading at the top of the screen instead of centring
   children: ReactNode;
 }
 
@@ -21,6 +22,7 @@ export const LandingSection = ({
   tinted,
   wash,
   compact,
+  alignTop,
   children,
 }: LandingSectionProps) => (
   <Box
@@ -37,7 +39,7 @@ export const LandingSection = ({
       minHeight: { md: SCREEN_HEIGHT },
       display: { md: "flex" },
       flexDirection: "column",
-      justifyContent: "center",
+      justifyContent: alignTop ? "flex-start" : "center",
     }}
   >
     <Box sx={{ maxWidth: 1200, mx: "auto", width: "100%" }}>

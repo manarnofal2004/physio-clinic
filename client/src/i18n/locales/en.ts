@@ -84,12 +84,15 @@ export const en = {
     },
     how: {
       title: "How it works",
-      bookTitle: "Book online",
-      bookText: "Choose a day and a free time. You only need your name and phone number.",
-      confirmTitle: "We confirm",
-      confirmText: "The clinic reviews your request and confirms the time with you.",
-      visitTitle: "Your session",
-      visitText: "Meet your physiotherapist for 45 minutes and leave with a plan.",
+      intro: "Three simple steps from booking to your first session.",
+      bookTitle: "Choose your time",
+      bookText:
+        "Pick a day and an open time. All we need is your name and phone number, no account.",
+      confirmTitle: "We confirm with you",
+      confirmText: "Our team reviews your request and calls you to confirm the time.",
+      visitTitle: "Start your recovery",
+      visitText:
+        "Forty-five minutes, one-to-one with your physiotherapist. You leave with a clear plan.",
     },
     gallery: {
       title: "Inside the clinic",

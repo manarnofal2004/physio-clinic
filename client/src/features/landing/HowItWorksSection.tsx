@@ -17,7 +17,7 @@ const steps: { title: StepKey; text: StepKey; top: number; x: number; side: "sta
 
 // The spine drawing (258 x 1400) shrinks on short screens so the section fits one
 // screen; its width follows its height.
-const SPINE_HEIGHT = "min(620px, calc(100svh - 230px))";
+const SPINE_HEIGHT = "min(600px, calc(100svh - 300px))";
 const SPINE_WIDTH = `calc(${SPINE_HEIGHT} * 258 / 1400)`;
 const LINE = 64; // length of the line from the spine to the text
 
@@ -51,17 +51,29 @@ export const HowItWorksSection = () => {
 
   const stepText = (step: (typeof steps)[number]) => (
     <>
-      <Typography variant="h4" component="h3" sx={{ fontSize: { xs: "1.6rem", md: "1.9rem" } }}>
+      <Typography
+        variant="h4"
+        component="h3"
+        sx={{ fontSize: { xs: "1.5rem", md: "1.7rem" }, lineHeight: 1.2 }}
+      >
         {t(`landing.how.${step.title}`)}
       </Typography>
-      <Typography color="text.secondary" sx={{ mt: 1, fontSize: "1.05rem", lineHeight: 1.7 }}>
+      <Typography
+        color="text.secondary"
+        sx={{ mt: 1.25, fontSize: "1rem", lineHeight: 1.75, maxWidth: 330 }}
+      >
         {t(`landing.how.${step.text}`)}
       </Typography>
     </>
   );
 
   return (
-    <LandingSection id="how-it-works" title={t("landing.how.title")}>
+    <LandingSection
+      id="how-it-works"
+      title={t("landing.how.title")}
+      intro={t("landing.how.intro")}
+      alignTop
+    >
       {/* Wide screens: the spine with the steps around it. */}
       <Box
         component="ol"
@@ -121,7 +133,7 @@ export const HowItWorksSection = () => {
                   flexShrink: 0,
                 }}
               />
-              <Box sx={{ px: 2, mt: "-4px", maxWidth: 380 }}>{stepText(step)}</Box>
+              <Box sx={{ px: 2, mt: "4px", maxWidth: 380 }}>{stepText(step)}</Box>
             </Box>
           );
         })}
