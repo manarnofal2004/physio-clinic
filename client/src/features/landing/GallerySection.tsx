@@ -20,12 +20,13 @@ const photos: { key: PhotoKey; src: string }[] = [
 ];
 
 // Height of the large photo on wide screens: the screen minus the heading above and
-// the caption under it.
-const FEATURE_HEIGHT = "calc(100svh - 286px)";
+// the strip of small photos under it.
+const FEATURE_HEIGHT = "calc(100svh - 300px)";
+const THUMB_HEIGHT = 72;
 
-// One large photo with its name and a line about the place, and the other photos as
-// a list beside it: picking one (or the arrows) shows it large. The photos keep
-// their natural shape.
+// One large photo with the name of the place, a line about it and arrows beside it,
+// and a strip of small photos under it: picking one (or the arrows) shows it large.
+// The photos keep their natural 3:2 shape.
 export const GallerySection = () => {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
@@ -49,81 +50,87 @@ export const GallerySection = () => {
       <Box
         sx={{
           display: "grid",
-          // The photo column is exactly as wide as a 3:2 photo of the full height, so
-          // the photo is never cut; the list takes the rest.
+          // The photo column is as wide as a 3:2 photo of the full height.
           gridTemplateColumns: {
             xs: "1fr",
             md: `min(calc(${FEATURE_HEIGHT} * 1.5), calc(100% - 300px)) 1fr`,
           },
-          gap: { xs: 2.5, md: 4 },
+          columnGap: 5,
+          rowGap: { xs: 2, md: 2.5 },
         }}
       >
-        {/* The large photo and its caption, as tall as the screen allows. */}
-        <Box>
-          <Box
-            key={photo.key}
-            component="img"
-            src={photo.src}
-            alt={text(photo.key)}
+        <Box
+          key={photo.key}
+          component="img"
+          src={photo.src}
+          alt={text(photo.key)}
+          sx={{
+            display: "block",
+            width: "100%",
+            aspectRatio: "3 / 2",
+            objectFit: "cover",
+            borderRadius: 4,
+            animation: "galleryFade 350ms ease-out",
+            "@keyframes galleryFade": { from: { opacity: 0.4 }, to: { opacity: 1 } },
+            "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+          }}
+        />
+
+        {/* Beside the photo: its number, name, a line about the place and the arrows. */}
+        <Box
+          aria-live="polite"
+          sx={{
+            alignSelf: "end",
+            display: "flex",
+            flexDirection: "column",
+            gap: 1.5,
+            pb: { md: 1 },
+          }}
+        >
+          <Typography
+            sx={{ color: "warning.main", fontSize: "1.1rem" }}
+            dir="ltr"
+            align={isRtl ? "right" : "left"}
+          >
+            {number.format(active + 1)} / {number.format(photos.length)}
+          </Typography>
+          <Typography
+            variant="h3"
+            component="h3"
             sx={{
-              display: "block",
-              width: "100%",
-              aspectRatio: "3 / 2",
-              objectFit: "cover",
-              borderRadius: 4,
-              animation: "galleryFade 350ms ease-out",
-              "@keyframes galleryFade": { from: { opacity: 0.4 }, to: { opacity: 1 } },
-              "@media (prefers-reduced-motion: reduce)": { animation: "none" },
-            }}
-          />
-          <Box
-            sx={{
-              mt: 2,
-              pb: 1.5,
-              display: "flex",
-              alignItems: "flex-end",
-              gap: 3,
-              borderBottom: 1,
-              borderColor: "divider",
+              fontSize: { xs: "1.8rem", md: "2.4rem" },
+              color: "primary.dark",
+              lineHeight: 1.15,
             }}
           >
-            <Box sx={{ flex: 1 }} aria-live="polite">
-              <Typography
-                variant="h4"
-                component="h3"
-                sx={{ fontSize: { xs: "1.5rem", md: "1.9rem" }, color: "primary.dark" }}
-              >
-                {text(photo.key)}
-              </Typography>
-              <Typography color="text.secondary" sx={{ mt: 0.5 }}>
-                {text(`${photo.key}Text`)}
-              </Typography>
-            </Box>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, flexShrink: 0 }}>
-              <IconButton onClick={() => go(-1)} aria-label={t("landing.gallery.previous")}>
-                <Prev />
-              </IconButton>
-              <Typography sx={{ minWidth: 64, textAlign: "center" }} dir="ltr">
-                {number.format(active + 1)} / {number.format(photos.length)}
-              </Typography>
-              <IconButton onClick={() => go(1)} aria-label={t("landing.gallery.next")}>
-                <Next />
-              </IconButton>
-            </Box>
+            {text(photo.key)}
+          </Typography>
+          <Typography color="text.secondary" sx={{ fontSize: "1.1rem", lineHeight: 1.7 }}>
+            {text(`${photo.key}Text`)}
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+            <IconButton
+              onClick={() => go(-1)}
+              aria-label={t("landing.gallery.previous")}
+              sx={{ border: 1, borderColor: "divider" }}
+            >
+              <Prev />
+            </IconButton>
+            <IconButton
+              onClick={() => go(1)}
+              aria-label={t("landing.gallery.next")}
+              sx={{ border: 1, borderColor: "divider" }}
+            >
+              <Next />
+            </IconButton>
           </Box>
         </Box>
 
-        {/* All the photos as a list; the one shown large is marked. */}
+        {/* The strip of small photos under the large one. */}
         <Box
           role="list"
           aria-label={t("landing.gallery.photos")}
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "row", md: "column" },
-            gap: { xs: 1.5, md: 1.25 },
-            overflowX: { xs: "auto", md: "visible" },
-            scrollbarWidth: "none",
-          }}
+          sx={{ display: "flex", gap: 1.5, overflowX: "auto", scrollbarWidth: "none" }}
         >
           {photos.map((item, index) => {
             const isActive = index === active;
@@ -133,20 +140,16 @@ export const GallerySection = () => {
                 role="listitem"
                 onClick={() => setActive(index)}
                 aria-current={isActive || undefined}
+                aria-label={text(item.key)}
                 sx={{
                   flexShrink: 0,
-                  display: "flex",
-                  flexDirection: { xs: "column", md: "row" },
-                  alignItems: { xs: "stretch", md: "center" },
-                  justifyContent: "flex-start",
-                  gap: { xs: 0.75, md: 2 },
-                  p: { md: 1 },
-                  width: { xs: 140, md: "100%" },
-                  borderRadius: 3,
-                  textAlign: "start",
-                  bgcolor: isActive ? "action.selected" : "transparent",
-                  transition: "background-color 200ms",
-                  "&:hover": { bgcolor: isActive ? "action.selected" : "action.hover" },
+                  borderRadius: 2.5,
+                  p: "3px",
+                  border: 2,
+                  borderColor: isActive ? "primary.main" : "transparent",
+                  transition: "border-color 200ms, opacity 200ms",
+                  opacity: isActive ? 1 : 0.7,
+                  "&:hover": { opacity: 1 },
                   "&:focus-visible": { outline: 2, outlineColor: "primary.main" },
                 }}
               >
@@ -156,25 +159,13 @@ export const GallerySection = () => {
                   alt=""
                   loading="lazy"
                   sx={{
-                    // On wide screens the five thumbnails share the photo's height.
-                    width: { xs: "100%", md: "auto" },
-                    height: { md: `min(84px, calc((${FEATURE_HEIGHT} + 40px) / 5 - 30px))` },
+                    display: "block",
+                    height: THUMB_HEIGHT,
                     aspectRatio: "3 / 2",
-                    flexShrink: 0,
                     objectFit: "cover",
                     borderRadius: 2,
-                    opacity: isActive ? 1 : 0.8,
                   }}
                 />
-                <Typography
-                  sx={{
-                    fontSize: "1rem",
-                    color: isActive ? "primary.dark" : "text.secondary",
-                    fontWeight: isActive ? 700 : 400,
-                  }}
-                >
-                  {text(item.key)}
-                </Typography>
               </ButtonBase>
             );
           })}
