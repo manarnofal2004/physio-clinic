@@ -9,10 +9,17 @@ type StepKey = keyof Translation["landing"]["how"];
 // Each step sits on the spine drawing: `top` is how far down the drawing (in %),
 // `x` is where the spine is at that height (in % of the drawing's width, from the
 // start side), and `side` says which side of the spine the text goes on.
-const steps: { title: StepKey; text: StepKey; top: number; x: number; side: "start" | "end" }[] = [
-  { title: "bookTitle", text: "bookText", top: 18, x: 32, side: "start" },
-  { title: "confirmTitle", text: "confirmText", top: 50, x: 66, side: "end" },
-  { title: "visitTitle", text: "visitText", top: 80, x: 36, side: "start" },
+const steps: {
+  title: StepKey;
+  text: StepKey;
+  note: StepKey;
+  top: number;
+  x: number;
+  side: "start" | "end";
+}[] = [
+  { title: "bookTitle", text: "bookText", note: "bookNote", top: 18, x: 32, side: "start" },
+  { title: "confirmTitle", text: "confirmText", note: "confirmNote", top: 50, x: 66, side: "end" },
+  { title: "visitTitle", text: "visitText", note: "visitNote", top: 80, x: 36, side: "start" },
 ];
 
 // The spine drawing (258 x 1400) shrinks on short screens so the section fits one
@@ -20,6 +27,7 @@ const steps: { title: StepKey; text: StepKey; top: number; x: number; side: "sta
 const SPINE_HEIGHT = "min(780px, calc(100svh - 215px))";
 const SPINE_WIDTH = `calc(${SPINE_HEIGHT} * 258 / 1400)`;
 const LINE = 90; // length of the line from the spine to the text
+const DOT = 22; // the dot on the spine
 
 // The three steps hang off a drawn spine in the middle of the section, alternating
 // sides. On phones the spine is hidden and the steps stack with a thin line.
@@ -29,42 +37,71 @@ export const HowItWorksSection = () => {
   const isRtl = theme.direction === "rtl";
   const number = new Intl.NumberFormat(i18n.language, { minimumIntegerDigits: 2 });
 
-  const marker = (index: number) => (
+  // A small honey dot on the spine (the step number is shown large next to the text).
+  const marker = (
     <Box
       aria-hidden
       sx={{
-        width: 54,
-        height: 54,
+        width: DOT,
+        height: DOT,
         borderRadius: "50%",
         bgcolor: "warning.main",
-        color: "common.white",
-        display: "grid",
-        placeItems: "center",
-        fontSize: "1.2rem",
         flexShrink: 0,
-        boxShadow: (th) => `0 0 0 5px ${th.palette.background.default}`,
+        boxShadow: (th) =>
+          `0 0 0 4px ${th.palette.background.default}, 0 0 0 5px ${th.palette.warning.main}`,
       }}
-    >
-      {number.format(index + 1)}
-    </Box>
+    />
   );
 
-  const stepText = (step: (typeof steps)[number]) => (
-    <>
+  // The step's text: a large outlined number behind the title, the title, a short
+  // honey note, then the description. `align` keeps the text close to the spine.
+  const stepText = (step: (typeof steps)[number], index: number, align: "start" | "end") => (
+    <Box sx={{ position: "relative", textAlign: align }}>
+      <Box
+        aria-hidden
+        sx={{
+          position: "absolute",
+          bottom: "100%",
+          mb: { xs: "-1.3rem", md: "-1.9rem" },
+          [align === "end" ? "insetInlineEnd" : "insetInlineStart"]: "-0.4rem",
+          fontSize: { xs: "4.5rem", md: "7rem" },
+          lineHeight: 1,
+          color: "transparent",
+          WebkitTextStroke: (th) => `1.5px ${th.palette.warning.main}`,
+          opacity: 0.45,
+          userSelect: "none",
+        }}
+      >
+        {number.format(index + 1)}
+      </Box>
       <Typography
         variant="h4"
         component="h3"
-        sx={{ fontSize: { xs: "1.7rem", md: "2.5rem" }, lineHeight: 1.15 }}
+        sx={{
+          position: "relative",
+          fontSize: { xs: "1.8rem", md: "2.6rem" },
+          lineHeight: 1.1,
+          letterSpacing: isRtl ? 0 : "-0.02em",
+        }}
       >
         {t(`landing.how.${step.title}`)}
       </Typography>
+      <Typography sx={{ mt: 1, color: "warning.main", fontSize: { xs: "1rem", md: "1.1rem" } }}>
+        {t(`landing.how.${step.note}`)}
+      </Typography>
       <Typography
         color="text.secondary"
-        sx={{ mt: 1.5, fontSize: { xs: "1.05rem", md: "1.2rem" }, lineHeight: 1.7, maxWidth: 420 }}
+        sx={{
+          mt: 1.25,
+          fontSize: { xs: "1.05rem", md: "1.15rem" },
+          lineHeight: 1.7,
+          maxWidth: 400,
+          ...(align === "end" && { marginInlineStart: "auto" }),
+        }}
       >
         {t(`landing.how.${step.text}`)}
       </Typography>
-    </>
+    </Box>
   );
 
   return (
@@ -111,29 +148,31 @@ export const HowItWorksSection = () => {
               sx={{
                 position: "absolute",
                 top: `${step.top}%`,
-                transform: "translateY(-27px)",
+                transform: `translateY(-${DOT / 2}px)`,
                 display: "flex",
                 alignItems: "flex-start",
                 flexDirection: atStart ? "row-reverse" : "row",
                 // The marker's centre sits on the spine; the text runs away from it.
                 ...(atStart
-                  ? { insetInlineEnd: `calc(50% - ${offset} - 27px)` }
-                  : { insetInlineStart: `calc(50% + ${offset} - 27px)` }),
-                width: "calc(50% - 27px)",
+                  ? { insetInlineEnd: `calc(50% - ${offset} - ${DOT / 2}px)` }
+                  : { insetInlineStart: `calc(50% + ${offset} - ${DOT / 2}px)` }),
+                width: `calc(50% - ${DOT / 2}px)`,
               }}
             >
-              {marker(index)}
+              {marker}
               <Box
                 aria-hidden
                 sx={{
                   width: LINE,
-                  mt: "26px",
+                  mt: `${DOT / 2}px`,
                   borderTop: 1.5,
                   borderColor: "warning.main",
                   flexShrink: 0,
                 }}
               />
-              <Box sx={{ px: 2.5, mt: "2px", maxWidth: 480 }}>{stepText(step)}</Box>
+              <Box sx={{ px: 2.5, mt: "-0.9rem", maxWidth: 480, flex: 1 }}>
+                {stepText(step, index, atStart ? "end" : "start")}
+              </Box>
             </Box>
           );
         })}
@@ -151,9 +190,9 @@ export const HowItWorksSection = () => {
           "&::before": {
             content: '""',
             position: "absolute",
-            top: 20,
-            bottom: 40,
-            insetInlineStart: 19,
+            top: 60,
+            bottom: 60,
+            insetInlineStart: DOT / 2 - 1,
             borderInlineStart: "1.5px dashed",
             borderColor: "warning.main",
           },
@@ -163,10 +202,10 @@ export const HowItWorksSection = () => {
           <Box
             component="li"
             key={step.title}
-            sx={{ display: "flex", gap: 2.5, position: "relative", pb: 4 }}
+            sx={{ display: "flex", gap: 2.5, position: "relative", pt: 4.5, pb: 1 }}
           >
-            {marker(index)}
-            <Box>{stepText(step)}</Box>
+            <Box sx={{ mt: 1.25 }}>{marker}</Box>
+            <Box sx={{ flex: 1 }}>{stepText(step, index, "start")}</Box>
           </Box>
         ))}
       </Box>
