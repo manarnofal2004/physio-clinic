@@ -9,18 +9,19 @@ import { LandingSection } from "./LandingSection";
 type PhotoKey = "reception" | "treatment" | "handsOn" | "exercise" | "waiting";
 type GalleryKey = keyof Translation["landing"]["gallery"];
 
-// All photos are wide (3:2), so the large frame shows each one whole.
+// All photos are wide (3:2), so the large frame shows each one whole. "?v=2" makes
+// browsers fetch the new versions instead of the copies they kept.
 const photos: { key: PhotoKey; src: string }[] = [
-  { key: "reception", src: "/images/gallery/reception.webp" },
-  { key: "treatment", src: "/images/gallery/treatment.webp" },
-  { key: "handsOn", src: "/images/gallery/hands-on.webp" },
-  { key: "exercise", src: "/images/gallery/exercise.webp" },
-  { key: "waiting", src: "/images/gallery/waiting.webp" },
+  { key: "reception", src: "/images/gallery/reception.webp?v=2" },
+  { key: "treatment", src: "/images/gallery/treatment.webp?v=2" },
+  { key: "handsOn", src: "/images/gallery/hands-on.webp?v=2" },
+  { key: "exercise", src: "/images/gallery/exercise.webp?v=2" },
+  { key: "waiting", src: "/images/gallery/waiting.webp?v=2" },
 ];
 
 // Height of the large photo on wide screens: the screen minus the heading above and
 // the caption under it.
-const FEATURE_HEIGHT = "calc(100svh - 300px)";
+const FEATURE_HEIGHT = "calc(100svh - 276px)";
 
 // One large photo with its name and a line about the place, and the other photos as
 // a list beside it: picking one (or the arrows) shows it large. The photos keep

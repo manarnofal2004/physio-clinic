@@ -23,7 +23,7 @@ const services: Service[] = [
   FIRST,
   { id: "sports", image: "/images/services/sports.webp" },
   { id: "surgery", image: "/images/services/surgery.webp" },
-  { id: "joints", image: "/images/services/joints.webp" },
+  { id: "joints", image: "/images/services/joints.webp?v=2" },
   { id: "neuro", image: "/images/services/neuro.webp" },
   { id: "manual", image: "/images/services/manual.webp" },
 ];

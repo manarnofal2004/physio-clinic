@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Box, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 import { CalendarDays, PhoneCall, Sun } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Translation } from "@/i18n/locales/en";
@@ -127,6 +127,16 @@ export const HowItWorksSection = () => {
           listStyle: "none",
         }}
       >
+        {/* A soft pale olive glow behind the spine, fading into the beige. */}
+        <Box
+          aria-hidden
+          sx={{
+            position: "absolute",
+            inset: "-12% 0",
+            background: (th) =>
+              `radial-gradient(ellipse 38% 55% at 50% 55%, ${th.palette.action.selected} 0%, ${alpha(th.palette.action.selected, 0.6)} 45%, ${alpha(th.palette.action.selected, 0)} 100%)`,
+          }}
+        />
         <Box
           component="img"
           src="/images/spine.webp"

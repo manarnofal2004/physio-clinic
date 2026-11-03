@@ -34,7 +34,7 @@ export const LandingSection = ({
     sx={{
       bgcolor: tinted ? "action.selected" : wash ? "background.wash" : "transparent",
       pt: compact || alignTop ? { xs: 3, md: 2.5 } : { xs: 6, md: 5 },
-      pb: { xs: 6, md: 5 },
+      pb: alignTop ? { xs: 6, md: 2 } : { xs: 6, md: 5 },
       px: { xs: 2, md: 4 },
       scrollMarginTop: NAVBAR_HEIGHT, // stay below the sticky navbar
       overflowX: "clip", // shapes that run to the screen edges never cause sideways scrolling
