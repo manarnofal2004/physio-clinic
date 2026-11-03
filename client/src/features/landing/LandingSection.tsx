@@ -37,6 +37,7 @@ export const LandingSection = ({
       pb: { xs: 6, md: 5 },
       px: { xs: 2, md: 4 },
       scrollMarginTop: NAVBAR_HEIGHT, // stay below the sticky navbar
+      overflowX: "clip", // shapes that run to the screen edges never cause sideways scrolling
       // Wide screens: each section fills one screen, its content in the middle.
       minHeight: { md: SCREEN_HEIGHT },
       display: { md: "flex" },

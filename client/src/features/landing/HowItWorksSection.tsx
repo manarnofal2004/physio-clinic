@@ -127,6 +127,36 @@ export const HowItWorksSection = () => {
           listStyle: "none",
         }}
       >
+        {/* A broad pale olive wave flowing behind the spine, from edge to edge of the
+            screen, so the band is not a flat colour. */}
+        <Box
+          component="svg"
+          aria-hidden
+          viewBox="0 0 1440 700"
+          preserveAspectRatio="none"
+          sx={{
+            position: "absolute",
+            top: "4%",
+            left: "50%",
+            width: "100vw",
+            height: "92%",
+            transform: `translateX(-50%)${isRtl ? " scaleX(-1)" : ""}`,
+          }}
+        >
+          <Box
+            component="path"
+            d="M0,150 C320,40 560,330 860,250 S1260,90 1440,190 L1440,470 C1150,590 930,360 620,460 S220,650 0,560 Z"
+            sx={{ fill: (th) => th.palette.action.selected, opacity: 0.75 }}
+          />
+          <Box
+            component="path"
+            d="M0,150 C320,40 560,330 860,250 S1260,90 1440,190"
+            fill="none"
+            strokeWidth={1}
+            vectorEffect="non-scaling-stroke"
+            sx={{ stroke: (th) => th.palette.warning.main, opacity: 0.35 }}
+          />
+        </Box>
         <Box
           component="img"
           src="/images/spine.webp"
