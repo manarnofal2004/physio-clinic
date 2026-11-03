@@ -1,5 +1,7 @@
+import type { ReactNode } from "react";
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { CalendarDays, PhoneCall, Sun } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Translation } from "@/i18n/locales/en";
 import { LandingSection } from "./LandingSection";
@@ -12,14 +14,14 @@ type StepKey = keyof Translation["landing"]["how"];
 const steps: {
   title: StepKey;
   text: StepKey;
-  note: StepKey;
+  icon: ReactNode;
   top: number;
   x: number;
   side: "start" | "end";
 }[] = [
-  { title: "bookTitle", text: "bookText", note: "bookNote", top: 18, x: 32, side: "start" },
-  { title: "confirmTitle", text: "confirmText", note: "confirmNote", top: 50, x: 66, side: "end" },
-  { title: "visitTitle", text: "visitText", note: "visitNote", top: 80, x: 36, side: "start" },
+  { title: "bookTitle", text: "bookText", icon: <CalendarDays />, top: 18, x: 32, side: "start" },
+  { title: "confirmTitle", text: "confirmText", icon: <PhoneCall />, top: 50, x: 66, side: "end" },
+  { title: "visitTitle", text: "visitText", icon: <Sun />, top: 80, x: 36, side: "start" },
 ];
 
 // The spine drawing (258 x 1400) shrinks on short screens so the section fits one
@@ -37,7 +39,7 @@ export const HowItWorksSection = () => {
   const isRtl = theme.direction === "rtl";
   const number = new Intl.NumberFormat(i18n.language, { minimumIntegerDigits: 2 });
 
-  // A small honey dot on the spine (the step number is shown large next to the text).
+  // A small honey dot on the spine.
   const marker = (
     <Box
       aria-hidden
@@ -53,41 +55,41 @@ export const HowItWorksSection = () => {
     />
   );
 
-  // The step's text: a large outlined number behind the title, the title, a short
-  // honey note, then the description. `align` keeps the text close to the spine.
-  const stepText = (step: (typeof steps)[number], index: number, align: "start" | "end") => (
-    <Box sx={{ position: "relative", textAlign: align }}>
-      <Box
-        aria-hidden
-        sx={{
-          position: "absolute",
-          bottom: "100%",
-          mb: { xs: "-1.3rem", md: "-1.9rem" },
-          [align === "end" ? "insetInlineEnd" : "insetInlineStart"]: "-0.4rem",
-          fontSize: { xs: "4.5rem", md: "7rem" },
-          lineHeight: 1,
-          color: "transparent",
-          WebkitTextStroke: (th) => `1.5px ${th.palette.warning.main}`,
-          opacity: 0.45,
-          userSelect: "none",
-        }}
-      >
-        {number.format(index + 1)}
+  // The step's text: an icon in a pale circle with the step number, the title, then
+  // the description.
+  const stepText = (step: (typeof steps)[number], index: number) => (
+    <Box>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+        <Box
+          aria-hidden
+          sx={{
+            width: 44,
+            height: 44,
+            borderRadius: "50%",
+            bgcolor: "action.selected",
+            display: "grid",
+            placeItems: "center",
+            flexShrink: 0,
+          }}
+        >
+          {step.icon}
+        </Box>
+        <Typography aria-hidden sx={{ color: "warning.main", fontSize: "1.5rem", lineHeight: 1 }}>
+          {number.format(index + 1)}
+        </Typography>
       </Box>
       <Typography
         variant="h4"
         component="h3"
         sx={{
-          position: "relative",
-          fontSize: { xs: "1.8rem", md: "2.6rem" },
-          lineHeight: 1.1,
-          letterSpacing: isRtl ? 0 : "-0.02em",
+          mt: 1.5,
+          fontSize: { xs: "1.8rem", md: "2.4rem" },
+          lineHeight: 1.2,
+          color: "primary.dark",
+          letterSpacing: isRtl ? 0 : "-0.01em",
         }}
       >
         {t(`landing.how.${step.title}`)}
-      </Typography>
-      <Typography sx={{ mt: 1, color: "warning.main", fontSize: { xs: "1rem", md: "1.1rem" } }}>
-        {t(`landing.how.${step.note}`)}
       </Typography>
       <Typography
         color="text.secondary"
@@ -96,7 +98,6 @@ export const HowItWorksSection = () => {
           fontSize: { xs: "1.05rem", md: "1.15rem" },
           lineHeight: 1.7,
           maxWidth: 400,
-          ...(align === "end" && { marginInlineStart: "auto" }),
         }}
       >
         {t(`landing.how.${step.text}`)}
@@ -110,6 +111,7 @@ export const HowItWorksSection = () => {
       title={t("landing.how.title")}
       intro={t("landing.how.intro")}
       alignTop
+      centered
     >
       {/* Wide screens: the spine with the steps around it. */}
       <Box
@@ -170,9 +172,7 @@ export const HowItWorksSection = () => {
                   flexShrink: 0,
                 }}
               />
-              <Box sx={{ px: 2.5, mt: "-0.9rem", maxWidth: 480, flex: 1 }}>
-                {stepText(step, index, atStart ? "end" : "start")}
-              </Box>
+              <Box sx={{ px: 2.5, mt: "-4.4rem", maxWidth: 460 }}>{stepText(step, index)}</Box>
             </Box>
           );
         })}
@@ -205,7 +205,7 @@ export const HowItWorksSection = () => {
             sx={{ display: "flex", gap: 2.5, position: "relative", pt: 4.5, pb: 1 }}
           >
             <Box sx={{ mt: 1.25 }}>{marker}</Box>
-            <Box sx={{ flex: 1 }}>{stepText(step, index, "start")}</Box>
+            <Box sx={{ flex: 1 }}>{stepText(step, index)}</Box>
           </Box>
         ))}
       </Box>

@@ -10,6 +10,7 @@ interface LandingSectionProps {
   wash?: boolean; // stone background, the same as the hero
   compact?: boolean; // less space above the heading and between heading and content
   alignTop?: boolean; // keep the heading at the top of the screen instead of centring
+  centered?: boolean; // centre the heading, with the intro in honey under it
   children: ReactNode;
 }
 
@@ -23,6 +24,7 @@ export const LandingSection = ({
   wash,
   compact,
   alignTop,
+  centered,
   children,
 }: LandingSectionProps) => (
   <Box
@@ -44,14 +46,27 @@ export const LandingSection = ({
   >
     <Box sx={{ maxWidth: 1200, mx: "auto", width: "100%" }}>
       {title && (
-        <Box sx={{ maxWidth: 640, mb: compact || alignTop ? 2 : { xs: 4, md: 5 } }}>
-          <Typography id={`${id}-title`} variant="h2">
+        <Box
+          sx={{
+            maxWidth: 640,
+            mb: compact || alignTop ? 2 : { xs: 4, md: 5 },
+            ...(centered && { mx: "auto", textAlign: "center" }),
+          }}
+        >
+          <Typography
+            id={`${id}-title`}
+            variant="h2"
+            sx={centered ? { color: "primary.dark" } : undefined}
+          >
             {title}
           </Typography>
           {intro && (
             <Typography
-              color="text.secondary"
-              sx={{ mt: compact || alignTop ? 0.5 : 2, fontSize: "1.125rem" }}
+              sx={{
+                mt: compact || alignTop ? 0.5 : 2,
+                fontSize: "1.125rem",
+                color: centered ? "warning.main" : "text.secondary",
+              }}
             >
               {intro}
             </Typography>

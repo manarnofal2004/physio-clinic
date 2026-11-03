@@ -90,9 +90,6 @@ export const en = {
         "Pick a day and an open time. All we need is your name and phone number, no account.",
       confirmTitle: "We confirm with you",
       confirmText: "Our team reviews your request and calls you to confirm the time.",
-      bookNote: "Takes under two minutes",
-      confirmNote: "A call from our team",
-      visitNote: "45 minutes, one-to-one",
       visitTitle: "Start your recovery",
       visitText:
         "Forty-five minutes, one-to-one with your physiotherapist. You leave with a clear plan.",
