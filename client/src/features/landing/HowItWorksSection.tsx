@@ -1,217 +1,158 @@
-import type { ReactNode } from "react";
 import { Box, Typography } from "@mui/material";
-import { Check } from "lucide-react";
+import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import type { Translation } from "@/i18n/locales/en";
 import { LandingSection } from "./LandingSection";
 
 type StepKey = keyof Translation["landing"]["how"];
 
-// A small white "scene" showing what the step looks like for the visitor.
-const Scene = ({ children }: { children: ReactNode }) => (
-  <Box
-    aria-hidden
-    sx={{
-      mt: 3,
-      height: 150,
-      borderRadius: 4,
-      bgcolor: "background.paper",
-      p: 2.5,
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-    }}
-  >
-    {children}
-  </Box>
-);
+// Each step sits on the spine drawing: `top` is how far down the drawing (in %),
+// `x` is where the spine is at that height (in % of the drawing's width, from the
+// start side), and `side` says which side of the spine the text goes on.
+const steps: { title: StepKey; text: StepKey; top: number; x: number; side: "start" | "end" }[] = [
+  { title: "bookTitle", text: "bookText", top: 18, x: 32, side: "start" },
+  { title: "confirmTitle", text: "confirmText", top: 50, x: 66, side: "end" },
+  { title: "visitTitle", text: "visitText", top: 80, x: 36, side: "start" },
+];
 
-// Step 1: a day with its free times, one of them picked.
-const PickScene = () => {
-  const { t } = useTranslation();
-  return (
-    <Scene>
-      <Typography variant="body2" color="text.secondary">
-        {t("landing.how.day")}
+const SPINE_HEIGHT = 640;
+const SPINE_WIDTH = 118; // the drawing is 258 x 1400
+const LINE = 64; // length of the line from the spine to the text
+
+// The three steps hang off a drawn spine in the middle of the section, alternating
+// sides. On phones the spine is hidden and the steps stack with a thin line.
+export const HowItWorksSection = () => {
+  const { t, i18n } = useTranslation();
+  const theme = useTheme();
+  const isRtl = theme.direction === "rtl";
+  const number = new Intl.NumberFormat(i18n.language, { minimumIntegerDigits: 2 });
+
+  const marker = (index: number) => (
+    <Box
+      aria-hidden
+      sx={{
+        width: 40,
+        height: 40,
+        borderRadius: "50%",
+        bgcolor: "warning.main",
+        color: "common.white",
+        display: "grid",
+        placeItems: "center",
+        fontSize: "1rem",
+        flexShrink: 0,
+        boxShadow: (th) => `0 0 0 5px ${th.palette.background.default}`,
+      }}
+    >
+      {number.format(index + 1)}
+    </Box>
+  );
+
+  const stepText = (step: (typeof steps)[number]) => (
+    <>
+      <Typography variant="h4" component="h3" sx={{ fontSize: { xs: "1.6rem", md: "1.9rem" } }}>
+        {t(`landing.how.${step.title}`)}
       </Typography>
-      <Box sx={{ display: "flex", gap: 1, mt: 1.5, flexWrap: "wrap" }} dir="ltr">
-        {["09:00", "09:45", "10:30"].map((time) => {
-          const picked = time === "09:45";
+      <Typography color="text.secondary" sx={{ mt: 1, fontSize: "1.05rem", lineHeight: 1.7 }}>
+        {t(`landing.how.${step.text}`)}
+      </Typography>
+    </>
+  );
+
+  return (
+    <LandingSection id="how-it-works" title={t("landing.how.title")}>
+      {/* Wide screens: the spine with the steps around it. */}
+      <Box
+        component="ol"
+        sx={{
+          display: { xs: "none", md: "block" },
+          position: "relative",
+          height: SPINE_HEIGHT,
+          m: 0,
+          p: 0,
+          listStyle: "none",
+        }}
+      >
+        <Box
+          component="img"
+          src="/images/spine.webp"
+          alt=""
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: "50%",
+            height: SPINE_HEIGHT,
+            width: SPINE_WIDTH,
+            // Mirrored in Arabic so the steps keep their sides.
+            transform: `translateX(-50%)${isRtl ? " scaleX(-1)" : ""}`,
+          }}
+        />
+        {steps.map((step, index) => {
+          // Distance of the spine point from the middle of the section, in px.
+          const offset = ((step.x - 50) / 100) * SPINE_WIDTH;
+          const atStart = step.side === "start";
           return (
             <Box
-              key={time}
+              component="li"
+              key={step.title}
               sx={{
-                px: 1.75,
-                py: 0.75,
-                borderRadius: 999,
-                fontSize: "0.95rem",
-                border: 1,
-                borderColor: picked ? "primary.main" : "divider",
-                bgcolor: picked ? "primary.main" : "transparent",
-                color: picked ? "primary.contrastText" : "text.primary",
+                position: "absolute",
+                top: `${step.top}%`,
+                transform: "translateY(-20px)",
+                display: "flex",
+                alignItems: "flex-start",
+                flexDirection: atStart ? "row-reverse" : "row",
+                // The marker's centre sits on the spine; the text runs away from it.
+                ...(atStart
+                  ? { insetInlineEnd: `calc(50% - ${offset}px - 20px)` }
+                  : { insetInlineStart: `calc(50% + ${offset}px - 20px)` }),
+                width: "calc(50% - 20px)",
               }}
             >
-              {time}
+              {marker(index)}
+              <Box
+                aria-hidden
+                sx={{
+                  width: LINE,
+                  mt: "19px",
+                  borderTop: 1.5,
+                  borderColor: "warning.main",
+                  flexShrink: 0,
+                }}
+              />
+              <Box sx={{ px: 2, mt: "-4px", maxWidth: 380 }}>{stepText(step)}</Box>
             </Box>
           );
         })}
       </Box>
-    </Scene>
-  );
-};
 
-// Step 2: the clinic's confirmation message.
-const ConfirmScene = () => {
-  const { t } = useTranslation();
-  return (
-    <Scene>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Box
-          sx={{
-            width: 22,
-            height: 22,
-            borderRadius: "50%",
-            bgcolor: "primary.main",
-            color: "primary.contrastText",
-            display: "grid",
-            placeItems: "center",
-          }}
-        >
-          <Check size={14} strokeWidth={2.5} color="currentColor" />
-        </Box>
-        <Typography variant="body2" color="text.secondary">
-          {t("landing.how.from")}
-        </Typography>
-      </Box>
-      <Box
-        sx={{
-          mt: 1.25,
-          px: 2,
-          py: 1.25,
-          borderRadius: 3,
-          borderStartStartRadius: 4,
-          bgcolor: "action.selected",
-          fontSize: "0.95rem",
-          lineHeight: 1.5,
-        }}
-      >
-        {t("landing.how.message")}
-      </Box>
-    </Scene>
-  );
-};
-
-// Step 3: a 45-minute ring, three quarters of an hour.
-const SessionScene = () => {
-  const { t } = useTranslation();
-  const r = 36;
-  const length = 2 * Math.PI * r;
-  return (
-    <Scene>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2.5 }}>
-        <Box component="svg" viewBox="0 0 88 88" sx={{ width: 88, height: 88, flexShrink: 0 }}>
-          <Box
-            component="circle"
-            cx={44}
-            cy={44}
-            r={r}
-            fill="none"
-            strokeWidth={6}
-            sx={{ stroke: (th) => th.palette.action.selected }}
-          />
-          <Box
-            component="circle"
-            cx={44}
-            cy={44}
-            r={r}
-            fill="none"
-            strokeWidth={6}
-            strokeLinecap="round"
-            strokeDasharray={`${length * 0.75} ${length}`}
-            transform="rotate(-90 44 44)"
-            sx={{ stroke: (th) => th.palette.warning.main }}
-          />
-        </Box>
-        <Box>
-          <Typography sx={{ fontSize: "2rem", lineHeight: 1, color: "primary.main" }}>
-            45{" "}
-            <Box component="span" sx={{ fontSize: "1rem" }}>
-              {t("landing.how.minutes")}
-            </Box>
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
-            {t("landing.how.oneToOne")}
-          </Typography>
-        </Box>
-      </Box>
-    </Scene>
-  );
-};
-
-const steps: { title: StepKey; text: StepKey; scene: ReactNode }[] = [
-  { title: "bookTitle", text: "bookText", scene: <PickScene /> },
-  { title: "confirmTitle", text: "confirmText", scene: <ConfirmScene /> },
-  { title: "visitTitle", text: "visitText", scene: <SessionScene /> },
-];
-
-// Three steps joined by a dotted honey path, each with a small scene of what the
-// visitor will see: picking a time, the confirmation, the session itself.
-export const HowItWorksSection = () => {
-  const { t, i18n } = useTranslation();
-  const number = new Intl.NumberFormat(i18n.language);
-
-  return (
-    <LandingSection id="how-it-works" title={t("landing.how.title")} tinted>
+      {/* Phones: the steps one under another, joined by a dashed honey line. */}
       <Box
         component="ol"
         sx={{
+          display: { xs: "block", md: "none" },
           m: 0,
           p: 0,
           listStyle: "none",
           position: "relative",
-          display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" },
-          gap: { xs: 5, md: 5 },
-          // The path that joins the three numbers on wide screens.
           "&::before": {
             content: '""',
-            display: { xs: "none", md: "block" },
             position: "absolute",
-            top: 23,
-            insetInline: "48px 33%",
-            borderTop: "2px dashed",
+            top: 20,
+            bottom: 40,
+            insetInlineStart: 19,
+            borderInlineStart: "1.5px dashed",
             borderColor: "warning.main",
-            opacity: 0.6,
           },
         }}
       >
         {steps.map((step, index) => (
-          <Box component="li" key={step.title} sx={{ position: "relative" }}>
-            <Box
-              aria-hidden
-              sx={{
-                width: 48,
-                height: 48,
-                borderRadius: "50%",
-                bgcolor: "primary.main",
-                color: "primary.contrastText",
-                display: "grid",
-                placeItems: "center",
-                fontSize: "1.3rem",
-                position: "relative",
-                // A ring in the band colour so the dashed path stops short of the circle.
-                boxShadow: (th) => `0 0 0 6px ${th.palette.action.selected}`,
-              }}
-            >
-              {number.format(index + 1)}
-            </Box>
-            <Typography variant="h5" component="h3" sx={{ mt: 2.5 }}>
-              {t(`landing.how.${step.title}`)}
-            </Typography>
-            <Typography color="text.secondary" sx={{ mt: 1, maxWidth: 340 }}>
-              {t(`landing.how.${step.text}`)}
-            </Typography>
-            {step.scene}
+          <Box
+            component="li"
+            key={step.title}
+            sx={{ display: "flex", gap: 2.5, position: "relative", pb: 4 }}
+          >
+            {marker(index)}
+            <Box>{stepText(step)}</Box>
           </Box>
         ))}
       </Box>
