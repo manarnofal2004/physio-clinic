@@ -49,12 +49,13 @@ export const GallerySection = () => {
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "1fr 320px" },
+          gridTemplateColumns: { xs: "1fr", md: "1fr 280px" },
           gap: { xs: 2.5, md: 4 },
         }}
       >
-        {/* The large photo and its caption. */}
-        <Box>
+        {/* The large photo and its caption. The frame keeps the photos' 3:2 shape, so
+            nothing is cut off; it is as tall as the screen allows. */}
+        <Box sx={{ width: { md: `min(100%, calc(${FEATURE_HEIGHT} * 1.5))` } }}>
           <Box
             key={photo.key}
             component="img"
@@ -63,7 +64,7 @@ export const GallerySection = () => {
             sx={{
               display: "block",
               width: "100%",
-              height: { xs: 300, sm: 420, md: FEATURE_HEIGHT },
+              aspectRatio: "3 / 2",
               objectFit: "cover",
               borderRadius: 4,
               animation: "galleryFade 350ms ease-out",
@@ -151,9 +152,8 @@ export const GallerySection = () => {
                   alt=""
                   loading="lazy"
                   sx={{
-                    width: { xs: "100%", md: 104 },
-                    height: { xs: 90, md: `calc((${FEATURE_HEIGHT} - 60px) / 5)` },
-                    maxHeight: { md: 96 },
+                    width: { xs: "100%", md: 120 },
+                    aspectRatio: "3 / 2",
                     objectFit: "cover",
                     borderRadius: 2,
                     opacity: isActive ? 1 : 0.8,
