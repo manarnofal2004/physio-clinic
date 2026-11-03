@@ -113,16 +113,17 @@ export const GallerySection = () => {
           </Box>
         </Box>
 
-        {/* All the photos as a list; the one shown large is marked. */}
+        {/* The names of all the places, split by hairlines; the one shown large is
+            olive with its number, the others are quiet. */}
         <Box
           role="list"
           aria-label={t("landing.gallery.photos")}
           sx={{
+            alignSelf: "center",
             display: "flex",
             flexDirection: { xs: "row", md: "column" },
-            gap: { xs: 1.5, md: 1.25 },
-            overflowX: { xs: "auto", md: "visible" },
-            scrollbarWidth: "none",
+            flexWrap: { xs: "wrap", md: "nowrap" },
+            gap: { xs: 1, md: 0 },
           }}
         >
           {photos.map((item, index) => {
@@ -134,47 +135,42 @@ export const GallerySection = () => {
                 onClick={() => setActive(index)}
                 aria-current={isActive || undefined}
                 sx={{
-                  flexShrink: 0,
                   display: "flex",
-                  flexDirection: { xs: "column", md: "row" },
-                  alignItems: { xs: "stretch", md: "center" },
+                  alignItems: "baseline",
+                  fontFamily: "inherit",
                   justifyContent: "flex-start",
-                  gap: { xs: 0.75, md: 2 },
-                  p: { md: 1 },
-                  width: { xs: 140, md: "100%" },
-                  borderRadius: 3,
+                  gap: 2,
+                  py: { xs: 0.75, md: 2 },
+                  px: { xs: 1.5, md: 0 },
                   textAlign: "start",
-                  bgcolor: isActive ? "action.selected" : "transparent",
-                  transition: "background-color 200ms",
-                  "&:hover": { bgcolor: isActive ? "action.selected" : "action.hover" },
+                  borderBottom: { md: 1 },
+                  borderColor: { md: "divider" },
+                  borderRadius: { xs: 999, md: 0 },
+                  bgcolor: { xs: isActive ? "action.selected" : "transparent", md: "transparent" },
+                  color: isActive ? "primary.dark" : "text.secondary",
+                  transition: "color 200ms",
+                  "&:first-of-type": { borderTop: { md: 1 }, borderColor: { md: "divider" } },
+                  "&:hover": { color: "primary.dark" },
                   "&:focus-visible": { outline: 2, outlineColor: "primary.main" },
                 }}
               >
                 <Box
-                  component="img"
-                  src={item.src}
-                  alt=""
-                  loading="lazy"
+                  component="span"
+                  aria-hidden
                   sx={{
-                    // On wide screens the five thumbnails share the photo's height.
-                    width: { xs: "100%", md: "auto" },
-                    height: { md: `min(84px, calc((${FEATURE_HEIGHT} + 40px) / 5 - 30px))` },
-                    aspectRatio: "3 / 2",
-                    flexShrink: 0,
-                    objectFit: "cover",
-                    borderRadius: 2,
-                    opacity: isActive ? 1 : 0.8,
-                  }}
-                />
-                <Typography
-                  sx={{
+                    display: { xs: "none", md: "inline" },
+                    width: 28,
                     fontSize: "1rem",
-                    color: isActive ? "primary.dark" : "text.secondary",
-                    fontWeight: isActive ? 700 : 400,
+                    color: "warning.main",
+                    opacity: isActive ? 1 : 0,
+                    transition: "opacity 200ms",
                   }}
                 >
+                  {number.format(index + 1)}
+                </Box>
+                <Box component="span" sx={{ fontSize: { xs: "1rem", md: "1.45rem" } }}>
                   {text(item.key)}
-                </Typography>
+                </Box>
               </ButtonBase>
             );
           })}
