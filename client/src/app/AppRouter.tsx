@@ -2,6 +2,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { PanelLayout } from "@/components/layout/PanelLayout";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { adminNavItems } from "@/components/layout/adminNavItems";
+import { LoginPage } from "@/features/auth/LoginPage";
 import { RequireAuth } from "@/features/auth/RequireAuth";
 import { LandingPage } from "@/features/landing/LandingPage";
 import { PageNotReady } from "@/features/therapist/PageNotReady";
@@ -14,7 +15,10 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <PublicLayout />,
-    children: [{ index: true, element: <LandingPage /> }],
+    children: [
+      { index: true, element: <LandingPage /> },
+      { path: "login", element: <LoginPage /> },
+    ],
   },
   {
     element: <RequireAuth roles={["admin"]} />,

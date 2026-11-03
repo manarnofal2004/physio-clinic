@@ -101,6 +101,22 @@ export const en = {
     welcomeText: "This is your panel. The menu shows the pages you have access to.",
     pageNotReady: "This page is not ready yet.",
   },
+  login: {
+    title: "Log in",
+    subtitle: "Use the account the clinic created for you.",
+    email: "Email",
+    password: "Password",
+    submit: "Log in",
+    errors: {
+      invalidEmail: "Enter a valid email address.",
+      passwordRequired: "Enter your password.",
+      invalidCredentials: "The email or password is incorrect.",
+      accountDisabled: "This account is turned off. Please contact the clinic.",
+      tooManyRequests: "Too many attempts. Please wait a few minutes and try again.",
+      network: "We couldn't reach the server. Check your connection and try again.",
+      unexpected: "Something went wrong. Please try again.",
+    },
+  },
   forbidden: {
     title: "You don't have access to this page",
     description: "Ask the clinic admin if you need access.",
