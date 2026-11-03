@@ -90,6 +90,11 @@ export const en = {
       confirmText: "The clinic reviews your request and confirms the time with you.",
       visitTitle: "Your session",
       visitText: "Meet your physiotherapist for 45 minutes and leave with a plan.",
+      day: "Sunday",
+      from: "Sanad clinic",
+      message: "Your session on Sunday at 09:45 is confirmed. See you soon!",
+      minutes: "min",
+      oneToOne: "one-to-one",
     },
     gallery: {
       title: "Inside the clinic",
