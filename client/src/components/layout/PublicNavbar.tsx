@@ -63,34 +63,16 @@ export const PublicNavbar = () => {
       underline="none"
       color="inherit"
       onClick={backToTop}
-      aria-label={t("brand.name")}
-      sx={{ display: "flex", alignItems: "center", gap: 1 }}
+      sx={{ display: "flex", alignItems: "center" }}
     >
-      {/* The mark (an S of vertebrae on a honey arc); dark mode uses a lighter copy
-          so it stays readable on the dark bar. */}
+      {/* The full logo (a figure with a spine held by a hand, "SANAD" and "سَنَد");
+          dark mode uses a copy in lighter colours so it stays readable on the dark bar. */}
       <Box
         component="img"
-        src={mode === "dark" ? "/logo-mark-dark.png" : "/logo-mark.png"}
-        alt=""
-        sx={{ height: 44, width: "auto", display: "block" }}
+        src={mode === "dark" ? "/logo-full-dark.png" : "/logo-full.png"}
+        alt={t("brand.name")}
+        sx={{ height: 48, width: "auto", display: "block" }}
       />
-      {/* The name is set in the site fonts (not part of the image) so the Arabic
-          is always spelled correctly. Both names show in either language. */}
-      <Box aria-hidden sx={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
-        <Box
-          component="span"
-          sx={{ fontWeight: 700, fontSize: "1.3rem", letterSpacing: "0.08em", color: "primary.main" }}
-        >
-          SANAD
-        </Box>
-        <Box
-          component="span"
-          lang="ar"
-          sx={{ fontSize: "1.25rem", lineHeight: 1.1, color: "warning.main", textAlign: "center" }}
-        >
-          سَنَد
-        </Box>
-      </Box>
     </Link>
   );
 
@@ -120,8 +102,8 @@ export const PublicNavbar = () => {
             component="nav"
             aria-label={t("nav.sections")}
             direction="row"
-            spacing={3}
-            sx={{ marginInlineStart: 3 }}
+            spacing={0.5}
+            sx={{ marginInlineStart: 2 }}
           >
             {sections.map((section) => (
               <Link
@@ -130,25 +112,28 @@ export const PublicNavbar = () => {
                 underline="none"
                 aria-current={section.id === active ? "location" : undefined}
                 sx={{
-                  position: "relative",
-                  py: 0.5,
+                  px: 1.75,
+                  py: 0.75,
+                  borderRadius: 999,
                   color: "text.secondary",
-                  transition: "color 150ms",
-                  "&:hover": { color: "primary.main" },
-                  // The current section: olive text with a short honey line under it.
-                  "&::after": {
-                    content: '""',
-                    position: "absolute",
-                    insetInline: 0,
-                    bottom: -2,
-                    height: 2,
-                    borderRadius: 1,
-                    bgcolor: "warning.main",
-                    transform: "scaleX(0)",
-                    transition: "transform 200ms ease-out",
+                  transition: "color 150ms, background-color 200ms",
+                  "&:hover": { color: "primary.main", bgcolor: "action.hover" },
+                  // The current section sits on a soft olive pill, with a small honey
+                  // dot before it.
+                  "&[aria-current]": {
+                    color: "primary.main",
+                    bgcolor: "action.selected",
+                    "&::before": {
+                      content: '""',
+                      display: "inline-block",
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      bgcolor: "warning.main",
+                      marginInlineEnd: 1,
+                      verticalAlign: "middle",
+                    },
                   },
-                  "&[aria-current]": { color: "primary.main", fontWeight: 700 },
-                  "&[aria-current]::after": { transform: "scaleX(1)" },
                 }}
               >
                 {t(`nav.${section.labelKey}`)}

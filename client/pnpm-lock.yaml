@@ -17,7 +17,7 @@ importers:
       '@emotion/styled':
         specifier: ^11.14.1
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(react@19.3.1)
-      '@fontsource/marhey':
+      '@fontsource/ibm-plex-sans-arabic':
         specifier: ^5.3.0
         version: 5.3.0
       '@fontsource/redaction':
@@ -278,8 +278,8 @@ packages:
     resolution: {integrity: sha512-IkO+/KEUvwbVpiURZg+P7zF74z5Jxe0UgJxVni+RtoHQ6IZieXaO02kmadomap/q+l6bc/jdPGGqTjhuZnuz1Q==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  '@fontsource/marhey@5.3.0':
-    resolution: {integrity: sha512-5v/maubwegrZ419c308p2/hzbAKeGuOhCCm3P3HF6JZf+RnX0NYFE8EqJ0wrSYvTtp9LE3T6m7pwwTIvU6hCyw==}
+  '@fontsource/ibm-plex-sans-arabic@5.3.0':
+    resolution: {integrity: sha512-ZZ4g+JDgQY0NqSh4o0MNWU1sHQmtcee1g++aKAwyJvZxnT5y51JXsN1cIXnaQaMd40dcbK6QFYa+Z1LbaiNuqA==}
 
   '@fontsource/redaction@5.3.0':
     resolution: {integrity: sha512-mlVA74kHfyjLPjX2j+93w/0leZAQ4aouFbx6LR8fbfqpaDRFidQnpFbpb+0wVY/MS/k3IbTjQgPjdVI8ymllzw==}
@@ -1707,7 +1707,7 @@ snapshots:
       '@eslint/core': 1.2.1
       levn: 0.4.1
 
-  '@fontsource/marhey@5.3.0': {}
+  '@fontsource/ibm-plex-sans-arabic@5.3.0': {}
 
   '@fontsource/redaction@5.3.0': {}
 
