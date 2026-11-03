@@ -18,11 +18,12 @@ import { useTranslation } from "react-i18next";
 import { NavLink, Outlet } from "react-router-dom";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
-import { adminNavItems } from "./adminNavItems";
+import type { PanelNavItem } from "./panelNavItem";
 
 const DRAWER_WIDTH = 260;
 
-export const AdminLayout = () => {
+// The shell of the staff panels: sidebar, top bar and the page inside. Each panel passes its links.
+export const PanelLayout = ({ navItems }: { navItems: PanelNavItem[] }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
@@ -37,18 +38,18 @@ export const AdminLayout = () => {
           {t("brand.name")}
         </Typography>
       </Toolbar>
-      <List component="nav" aria-label={t("admin.navigation")}>
-        {adminNavItems.map((item) => (
+      <List component="nav" aria-label={t("panel.navigation")}>
+        {navItems.map((item) => (
           <ListItemButton
             key={item.path}
             component={NavLink}
             to={item.path}
-            end={item.path === "/admin"}
+            end={item.path === "/admin" || item.path === "/therapist"}
             onClick={closeMobile}
             sx={{ "&.active": { bgcolor: "action.selected", color: "primary.main" } }}
           >
             <ListItemIcon sx={{ color: "inherit" }}>{item.icon}</ListItemIcon>
-            <ListItemText primary={t(`admin.${item.labelKey}`)} />
+            <ListItemText primary={t(`panel.${item.labelKey}`)} />
           </ListItemButton>
         ))}
       </List>

@@ -4,6 +4,9 @@ export const en = {
     name: "Sanad",
     fullName: "Sanad Physiotherapy",
   },
+  common: {
+    loading: "Loading",
+  },
   nav: {
     sections: "Page sections",
     services: "Services",
@@ -16,8 +19,9 @@ export const en = {
     openMenu: "Open menu",
     closeMenu: "Close menu",
   },
-  admin: {
-    navigation: "Admin navigation",
+  panel: {
+    navigation: "Panel navigation",
+    home: "Home",
     dashboard: "Dashboard",
     patients: "Patients",
     reports: "Reports",
@@ -91,6 +95,16 @@ export const en = {
       visitTitle: "Your session",
       visitText: "Meet your physiotherapist for 45 minutes and leave with a plan.",
     },
+  },
+  therapist: {
+    welcome: "Welcome, {{name}}",
+    welcomeText: "This is your panel. The menu shows the pages you have access to.",
+    pageNotReady: "This page is not ready yet.",
+  },
+  forbidden: {
+    title: "You don't have access to this page",
+    description: "Ask the clinic admin if you need access.",
+    backHome: "Back to your panel",
   },
   notFound: {
     message: "This page could not be found.",

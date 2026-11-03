@@ -1,5 +1,3 @@
-import type { ReactNode } from "react";
-import type { Translation } from "@/i18n/locales/en";
 import {
   CalendarDays,
   ClipboardList,
@@ -9,14 +7,9 @@ import {
   UserCog,
   Users,
 } from "lucide-react";
+import type { PanelNavItem } from "./panelNavItem";
 
-export interface AdminNavItem {
-  labelKey: keyof Translation["admin"]; // text comes from the "admin" translations
-  path: string;
-  icon: ReactNode;
-}
-
-export const adminNavItems: AdminNavItem[] = [
+export const adminNavItems: PanelNavItem[] = [
   { labelKey: "dashboard", path: "/admin", icon: <LayoutDashboard /> },
   { labelKey: "patients", path: "/admin/patients", icon: <Users /> },
   { labelKey: "reports", path: "/admin/reports", icon: <ClipboardList /> },

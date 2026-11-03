@@ -6,6 +6,9 @@ export const ar: Translation = {
     name: "سَنَد",
     fullName: "سَنَد للعلاج الطبيعي",
   },
+  common: {
+    loading: "جارٍ التحميل",
+  },
   nav: {
     sections: "أقسام الصفحة",
     services: "خدماتنا",
@@ -18,8 +21,9 @@ export const ar: Translation = {
     openMenu: "فتح القائمة",
     closeMenu: "إغلاق القائمة",
   },
-  admin: {
-    navigation: "قائمة الإدارة",
+  panel: {
+    navigation: "قائمة اللوحة",
+    home: "الرئيسية",
     dashboard: "لوحة التحكم",
     patients: "المرضى",
     reports: "التقارير",
@@ -91,6 +95,16 @@ export const ar: Translation = {
       visitTitle: "جلستك",
       visitText: "تلتقي بأخصائي العلاج الطبيعي لمدة 45 دقيقة وتخرج بخطة واضحة.",
     },
+  },
+  therapist: {
+    welcome: "أهلاً، {{name}}",
+    welcomeText: "هذه لوحتك. تعرض القائمة الصفحات المتاحة لك.",
+    pageNotReady: "هذه الصفحة ليست جاهزة بعد.",
+  },
+  forbidden: {
+    title: "ليس لديك صلاحية لفتح هذه الصفحة",
+    description: "تواصل مع مدير العيادة إذا كنت بحاجة إليها.",
+    backHome: "العودة إلى لوحتك",
   },
   notFound: {
     message: "لم نجد هذه الصفحة.",
