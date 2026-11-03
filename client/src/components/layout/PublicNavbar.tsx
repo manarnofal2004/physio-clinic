@@ -17,22 +17,14 @@ import { useTheme } from "@mui/material/styles";
 import { Menu as MenuIcon, X as CloseIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink, useLocation } from "react-router-dom";
-import type { Translation } from "@/i18n/locales/en";
+import { landingSections } from "./landingSections";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { NAVBAR_HEIGHT } from "./navbarHeight";
 import { useColorMode } from "@/theme/colorModeContext";
 import { ThemeToggle } from "./ThemeToggle";
 import { useActiveSection } from "./useActiveSection";
 
-// Sections of the landing page (6.8 and 6.9 give them these ids).
-const sections: { id: string; labelKey: keyof Translation["nav"] }[] = [
-  { id: "services", labelKey: "services" },
-  { id: "how-it-works", labelKey: "howItWorks" },
-  { id: "gallery", labelKey: "gallery" },
-  { id: "faq", labelKey: "faq" },
-  { id: "contact", labelKey: "contact" },
-];
-
+const sections = landingSections;
 const sectionIds = sections.map((section) => section.id);
 
 const BOOKING_ID = "booking";
