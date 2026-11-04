@@ -24,7 +24,7 @@ const AUTO_MS = 5000; // the photos move on by themselves every 5 seconds
 // Height of the large photo on wide screens: the screen minus the heading above.
 const FEATURE_HEIGHT = "calc(100svh - 236px)";
 
-// One large photo, and beside it the next two photos as a small stack of prints
+// One large photo, and beside it the next three photos as a small stack of prints
 // peeking out (clicking the stack moves on), then the number, name and a line
 // about the place, with arrows. The photos keep their natural 3:2 shape.
 export const GallerySection = () => {
@@ -55,7 +55,7 @@ export const GallerySection = () => {
   const arrow = { border: 1, borderColor: "divider", "&:hover": { bgcolor: "action.selected" } };
 
   // One print in the stack: a white border, a soft shadow and a slight tilt.
-  const print = (offset: 1 | 2, sx: object) => {
+  const print = (offset: 1 | 2 | 3, sx: object) => {
     const item = at(offset);
     return (
       <Box
@@ -65,7 +65,7 @@ export const GallerySection = () => {
         alt=""
         sx={{
           position: "absolute",
-          width: "78%",
+          width: "70%",
           aspectRatio: "3 / 2",
           objectFit: "cover",
           borderRadius: 2.5,
@@ -94,11 +94,13 @@ export const GallerySection = () => {
         onBlur={() => setPaused(false)}
         sx={{
           display: "grid",
-          // The photo column is as wide as a 3:2 photo of the full height.
+          // The photo column is a 3:2 photo a little under the full height, leaving
+          // room beside it for the stack and the text.
           gridTemplateColumns: {
             xs: "1fr",
-            md: `min(calc(${FEATURE_HEIGHT} * 1.5), calc(100% - 290px)) 1fr`,
+            md: `min(calc(${FEATURE_HEIGHT} * 1.38), calc(100% - 380px)) 1fr`,
           },
+          alignItems: "center",
           gap: { xs: 3, md: 4 },
           "@keyframes galleryFade": { from: { opacity: 0.4 }, to: { opacity: 1 } },
         }}
@@ -119,23 +121,26 @@ export const GallerySection = () => {
           }}
         />
 
-        <Box sx={{ display: "flex", flexDirection: "column", gap: { md: 4 } }}>
-          {/* The next two photos, stacked like prints; clicking shows the next one. */}
+        <Box sx={{ display: "flex", flexDirection: "column", gap: { md: 3 } }}>
+          {/* The next three photos, stacked like prints; clicking shows the next one.
+              The stack is sized from the screen height so the text under it always
+              stays on screen. */}
           <ButtonBase
             onClick={() => go(1)}
             aria-label={`${t("landing.gallery.next")}: ${text(at(1).key)}`}
             sx={{
               display: { xs: "none", md: "block" },
               position: "relative",
-              width: "78%",
-              aspectRatio: "4 / 3",
+              width: `min(100%, calc((${FEATURE_HEIGHT} - 230px) * 1.5))`,
+              aspectRatio: "3 / 2",
               borderRadius: 3,
               "&:hover img:last-of-type": { transform: "rotate(-1deg) translateY(-6px)" },
               "&:focus-visible": { outline: 2, outlineColor: "primary.main", outlineOffset: 4 },
             }}
           >
-            {print(2, { top: 0, insetInlineEnd: 0, transform: "rotate(5deg)" })}
-            {print(1, { top: "22%", insetInlineStart: 0, transform: "rotate(-3deg)" })}
+            {print(3, { top: 0, insetInlineEnd: 0, transform: "rotate(6deg)" })}
+            {print(2, { top: "12%", insetInlineStart: "15%", transform: "rotate(-1deg)" })}
+            {print(1, { top: "26%", insetInlineStart: 0, transform: "rotate(-5deg)" })}
           </ButtonBase>
 
           {/* The number, name and a line about the photo shown large, with arrows. */}
