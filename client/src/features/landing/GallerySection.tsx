@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, ButtonBase, IconButton, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Translation } from "@/i18n/locales/en";
@@ -28,7 +28,8 @@ const FEATURE_HEIGHT = "calc(100svh - 236px)";
 // leaves the sheet that much more width than half, and the small photos keep about 3:2.
 const SHEET_TEXT = "364px";
 const GAP = "32px";
-const COLUMNS = `minmax(0, 1fr) min(calc(${FEATURE_HEIGHT} * 1.5), calc((100% - ${GAP} + ${SHEET_TEXT}) / 2))`;
+const MAT = 12; // width of the cream mat around the large photo
+const COLUMNS = `minmax(0, 1fr) min(calc((${FEATURE_HEIGHT} - ${MAT * 2}px) * 1.5 + ${MAT * 2}px), calc((100% - ${GAP} + ${SHEET_TEXT}) / 2))`;
 // On short laptop screens the sheet is wide and low, so the small photos go in one row.
 const SHORT = "@media (min-width: 900px) and (max-height: 760px)";
 
@@ -248,23 +249,34 @@ export const GallerySection = () => {
           </Box>
         </Box>
 
+        {/* The large photo, mounted like a print: a cream mat with a thin line
+            around the photo and a soft shadow, to match the paper sheet. */}
         <Box
-          key={photo.key}
-          component="img"
-          src={photo.src}
-          alt={text(photo.key)}
           sx={{
-            display: "block",
-            width: "100%",
-            aspectRatio: "3 / 2",
             alignSelf: "start", // sets the row height; the sheet stretches to match
-            objectFit: "cover",
-            borderRadius: 1,
-            boxShadow: "0 10px 24px -12px rgba(60, 50, 20, 0.35)",
-            animation: "galleryFade 350ms ease-out",
-            "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+            p: `${MAT}px`,
+            bgcolor: theme.palette.mode === "light" ? "#fffdf7" : "background.paper",
+            borderRadius: "3px",
+            boxShadow: "0 1px 2px rgba(60, 50, 20, 0.08), 0 16px 32px -14px rgba(60, 50, 20, 0.35)",
           }}
-        />
+        >
+          <Box
+            key={photo.key}
+            component="img"
+            src={photo.src}
+            alt={text(photo.key)}
+            sx={{
+              display: "block",
+              width: "100%",
+              aspectRatio: "3 / 2",
+              objectFit: "cover",
+              outline: "1px solid",
+              outlineColor: (th) => alpha(th.palette.primary.dark, 0.15),
+              animation: "galleryFade 350ms ease-out",
+              "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+            }}
+          />
+        </Box>
       </Box>
     </LandingSection>
   );
