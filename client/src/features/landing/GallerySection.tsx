@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, ButtonBase, IconButton, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -19,6 +19,8 @@ const photos: { key: PhotoKey; src: string }[] = [
   { key: "waiting", src: "/images/gallery/waiting.webp?v=2" },
 ];
 
+const AUTO_MS = 5000; // the photos move on by themselves every 5 seconds
+
 // Height of the large photo on wide screens: the screen minus the heading above.
 const FEATURE_HEIGHT = "calc(100svh - 236px)";
 
@@ -36,6 +38,18 @@ export const GallerySection = () => {
   const text = (key: string) => t(`landing.gallery.${key as GalleryKey}`);
 
   const go = (step: 1 | -1) => setActive((a) => (a + step + photos.length) % photos.length);
+
+  // The photos change by themselves, but stay put while the visitor's pointer or
+  // keyboard focus is on the gallery, and never for people who asked for less motion.
+  const [paused, setPaused] = useState(false);
+  const [reduceMotion] = useState(
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
+  useEffect(() => {
+    if (paused || reduceMotion) return;
+    const id = window.setTimeout(() => go(1), AUTO_MS);
+    return () => window.clearTimeout(id);
+  }, [active, paused, reduceMotion]);
   const Prev = isRtl ? ChevronRight : ChevronLeft;
   const Next = isRtl ? ChevronLeft : ChevronRight;
   const arrow = { border: 1, borderColor: "divider", "&:hover": { bgcolor: "action.selected" } };
@@ -74,6 +88,10 @@ export const GallerySection = () => {
       alignTop
     >
       <Box
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onFocus={() => setPaused(true)}
+        onBlur={() => setPaused(false)}
         sx={{
           display: "grid",
           // The photo column is as wide as a 3:2 photo of the full height.
@@ -101,7 +119,7 @@ export const GallerySection = () => {
           }}
         />
 
-        <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: { md: 4 } }}>
           {/* The next two photos, stacked like prints; clicking shows the next one. */}
           <ButtonBase
             onClick={() => go(1)}
@@ -109,7 +127,7 @@ export const GallerySection = () => {
             sx={{
               display: { xs: "none", md: "block" },
               position: "relative",
-              width: "100%",
+              width: "78%",
               aspectRatio: "4 / 3",
               borderRadius: 3,
               "&:hover img:last-of-type": { transform: "rotate(-1deg) translateY(-6px)" },
@@ -121,10 +139,7 @@ export const GallerySection = () => {
           </ButtonBase>
 
           {/* The number, name and a line about the photo shown large, with arrows. */}
-          <Box
-            aria-live="polite"
-            sx={{ display: "flex", flexDirection: "column", gap: 1.25, pb: { md: 1 } }}
-          >
+          <Box aria-live="polite" sx={{ display: "flex", flexDirection: "column", gap: 1.25 }}>
             <Typography sx={{ color: "warning.main", fontSize: "1.05rem" }}>
               <bdi>
                 {number.format(active + 1)} / {number.format(photos.length)}
