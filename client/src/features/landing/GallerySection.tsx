@@ -111,10 +111,18 @@ export const GallerySection = () => {
             sx={{
               height: "100%",
               boxSizing: "border-box",
-              clipPath: TORN,
-              bgcolor: theme.palette.mode === "light" ? "#fbf7ef" : "background.paper",
+              // Light mode: a photo of real torn paper, stretched to the sheet.
+              // Dark mode: a dark sheet cut with the same kind of torn edge.
+              ...(theme.palette.mode === "light"
+                ? {
+                    // Separate properties: the RTL plugin garbles the shorthand.
+                    backgroundImage: "url(/images/paper.webp)",
+                    backgroundSize: "100% 100%",
+                    backgroundRepeat: "no-repeat",
+                  }
+                : { clipPath: TORN, bgcolor: "background.paper" }),
               px: { xs: 2.5, md: 3.5 },
-              py: { xs: 3, md: 3.5 },
+              py: { xs: 3.5, md: 4 },
               display: "flex",
               flexDirection: "column",
               gap: 2,
