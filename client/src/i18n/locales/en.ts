@@ -49,7 +49,7 @@ export const en = {
       imageAlt: "A physiotherapist examining a patient's knee",
     },
     services: {
-      title: "What we treat",
+      title: "What's bothering you?",
       backNeck: "Back and neck pain",
       backNeckText: "Posture, disc problems and long-standing pain.",
       sports: "Sports injuries",
@@ -83,8 +83,8 @@ export const en = {
       book: "Book a session",
     },
     how: {
-      title: "How it works",
-      intro: "Three simple steps from booking to your first session.",
+      title: "Three steps to your first visit",
+      intro: "No account needed, and we call you to confirm.",
       bookTitle: "Choose your time",
       bookText:
         "Pick a day and an open time. All we need is your name and phone number, no account.",
@@ -95,7 +95,7 @@ export const en = {
         "Forty-five minutes, one-to-one with your physiotherapist. You leave with a clear plan.",
     },
     gallery: {
-      title: "Inside the clinic",
+      title: "A look around Sanad",
       intro: "A calm place to recover: bright treatment rooms and a full exercise area.",
       reception: "Reception",
       treatment: "Treatment room",
@@ -114,7 +114,7 @@ export const en = {
       next: "Next photo",
     },
     faq: {
-      title: "Questions people ask",
+      title: "Before you come",
       q1: "Do I need an account to book?",
       a1: "No. Choose a free time and enter your name and phone number. The clinic confirms the booking with you.",
       q2: "How long is a session?",

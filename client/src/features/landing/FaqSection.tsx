@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Accordion, AccordionDetails, AccordionSummary, Box, Typography } from "@mui/material";
 import { Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { LandingSection } from "./LandingSection";
+import { LandingSection, SectionTitle } from "./LandingSection";
 
 const questions = ["1", "2", "3", "4", "5"] as const;
 
@@ -22,9 +22,9 @@ export const FaqSection = () => {
           alignItems: "start",
         }}
       >
-        <Typography id="faq-title" variant="h2" sx={{ position: { md: "sticky" }, top: 96 }}>
-          {t("landing.faq.title")}
-        </Typography>
+        <Box sx={{ position: { md: "sticky" }, top: 96 }}>
+          <SectionTitle id="faq-title">{t("landing.faq.title")}</SectionTitle>
+        </Box>
 
         <Box role="list" aria-labelledby="faq-title">
           {questions.map((n) => (

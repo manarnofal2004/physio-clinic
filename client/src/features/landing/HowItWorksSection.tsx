@@ -26,7 +26,7 @@ const steps: {
 
 // The spine drawing (258 x 1400) shrinks on short screens so the section fits one
 // screen; its width follows its height.
-const SPINE_HEIGHT = "min(780px, calc(100svh - 215px))";
+const SPINE_HEIGHT = "min(780px, calc(100svh - 230px))";
 const SPINE_WIDTH = `calc(${SPINE_HEIGHT} * 258 / 1400)`;
 const LINE = 90; // length of the line from the spine to the text
 const DOT = 22; // the dot on the spine

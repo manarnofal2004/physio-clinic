@@ -1,6 +1,29 @@
 import type { ReactNode } from "react";
 import { Box, Typography } from "@mui/material";
 import { NAVBAR_HEIGHT, SCREEN_HEIGHT } from "@/components/layout/navbarHeight";
+import { Scribble } from "./Scribble";
+
+// A section title: large, in dark olive, with the honey hand-drawn line under it.
+export const SectionTitle = ({
+  id,
+  centered,
+  children,
+}: {
+  id: string;
+  centered?: boolean;
+  children: ReactNode;
+}) => (
+  <Box>
+    <Typography
+      id={id}
+      variant="h2"
+      sx={{ color: "primary.dark", fontSize: { xs: "2.2rem", md: "2.75rem" } }}
+    >
+      {children}
+    </Typography>
+    <Scribble sx={{ mt: 0.75, width: 120, ...(centered && { mx: "auto" }) }} />
+  </Box>
+);
 
 interface LandingSectionProps {
   id: string; // the navbar links to "/#id"
@@ -10,7 +33,7 @@ interface LandingSectionProps {
   wash?: boolean; // stone background, the same as the hero
   compact?: boolean; // less space above the heading and between heading and content
   alignTop?: boolean; // keep the heading at the top of the screen instead of centring
-  centered?: boolean; // centre the heading, with the intro in honey under it
+  centered?: boolean; // centre the heading and its line
   children: ReactNode;
 }
 
@@ -54,19 +77,15 @@ export const LandingSection = ({
             ...(centered && { mx: "auto", textAlign: "center" }),
           }}
         >
-          <Typography
-            id={`${id}-title`}
-            variant="h2"
-            sx={centered ? { color: "primary.dark" } : undefined}
-          >
+          <SectionTitle id={`${id}-title`} centered={centered}>
             {title}
-          </Typography>
+          </SectionTitle>
           {intro && (
             <Typography
               // The intro reads like a quiet line from a book: Redaction italic in
               // English, Amiri in Arabic (Arabic has no italic), in dark honey.
               sx={{
-                mt: compact || alignTop ? 0.5 : 2,
+                mt: compact || alignTop ? 1 : 2,
                 fontFamily: '"Redaction", "Amiri", serif',
                 fontStyle: "italic",
                 fontSize: { xs: "1.2rem", md: "1.3rem" },

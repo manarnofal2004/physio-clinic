@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Translation } from "@/i18n/locales/en";
 import { LandingSection } from "./LandingSection";
+import { Scribble } from "./Scribble";
 
 type PhotoKey = "reception" | "treatment" | "handsOn" | "exercise" | "waiting";
 type GalleryKey = keyof Translation["landing"]["gallery"];
@@ -48,9 +49,6 @@ const tornPaper = () => {
   return `polygon(${[...top, ...bottom].join(", ")})`;
 };
 const TORN = tornPaper();
-
-// A wavy hand-drawn line for under the place name.
-const SCRIBBLE = "M2 8 C 20 3, 38 11, 58 6 S 96 4, 118 7 S 160 10, 198 5";
 
 // One large photo, and beside it a sheet of paper with torn edges: the place's name
 // with a hand-drawn line under it and a sentence about it, the other photos glued on
@@ -139,22 +137,7 @@ export const GallerySection = () => {
               >
                 {text(photo.key)}
               </Typography>
-              <Box
-                component="svg"
-                aria-hidden
-                viewBox="0 0 200 12"
-                preserveAspectRatio="none"
-                sx={{ display: "block", width: 150, height: 10, mt: 0.25 }}
-              >
-                <Box
-                  component="path"
-                  d={SCRIBBLE}
-                  fill="none"
-                  strokeWidth={2.2}
-                  strokeLinecap="round"
-                  sx={{ stroke: (th) => th.palette.warning.main }}
-                />
-              </Box>
+              <Scribble sx={{ mt: 0.25 }} />
               <Typography color="text.secondary" sx={{ mt: 1.25, fontSize: "1.05rem" }}>
                 {text(`${photo.key}Text`)}
               </Typography>
@@ -249,13 +232,14 @@ export const GallerySection = () => {
           </Box>
         </Box>
 
-        {/* The large photo, mounted like a print: a cream mat with a thin line
+        {/* The large photo, mounted like a print: a pale olive mat (the colour of the
+            navbar and icon bubbles) with a thin line
             around the photo and a soft shadow, to match the paper sheet. */}
         <Box
           sx={{
             alignSelf: "start", // sets the row height; the sheet stretches to match
             p: `${MAT}px`,
-            bgcolor: theme.palette.mode === "light" ? "#fffdf7" : "background.paper",
+            bgcolor: "action.selected",
             borderRadius: "3px",
             boxShadow: "0 1px 2px rgba(60, 50, 20, 0.08), 0 16px 32px -14px rgba(60, 50, 20, 0.35)",
           }}
