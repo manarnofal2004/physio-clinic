@@ -9,8 +9,6 @@ import { LandingSection } from "./LandingSection";
 type PhotoKey = "reception" | "treatment" | "handsOn" | "exercise" | "waiting";
 type GalleryKey = keyof Translation["landing"]["gallery"];
 
-// All photos are wide (3:2), so the large frame shows each one whole. "?v=2" makes
-// browsers fetch the new versions instead of the copies they kept.
 const photos: { key: PhotoKey; src: string }[] = [
   { key: "reception", src: "/images/gallery/reception.webp?v=2" },
   { key: "treatment", src: "/images/gallery/treatment.webp?v=2" },
@@ -19,96 +17,65 @@ const photos: { key: PhotoKey; src: string }[] = [
   { key: "waiting", src: "/images/gallery/waiting.webp?v=2" },
 ];
 
-const AUTO_MS = 5000; // the photos move on by themselves every 5 seconds
-
-// Height of the large photo on wide screens: the screen minus the heading above.
+const AUTO_MS = 5000;
 const FEATURE_HEIGHT = "calc(100svh - 236px)";
 
-// One large photo, and beside it the next three photos as a small stack of prints
-// peeking out (clicking the stack moves on), then the number, name and a line
-// about the place, with arrows. The photos keep their natural 3:2 shape.
 export const GallerySection = () => {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
   const isRtl = theme.direction === "rtl";
   const [active, setActive] = useState(0);
-  const at = (offset: number) => photos[(active + offset) % photos.length] ?? photos[0]!;
-  const photo = at(0);
-  const number = new Intl.NumberFormat(i18n.language, { minimumIntegerDigits: 2 });
-  const text = (key: string) => t(`landing.gallery.${key as GalleryKey}`);
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(true);
 
-  const go = (step: 1 | -1) => setActive((a) => (a + step + photos.length) % photos.length);
+  const photo = photos[active] ?? photos[0];
+  const number = new Intl.NumberFormat(i18n.language, {
+    minimumIntegerDigits: 2,
+  });
+  const text = (key: GalleryKey) => t(`landing.gallery.${key}`);
+  const go = (step: 1 | -1) => {
+    setActive((current) => (current + step + photos.length) % photos.length);
+  };
 
-  // The photos change by themselves, but stay put while the visitor's pointer or
-  // keyboard focus is on the gallery, and never for people who asked for less motion.
-  const [paused, setPaused] = useState(false);
-  const [reduceMotion] = useState(
-    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-  );
   useEffect(() => {
-    if (paused || reduceMotion) return;
-    const id = window.setTimeout(() => go(1), AUTO_MS);
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduceMotion(preference.matches);
+
+    update();
+    preference.addEventListener("change", update);
+    return () => preference.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    if (hovered || focused || reduceMotion) return;
+
+    const id = window.setTimeout(() => {
+      setActive((current) => (current + 1) % photos.length);
+    }, AUTO_MS);
+
     return () => window.clearTimeout(id);
-  }, [active, paused, reduceMotion]);
+  }, [active, hovered, focused, reduceMotion]);
+
+  if (!photo) return null;
+
   const Prev = isRtl ? ChevronRight : ChevronLeft;
   const Next = isRtl ? ChevronLeft : ChevronRight;
-  const arrow = { border: 1, borderColor: "divider", "&:hover": { bgcolor: "action.selected" } };
-
-  // One print in the stack, made like an instant photo: a white frame with a wider
-  // bottom edge carrying the place's name, tilted by `turn` degrees. When the photos
-  // move on, each print drops into its new place.
-  const print = (offset: 1 | 2 | 3, turn: number, sx: object) => {
-    const item = at(offset);
-    return (
-      <Box
-        key={`${item.key}-${offset}`}
-        sx={{
-          position: "absolute",
-          width: "62%",
-          p: "6px",
-          pb: 0,
-          bgcolor: "background.paper",
-          borderRadius: 1.5,
-          boxShadow: "0 16px 34px -16px rgba(40, 50, 20, 0.5)",
-          "--turn": `${turn}deg`,
-          transform: "rotate(var(--turn))",
-          transition: "transform 300ms ease-out",
-          animation: "printIn 450ms cubic-bezier(0.2, 0.8, 0.2, 1)",
-          "@keyframes printIn": {
-            from: { opacity: 0, transform: "translateY(-18px) rotate(calc(var(--turn) * 2))" },
-            to: { opacity: 1, transform: "rotate(var(--turn))" },
-          },
-          "@media (prefers-reduced-motion: reduce)": { animation: "none" },
-          ...sx,
-        }}
-      >
-        <Box
-          component="img"
-          src={item.src}
-          alt=""
-          sx={{
-            display: "block",
-            width: "100%",
-            aspectRatio: "3 / 2",
-            objectFit: "cover",
-            borderRadius: 1,
-          }}
-        />
-        <Box
-          sx={{
-            py: 0.75,
-            textAlign: "center",
-            fontSize: "0.85rem",
-            color: "text.secondary",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {text(item.key)}
-        </Box>
-      </Box>
-    );
+  const arrow = {
+    width: 44,
+    height: 44,
+    border: 1,
+    borderColor: "divider",
+    color: "primary.dark",
+    "&:hover": {
+      bgcolor: "action.selected",
+      borderColor: "primary.main",
+    },
+    "&.Mui-focusVisible": {
+      outline: "2px solid",
+      outlineColor: "primary.main",
+      outlineOffset: 3,
+    },
   };
 
   return (
@@ -119,21 +86,26 @@ export const GallerySection = () => {
       alignTop
     >
       <Box
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-        onFocus={() => setPaused(true)}
-        onBlur={() => setPaused(false)}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        onFocusCapture={() => setFocused(true)}
+        onBlurCapture={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) {
+            setFocused(false);
+          }
+        }}
         sx={{
           display: "grid",
-          // The photo column is a 3:2 photo a little under the full height, leaving
-          // room beside it for the stack and the text.
           gridTemplateColumns: {
-            xs: "1fr",
-            md: `min(calc(${FEATURE_HEIGHT} * 1.38), calc(100% - 380px)) 1fr`,
+            xs: "minmax(0, 1fr)",
+            md: `min(calc(${FEATURE_HEIGHT} * 1.38), calc(100% - 380px)) minmax(0, 1fr)`,
           },
           alignItems: "center",
-          gap: { xs: 3, md: 4 },
-          "@keyframes galleryFade": { from: { opacity: 0.4 }, to: { opacity: 1 } },
+          gap: { xs: 2.5, md: 4 },
+          "@keyframes galleryFade": {
+            from: { opacity: 0.4 },
+            to: { opacity: 1 },
+          },
         }}
       >
         <Box
@@ -148,67 +120,274 @@ export const GallerySection = () => {
             objectFit: "cover",
             borderRadius: 4,
             animation: "galleryFade 350ms ease-out",
-            "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+            "@media (prefers-reduced-motion: reduce)": {
+              animation: "none",
+            },
           }}
         />
 
-        <Box sx={{ display: "flex", flexDirection: "column", gap: { md: 3 } }}>
-          {/* The next three photos, stacked like prints; clicking shows the next one.
-              The stack is sized from the screen height so the text under it always
-              stays on screen. */}
-          <ButtonBase
-            onClick={() => go(1)}
-            aria-label={`${t("landing.gallery.next")}: ${text(at(1).key)}`}
-            sx={{
+        <Box
+          sx={{
+            position: "relative",
+            minWidth: 0,
+            boxSizing: "border-box",
+            height: {
+              xs: "auto",
+              md: `min(${FEATURE_HEIGHT}, 560px)`,
+            },
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            gap: { xs: 2.5, md: "clamp(12px, 2svh, 22px)" },
+            paddingInlineStart: { xs: 0, md: 3 },
+            "&::before": {
+              content: '""',
               display: { xs: "none", md: "block" },
-              position: "relative",
-              width: `min(100%, calc((${FEATURE_HEIGHT} - 230px) * 1.33))`,
-              aspectRatio: "4 / 3",
-              borderRadius: 3,
-              // Hovering fans the prints out a little.
-              "&:hover > div:nth-of-type(1)": { transform: "rotate(12deg) translateX(8px)" },
-              "&:hover > div:nth-of-type(2)": { transform: "rotate(-8deg) translateX(-8px)" },
-              "&:hover > div:nth-of-type(3)": { transform: "rotate(1deg) translateY(-8px)" },
-              "&:focus-visible": { outline: 2, outlineColor: "primary.main", outlineOffset: 4 },
+              position: "absolute",
+              insetInlineStart: 0,
+              insetBlock: 0,
+              width: "1px",
+              bgcolor: "divider",
+            },
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "flex-end",
+              justifyContent: "space-between",
+              gap: 2,
+              pb: { xs: 1.5, md: 2 },
+              borderBottom: 1,
+              borderColor: "divider",
             }}
           >
-            {print(3, 8, { top: 0, insetInlineEnd: "2%" })}
-            {print(2, -4, { top: "10%", insetInlineStart: "4%" })}
-            {print(1, 3, { top: "24%", insetInlineStart: "26%" })}
-          </ButtonBase>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "baseline",
+                gap: 1,
+                color: "primary.main",
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              <Typography
+                component="span"
+                sx={{
+                  fontFamily: "inherit",
+                  fontWeight: 300,
+                  fontSize: {
+                    xs: "3.5rem",
+                    md: "clamp(3.5rem, 9svh, 6rem)",
+                  },
+                  lineHeight: 0.85,
+                  letterSpacing: "-0.065em",
+                }}
+              >
+                <bdi>{number.format(active + 1)}</bdi>
+              </Typography>
+              <Typography component="span" sx={{ color: "text.secondary", fontSize: "0.85rem" }}>
+                <bdi>/ {number.format(photos.length)}</bdi>
+              </Typography>
+            </Box>
 
-          {/* The number, name and a line about the photo shown large, with arrows. */}
-          <Box aria-live="polite" sx={{ display: "flex", flexDirection: "column", gap: 1.25 }}>
-            <Typography sx={{ color: "warning.main", fontSize: "1.05rem" }}>
-              <bdi>
-                {number.format(active + 1)} / {number.format(photos.length)}
-              </bdi>
-            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                pb: 0.25,
+              }}
+            >
+              <Box
+                aria-hidden="true"
+                sx={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  bgcolor: "warning.main",
+                }}
+              />
+              <Typography
+                sx={{
+                  color: "text.secondary",
+                  fontSize: "0.8rem",
+                  lineHeight: 1.4,
+                }}
+              >
+                {t("landing.gallery.photos")}
+              </Typography>
+            </Box>
+          </Box>
+
+          <Box
+            aria-live={hovered || focused || reduceMotion ? "polite" : "off"}
+            aria-atomic="true"
+            sx={{
+              position: "relative",
+              paddingInlineStart: { xs: 0, md: 2 },
+              "&::before": {
+                content: '""',
+                display: { xs: "none", md: "block" },
+                position: "absolute",
+                insetInlineStart: "-25px",
+                top: "0.35em",
+                width: 3,
+                height: 36,
+                borderRadius: 2,
+                bgcolor: "warning.main",
+              },
+            }}
+          >
             <Typography
               variant="h3"
               component="h3"
               sx={{
-                fontSize: { xs: "1.8rem", md: "2.3rem" },
                 color: "primary.dark",
+                fontSize: {
+                  xs: "1.8rem",
+                  md: "clamp(1.65rem, 3.6svh, 2.5rem)",
+                },
+                fontWeight: 400,
                 lineHeight: 1.15,
+                overflowWrap: "anywhere",
+                mb: { xs: 1, md: "clamp(8px, 1.5svh, 16px)" },
               }}
             >
               {text(photo.key)}
             </Typography>
-            <Typography color="text.secondary" sx={{ fontSize: "1.05rem", lineHeight: 1.7 }}>
+            <Typography
+              color="text.secondary"
+              sx={{
+                fontSize: { xs: "1rem", md: "clamp(0.9rem, 1.65svh, 1.05rem)" },
+                lineHeight: 1.6,
+                overflowWrap: "anywhere",
+                maxWidth: "36ch",
+              }}
+            >
               {text(`${photo.key}Text`)}
             </Typography>
-            <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
-              <IconButton
-                onClick={() => go(-1)}
-                aria-label={t("landing.gallery.previous")}
-                sx={arrow}
+          </Box>
+
+          <Box>
+            <Box
+              role="group"
+              aria-label={t("landing.gallery.photos")}
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
+                gap: { xs: 1, md: 0.75 },
+              }}
+            >
+              {photos.map((item, index) => {
+                const selected = index === active;
+
+                return (
+                  <ButtonBase
+                    key={item.key}
+                    onClick={() => setActive(index)}
+                    aria-label={`${number.format(index + 1)}: ${text(item.key)}`}
+                    aria-pressed={selected}
+                    sx={{
+                      minWidth: 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "stretch",
+                      gap: 1,
+                      borderRadius: 0.5,
+                      "&.Mui-focusVisible": {
+                        outline: "2px solid",
+                        outlineColor: "primary.main",
+                        outlineOffset: 4,
+                      },
+                      "&:hover .gallery-marker": {
+                        bgcolor: "primary.main",
+                      },
+                    }}
+                  >
+                    <Box
+                      component="img"
+                      src={item.src}
+                      alt=""
+                      loading="lazy"
+                      sx={{
+                        display: "block",
+                        width: "100%",
+                        aspectRatio: "3 / 2",
+                        objectFit: "contain",
+                        borderRadius: 0.5,
+                        opacity: selected ? 1 : 0.65,
+                        transition: "opacity 180ms ease",
+                        "@media (prefers-reduced-motion: reduce)": {
+                          transition: "none",
+                        },
+                      }}
+                    />
+                    <Box
+                      className="gallery-marker"
+                      aria-hidden="true"
+                      sx={{
+                        height: 2,
+                        bgcolor: selected ? "warning.main" : "divider",
+                        borderRadius: 1,
+                      }}
+                    />
+                  </ButtonBase>
+                );
+              })}
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 2,
+                mt: { xs: 2, md: "clamp(12px, 2svh, 22px)" },
+              }}
+            >
+              <Box
+                aria-hidden="true"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  flex: 1,
+                  maxWidth: 100,
+                  gap: 0.75,
+                }}
               >
-                <Prev />
-              </IconButton>
-              <IconButton onClick={() => go(1)} aria-label={t("landing.gallery.next")} sx={arrow}>
-                <Next />
-              </IconButton>
+                <Box
+                  sx={{
+                    width: 5,
+                    height: 5,
+                    borderRadius: "50%",
+                    bgcolor: "primary.main",
+                  }}
+                />
+                <Box sx={{ flex: 1, height: "1px", bgcolor: "divider" }} />
+                <Box
+                  sx={{
+                    width: 5,
+                    height: 5,
+                    borderRadius: "50%",
+                    border: 1,
+                    borderColor: "primary.main",
+                  }}
+                />
+              </Box>
+
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <IconButton
+                  onClick={() => go(-1)}
+                  aria-label={t("landing.gallery.previous")}
+                  sx={arrow}
+                >
+                  <Prev size={20} />
+                </IconButton>
+                <IconButton onClick={() => go(1)} aria-label={t("landing.gallery.next")} sx={arrow}>
+                  <Next size={20} />
+                </IconButton>
+              </Box>
             </Box>
           </Box>
         </Box>
