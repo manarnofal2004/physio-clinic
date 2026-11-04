@@ -63,7 +63,7 @@ export const PublicNavbar = () => {
         component="img"
         src={mode === "dark" ? "/logo-full-dark.png?v=3" : "/logo-full.png?v=3"}
         alt={t("brand.name")}
-        sx={{ height: 54, width: "auto", display: "block" }}
+        sx={{ height: 42, width: "auto", display: "block" }}
       />
     </Link>
   );
@@ -86,7 +86,7 @@ export const PublicNavbar = () => {
       color="inherit"
       sx={{ borderBottom: 1, borderColor: "divider", bgcolor: "background.default" }}
     >
-      <Toolbar sx={{ gap: 3, px: { md: 4 }, minHeight: NAVBAR_HEIGHT }}>
+      <Toolbar sx={{ gap: 3, px: { md: 4 }, minHeight: NAVBAR_HEIGHT, height: NAVBAR_HEIGHT }}>
         {brand}
 
         {isDesktop && (
