@@ -37,26 +37,14 @@ const SHORT = "@media (min-width: 900px) and (max-height: 760px)";
 // Handwriting for the captions: Caveat for Latin, Aref Ruqaa for Arabic.
 const HAND = '"Caveat", "Aref Ruqaa", cursive';
 
-// A torn paper edge: the sheet's outline with small irregular steps along the top
-// and bottom (fixed numbers, so it looks the same on every visit).
-const TEAR = [0, 1.2, 0.4, 1.6, 0.6, 1.4, 0.2, 1.1, 0.7, 1.5, 0.3, 1.3, 0.8, 1.6, 0.5, 1.0, 0.2];
-const tornPaper = () => {
-  const step = 100 / (TEAR.length - 1);
-  const top = TEAR.map((y, i) => `${(i * step).toFixed(2)}% ${y}%`);
-  const bottom = TEAR.map(
-    (_, i) => `${(100 - i * step).toFixed(2)}% ${100 - (TEAR[(i + 5) % TEAR.length] ?? 0)}%`,
-  );
-  return `polygon(${[...top, ...bottom].join(", ")})`;
-};
-const TORN = tornPaper();
-
 // One large photo, and beside it a sheet of paper with torn edges: the place's name
 // with a hand-drawn line under it and a sentence about it, the other photos glued on
 // with handwritten names, and arrows. The photos change by themselves every few
 // seconds.
 export const GallerySection = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const theme = useTheme();
+  const number = new Intl.NumberFormat(i18n.language);
   const isRtl = theme.direction === "rtl";
   const [active, setActive] = useState(0);
   const photo = photos[active] ?? photos[0]!;
@@ -80,7 +68,16 @@ export const GallerySection = () => {
   // Arrows point the way the photos move: in Arabic "next" is to the left.
   const Prev = isRtl ? ArrowRight : ArrowLeft;
   const Next = isRtl ? ArrowLeft : ArrowRight;
-  const arrow = { color: "primary.dark", "&:hover": { bgcolor: "action.hover" } };
+  // Round pale olive bubbles that fill with olive on hover.
+  const arrow = {
+    width: 40,
+    height: 40,
+    bgcolor: "action.selected",
+    color: "primary.dark",
+    transition: "background-color 150ms, color 150ms",
+    "&:hover": { bgcolor: "primary.main", color: "primary.contrastText" },
+    "&.Mui-focusVisible": { outline: 2, outlineColor: "primary.main", outlineOffset: 2 },
+  };
 
   return (
     <LandingSection
@@ -112,16 +109,12 @@ export const GallerySection = () => {
             sx={{
               height: "100%",
               boxSizing: "border-box",
-              // Light mode: a photo of real torn paper, stretched to the sheet.
-              // Dark mode: a dark sheet cut with the same kind of torn edge.
-              ...(theme.palette.mode === "light"
-                ? {
-                    // Separate properties: the RTL plugin garbles the shorthand.
-                    backgroundImage: "url(/images/paper.webp)",
-                    backgroundSize: "100% 100%",
-                    backgroundRepeat: "no-repeat",
-                  }
-                : { clipPath: TORN, bgcolor: "background.paper" }),
+              // A photo of real torn paper stretched to the sheet: cream in light
+              // mode, a dark olive stone version of the same sheet in dark mode.
+              // Separate properties: the RTL plugin garbles the shorthand.
+              backgroundImage: `url(/images/${theme.palette.mode === "light" ? "paper" : "paper-dark"}.webp)`,
+              backgroundSize: "100% 100%",
+              backgroundRepeat: "no-repeat",
               px: { xs: 2.5, md: 3.5 },
               py: { xs: 3.5, md: 4 },
               display: "flex",
@@ -196,7 +189,8 @@ export const GallerySection = () => {
                       boxSizing: "border-box",
                       objectFit: "cover",
                       border: "4px solid",
-                      borderColor: "background.paper",
+                      // White print borders; a soft cream at night so they don't glare.
+                      borderColor: theme.palette.mode === "light" ? "background.paper" : "#d9d1bf",
                       boxShadow: "0 3px 8px rgba(60, 50, 20, 0.18)",
                     }}
                   />
@@ -217,16 +211,31 @@ export const GallerySection = () => {
               ))}
             </Box>
 
-            <Box sx={{ display: "flex", gap: 1, mt: -1 }}>
+            {/* The arrows with the photo's number between them, written by hand. */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mt: -1 }}>
               <IconButton
                 onClick={() => go(-1)}
                 aria-label={t("landing.gallery.previous")}
                 sx={arrow}
               >
-                <Prev />
+                <Prev size={18} />
               </IconButton>
+              <Box
+                component="span"
+                aria-hidden
+                sx={{
+                  fontFamily: HAND,
+                  fontSize: "1.3rem",
+                  color: "warning.dark",
+                  minWidth: 44,
+                  textAlign: "center",
+                  direction: "ltr",
+                }}
+              >
+                {number.format(active + 1)} / {number.format(photos.length)}
+              </Box>
               <IconButton onClick={() => go(1)} aria-label={t("landing.gallery.next")} sx={arrow}>
-                <Next />
+                <Next size={18} />
               </IconButton>
             </Box>
           </Box>

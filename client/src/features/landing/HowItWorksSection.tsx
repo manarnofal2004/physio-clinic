@@ -113,7 +113,6 @@ export const HowItWorksSection = () => {
       title={t("landing.how.title")}
       intro={t("landing.how.intro")}
       alignTop
-      centered
     >
       {/* Wide screens: the spine with the steps around it. */}
       <Box
