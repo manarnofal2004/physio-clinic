@@ -15,3 +15,5 @@ import "@fontsource/aref-ruqaa/arabic-400.css";
 // Amiri (a classic book Naskh) for the Arabic intro line under each section title;
 // the English one is Redaction italic.
 import "@fontsource/amiri/arabic-400.css";
+// El Messiri for the Arabic section titles; the English ones are Redaction italic.
+import "@fontsource/el-messiri/arabic-600.css";

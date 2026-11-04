@@ -1,7 +1,7 @@
 import { Box, type SxProps, type Theme } from "@mui/material";
 
-// A wavy line, as if drawn by hand with a honey pen. It sits under the section titles
-// and the place names in the gallery, so the same mark runs through the page.
+// A wavy line, as if drawn by hand with a honey pen, under the place names in the
+// gallery.
 const PATH = "M2 8 C 20 3, 38 11, 58 6 S 96 4, 118 7 S 160 10, 198 5";
 
 export const Scribble = ({ sx }: { sx?: SxProps<Theme> }) => (

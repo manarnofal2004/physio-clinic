@@ -26,6 +26,9 @@ importers:
       '@fontsource/caveat':
         specifier: ^5.3.0
         version: 5.3.0
+      '@fontsource/el-messiri':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@fontsource/ibm-plex-sans-arabic':
         specifier: ^5.3.0
         version: 5.3.0
@@ -295,6 +298,9 @@ packages:
 
   '@fontsource/caveat@5.3.0':
     resolution: {integrity: sha512-eHTfzQxFSW9ABERRLNruHoNJmKed2J7pqTUc5lp4a4POMgXGKpxmWj3d9Hz10kmAg6iuTTLe6UagbA4bnsmfQw==}
+
+  '@fontsource/el-messiri@5.3.0':
+    resolution: {integrity: sha512-Fqhf6DEuRInnLso60tk2i8mQlFfDjYNeF6Ybrto7jBnAwNClQqn4g9lMae/M+ub1zWYteM98uPOA1DwU5J8hbw==}
 
   '@fontsource/ibm-plex-sans-arabic@5.3.0':
     resolution: {integrity: sha512-ZZ4g+JDgQY0NqSh4o0MNWU1sHQmtcee1g++aKAwyJvZxnT5y51JXsN1cIXnaQaMd40dcbK6QFYa+Z1LbaiNuqA==}
@@ -1730,6 +1736,8 @@ snapshots:
   '@fontsource/aref-ruqaa@5.3.0': {}
 
   '@fontsource/caveat@5.3.0': {}
+
+  '@fontsource/el-messiri@5.3.0': {}
 
   '@fontsource/ibm-plex-sans-arabic@5.3.0': {}
 
