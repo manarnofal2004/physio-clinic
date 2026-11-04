@@ -63,10 +63,16 @@ export const LandingSection = ({
           </Typography>
           {intro && (
             <Typography
+              // The intro reads like a quiet line from a book: Redaction italic in
+              // English, Amiri in Arabic (Arabic has no italic), in dark honey.
               sx={{
                 mt: compact || alignTop ? 0.5 : 2,
-                fontSize: "1.125rem",
-                color: centered ? "warning.main" : "text.secondary",
+                fontFamily: '"Redaction", "Amiri", serif',
+                fontStyle: "italic",
+                fontSize: { xs: "1.2rem", md: "1.3rem" },
+                lineHeight: 1.5,
+                color: "warning.dark",
+                "&:lang(ar)": { fontStyle: "normal", fontSize: { xs: "1.3rem", md: "1.4rem" } },
               }}
             >
               {intro}

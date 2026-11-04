@@ -23,9 +23,14 @@ const AUTO_MS = 5000; // the photos move on by themselves every 5 seconds
 
 // Height of the large photo on wide screens: the screen minus the heading above.
 const FEATURE_HEIGHT = "calc(100svh - 236px)";
-// Height of the small glued photos: two rows of them, the name and the arrows must
-// fit next to the large photo, on short screens too.
-const SMALL_HEIGHT = `clamp(64px, calc((${FEATURE_HEIGHT} - 270px) / 2), 124px)`;
+// The sheet is as tall as the large photo and takes the rest of the width. Its name,
+// sentence, captions, arrows and padding take about SHEET_TEXT, so the large photo
+// leaves the sheet that much more width than half, and the small photos keep about 3:2.
+const SHEET_TEXT = "364px";
+const GAP = "32px";
+const COLUMNS = `minmax(0, 1fr) min(calc(${FEATURE_HEIGHT} * 1.5), calc((100% - ${GAP} + ${SHEET_TEXT}) / 2))`;
+// On short laptop screens the sheet is wide and low, so the small photos go in one row.
+const SHORT = "@media (min-width: 900px) and (max-height: 760px)";
 
 // Handwriting for the captions: Caveat for Latin, Aref Ruqaa for Arabic.
 const HAND = '"Caveat", "Aref Ruqaa", cursive';
@@ -92,11 +97,8 @@ export const GallerySection = () => {
         onBlur={() => setPaused(false)}
         sx={{
           display: "grid",
-          gridTemplateColumns: {
-            xs: "1fr",
-            md: `minmax(0, 1fr) min(calc(${FEATURE_HEIGHT} * 1.38), calc(100% - 380px))`,
-          },
-          gap: { xs: 3, md: 4 },
+          gridTemplateColumns: { xs: "1fr", md: COLUMNS },
+          gap: { xs: 3, md: GAP },
           "@keyframes galleryFade": { from: { opacity: 0.4 }, to: { opacity: 1 } },
         }}
       >
@@ -157,20 +159,25 @@ export const GallerySection = () => {
               </Typography>
             </Box>
 
-            {/* The other photos, glued on slightly crooked, each with its name. */}
+            {/* The other photos in a tidy two-by-two grid that fills the rest of
+                the sheet, each with its name written under it. */}
             <Box
               role="list"
               aria-label={t("landing.gallery.photos")}
               sx={{
+                flex: { md: 1 },
+                minHeight: 0,
                 display: "grid",
-                // Two columns, each as wide as one small photo may be (from the
-                // screen height), so the photos never push the text off screen.
                 gridTemplateColumns: "1fr 1fr",
-                maxWidth: { xs: 320, md: `calc(${SMALL_HEIGHT} * 3 + 16px)` },
+                gridTemplateRows: { md: "minmax(0, 1fr) minmax(0, 1fr)" },
                 gap: { xs: 1.5, md: 2 },
+                [SHORT]: {
+                  gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+                  gridTemplateRows: "minmax(0, 1fr)",
+                },
               }}
             >
-              {others.map((item, index) => (
+              {others.map((item) => (
                 <ButtonBase
                   key={item.key}
                   role="listitem"
@@ -180,9 +187,9 @@ export const GallerySection = () => {
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "stretch",
-                    transform: `rotate(${[-1.6, 1.2, 1.4, -1.1][index] ?? 0}deg)`,
+                    minHeight: 0,
                     transition: "transform 200ms ease-out",
-                    "&:hover": { transform: "rotate(0deg) translateY(-3px)" },
+                    "&:hover": { transform: "translateY(-3px)" },
                     "&:focus-visible": {
                       outline: 2,
                       outlineColor: "primary.main",
@@ -198,7 +205,11 @@ export const GallerySection = () => {
                     sx={{
                       display: "block",
                       width: "100%",
-                      aspectRatio: "3 / 2",
+                      // Phones: 3:2. Wide screens: whatever the grid cell leaves.
+                      aspectRatio: { xs: "3 / 2", md: "auto" },
+                      flex: { md: 1 },
+                      minHeight: 0,
+                      boxSizing: "border-box",
                       objectFit: "cover",
                       border: "4px solid",
                       borderColor: "background.paper",
@@ -222,7 +233,7 @@ export const GallerySection = () => {
               ))}
             </Box>
 
-            <Box sx={{ display: "flex", gap: 1, mt: "auto" }}>
+            <Box sx={{ display: "flex", gap: 1, mt: -1 }}>
               <IconButton
                 onClick={() => go(-1)}
                 aria-label={t("landing.gallery.previous")}
@@ -246,6 +257,7 @@ export const GallerySection = () => {
             display: "block",
             width: "100%",
             aspectRatio: "3 / 2",
+            alignSelf: "start", // sets the row height; the sheet stretches to match
             objectFit: "cover",
             borderRadius: 1,
             boxShadow: "0 10px 24px -12px rgba(60, 50, 20, 0.35)",

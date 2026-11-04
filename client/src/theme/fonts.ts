@@ -12,3 +12,6 @@ import "@fontsource/ibm-plex-sans-arabic/arabic-700.css";
 // Aref Ruqaa (a Ruq'ah hand) for Arabic.
 import "@fontsource/caveat/latin-500.css";
 import "@fontsource/aref-ruqaa/arabic-400.css";
+// Amiri (a classic book Naskh) for the Arabic intro line under each section title;
+// the English one is Redaction italic.
+import "@fontsource/amiri/arabic-400.css";
