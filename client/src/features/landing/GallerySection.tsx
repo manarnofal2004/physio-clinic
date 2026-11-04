@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, ButtonBase, IconButton, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Translation } from "@/i18n/locales/en";
 import { LandingSection } from "./LandingSection";
@@ -23,18 +23,40 @@ const AUTO_MS = 5000; // the photos move on by themselves every 5 seconds
 
 // Height of the large photo on wide screens: the screen minus the heading above.
 const FEATURE_HEIGHT = "calc(100svh - 236px)";
+// Height of the small glued photos: two rows of them, the name and the arrows must
+// fit next to the large photo, on short screens too.
+const SMALL_HEIGHT = `clamp(64px, calc((${FEATURE_HEIGHT} - 270px) / 2), 124px)`;
 
-// One large photo, and beside it the next three photos as a small stack of prints
-// peeking out (clicking the stack moves on), then the number, name and a line
-// about the place, with arrows. The photos keep their natural 3:2 shape.
+// Handwriting for the captions: Caveat for Latin, Aref Ruqaa for Arabic.
+const HAND = '"Caveat", "Aref Ruqaa", cursive';
+
+// A torn paper edge: the sheet's outline with small irregular steps along the top
+// and bottom (fixed numbers, so it looks the same on every visit).
+const TEAR = [0, 1.2, 0.4, 1.6, 0.6, 1.4, 0.2, 1.1, 0.7, 1.5, 0.3, 1.3, 0.8, 1.6, 0.5, 1.0, 0.2];
+const tornPaper = () => {
+  const step = 100 / (TEAR.length - 1);
+  const top = TEAR.map((y, i) => `${(i * step).toFixed(2)}% ${y}%`);
+  const bottom = TEAR.map(
+    (_, i) => `${(100 - i * step).toFixed(2)}% ${100 - (TEAR[(i + 5) % TEAR.length] ?? 0)}%`,
+  );
+  return `polygon(${[...top, ...bottom].join(", ")})`;
+};
+const TORN = tornPaper();
+
+// A wavy hand-drawn line for under the place name.
+const SCRIBBLE = "M2 8 C 20 3, 38 11, 58 6 S 96 4, 118 7 S 160 10, 198 5";
+
+// One large photo, and beside it a sheet of paper with torn edges: the place's name
+// with a hand-drawn line under it and a sentence about it, the other photos glued on
+// with handwritten names, and arrows. The photos change by themselves every few
+// seconds.
 export const GallerySection = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const theme = useTheme();
   const isRtl = theme.direction === "rtl";
   const [active, setActive] = useState(0);
-  const at = (offset: number) => photos[(active + offset) % photos.length] ?? photos[0]!;
-  const photo = at(0);
-  const number = new Intl.NumberFormat(i18n.language, { minimumIntegerDigits: 2 });
+  const photo = photos[active] ?? photos[0]!;
+  const others = photos.filter((_, index) => index !== active);
   const text = (key: string) => t(`landing.gallery.${key as GalleryKey}`);
 
   const go = (step: 1 | -1) => setActive((a) => (a + step + photos.length) % photos.length);
@@ -50,66 +72,11 @@ export const GallerySection = () => {
     const id = window.setTimeout(() => go(1), AUTO_MS);
     return () => window.clearTimeout(id);
   }, [active, paused, reduceMotion]);
-  const Prev = isRtl ? ChevronRight : ChevronLeft;
-  const Next = isRtl ? ChevronLeft : ChevronRight;
-  const arrow = { border: 1, borderColor: "divider", "&:hover": { bgcolor: "action.selected" } };
 
-  // One print in the stack, made like an instant photo: a white frame with a wider
-  // bottom edge carrying the place's name, tilted by `turn` degrees. When the photos
-  // move on, each print drops into its new place.
-  const print = (offset: 1 | 2 | 3, turn: number, sx: object) => {
-    const item = at(offset);
-    return (
-      <Box
-        key={`${item.key}-${offset}`}
-        sx={{
-          position: "absolute",
-          width: "62%",
-          p: "6px",
-          pb: 0,
-          bgcolor: "background.paper",
-          borderRadius: 1.5,
-          boxShadow: "0 16px 34px -16px rgba(40, 50, 20, 0.5)",
-          "--turn": `${turn}deg`,
-          transform: "rotate(var(--turn))",
-          transition: "transform 300ms ease-out",
-          animation: "printIn 450ms cubic-bezier(0.2, 0.8, 0.2, 1)",
-          "@keyframes printIn": {
-            from: { opacity: 0, transform: "translateY(-18px) rotate(calc(var(--turn) * 2))" },
-            to: { opacity: 1, transform: "rotate(var(--turn))" },
-          },
-          "@media (prefers-reduced-motion: reduce)": { animation: "none" },
-          ...sx,
-        }}
-      >
-        <Box
-          component="img"
-          src={item.src}
-          alt=""
-          sx={{
-            display: "block",
-            width: "100%",
-            aspectRatio: "3 / 2",
-            objectFit: "cover",
-            borderRadius: 1,
-          }}
-        />
-        <Box
-          sx={{
-            py: 0.75,
-            textAlign: "center",
-            fontSize: "0.85rem",
-            color: "text.secondary",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {text(item.key)}
-        </Box>
-      </Box>
-    );
-  };
+  // Arrows point the way the photos move: in Arabic "next" is to the left.
+  const Prev = isRtl ? ArrowRight : ArrowLeft;
+  const Next = isRtl ? ArrowLeft : ArrowRight;
+  const arrow = { color: "primary.dark", "&:hover": { bgcolor: "action.hover" } };
 
   return (
     <LandingSection
@@ -125,80 +92,129 @@ export const GallerySection = () => {
         onBlur={() => setPaused(false)}
         sx={{
           display: "grid",
-          // The photo column is a 3:2 photo a little under the full height, leaving
-          // room beside it for the stack and the text.
           gridTemplateColumns: {
             xs: "1fr",
-            md: `min(calc(${FEATURE_HEIGHT} * 1.38), calc(100% - 380px)) 1fr`,
+            md: `minmax(0, 1fr) min(calc(${FEATURE_HEIGHT} * 1.38), calc(100% - 380px))`,
           },
-          alignItems: "center",
           gap: { xs: 3, md: 4 },
           "@keyframes galleryFade": { from: { opacity: 0.4 }, to: { opacity: 1 } },
         }}
       >
+        {/* The sheet of paper, with a soft shadow that follows its torn edges. */}
         <Box
-          key={photo.key}
-          component="img"
-          src={photo.src}
-          alt={text(photo.key)}
           sx={{
-            display: "block",
-            width: "100%",
-            aspectRatio: "3 / 2",
-            objectFit: "cover",
-            borderRadius: 4,
-            animation: "galleryFade 350ms ease-out",
-            "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+            order: { xs: 2, md: 0 },
+            filter: "drop-shadow(0 10px 18px rgba(60, 50, 20, 0.18))",
           }}
-        />
-
-        <Box sx={{ display: "flex", flexDirection: "column", gap: { md: 3 } }}>
-          {/* The next three photos, stacked like prints; clicking shows the next one.
-              The stack is sized from the screen height so the text under it always
-              stays on screen. */}
-          <ButtonBase
-            onClick={() => go(1)}
-            aria-label={`${t("landing.gallery.next")}: ${text(at(1).key)}`}
+        >
+          <Box
             sx={{
-              display: { xs: "none", md: "block" },
-              position: "relative",
-              width: `min(100%, calc((${FEATURE_HEIGHT} - 230px) * 1.33))`,
-              aspectRatio: "4 / 3",
-              borderRadius: 3,
-              // Hovering fans the prints out a little.
-              "&:hover > div:nth-of-type(1)": { transform: "rotate(12deg) translateX(8px)" },
-              "&:hover > div:nth-of-type(2)": { transform: "rotate(-8deg) translateX(-8px)" },
-              "&:hover > div:nth-of-type(3)": { transform: "rotate(1deg) translateY(-8px)" },
-              "&:focus-visible": { outline: 2, outlineColor: "primary.main", outlineOffset: 4 },
+              height: "100%",
+              boxSizing: "border-box",
+              clipPath: TORN,
+              bgcolor: theme.palette.mode === "light" ? "#fbf7ef" : "background.paper",
+              px: { xs: 2.5, md: 3.5 },
+              py: { xs: 3, md: 3.5 },
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
             }}
           >
-            {print(3, 8, { top: 0, insetInlineEnd: "2%" })}
-            {print(2, -4, { top: "10%", insetInlineStart: "4%" })}
-            {print(1, 3, { top: "24%", insetInlineStart: "26%" })}
-          </ButtonBase>
+            <Box aria-live="polite">
+              <Typography
+                variant="h3"
+                component="h3"
+                sx={{ fontSize: { xs: "1.8rem", md: "2.2rem" }, color: "primary.dark" }}
+              >
+                {text(photo.key)}
+              </Typography>
+              <Box
+                component="svg"
+                aria-hidden
+                viewBox="0 0 200 12"
+                preserveAspectRatio="none"
+                sx={{ display: "block", width: 150, height: 10, mt: 0.25 }}
+              >
+                <Box
+                  component="path"
+                  d={SCRIBBLE}
+                  fill="none"
+                  strokeWidth={2.2}
+                  strokeLinecap="round"
+                  sx={{ stroke: (th) => th.palette.warning.main }}
+                />
+              </Box>
+              <Typography color="text.secondary" sx={{ mt: 1.25, fontSize: "1.05rem" }}>
+                {text(`${photo.key}Text`)}
+              </Typography>
+            </Box>
 
-          {/* The number, name and a line about the photo shown large, with arrows. */}
-          <Box aria-live="polite" sx={{ display: "flex", flexDirection: "column", gap: 1.25 }}>
-            <Typography sx={{ color: "warning.main", fontSize: "1.05rem" }}>
-              <bdi>
-                {number.format(active + 1)} / {number.format(photos.length)}
-              </bdi>
-            </Typography>
-            <Typography
-              variant="h3"
-              component="h3"
+            {/* The other photos, glued on slightly crooked, each with its name. */}
+            <Box
+              role="list"
+              aria-label={t("landing.gallery.photos")}
               sx={{
-                fontSize: { xs: "1.8rem", md: "2.3rem" },
-                color: "primary.dark",
-                lineHeight: 1.15,
+                display: "grid",
+                // Two columns, each as wide as one small photo may be (from the
+                // screen height), so the photos never push the text off screen.
+                gridTemplateColumns: "1fr 1fr",
+                maxWidth: { xs: 320, md: `calc(${SMALL_HEIGHT} * 3 + 16px)` },
+                gap: { xs: 1.5, md: 2 },
               }}
             >
-              {text(photo.key)}
-            </Typography>
-            <Typography color="text.secondary" sx={{ fontSize: "1.05rem", lineHeight: 1.7 }}>
-              {text(`${photo.key}Text`)}
-            </Typography>
-            <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+              {others.map((item, index) => (
+                <ButtonBase
+                  key={item.key}
+                  role="listitem"
+                  onClick={() => setActive(photos.indexOf(item))}
+                  aria-label={`${t("landing.gallery.open")}: ${text(item.key)}`}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "stretch",
+                    transform: `rotate(${[-1.6, 1.2, 1.4, -1.1][index] ?? 0}deg)`,
+                    transition: "transform 200ms ease-out",
+                    "&:hover": { transform: "rotate(0deg) translateY(-3px)" },
+                    "&:focus-visible": {
+                      outline: 2,
+                      outlineColor: "primary.main",
+                      outlineOffset: 3,
+                    },
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={item.src}
+                    alt=""
+                    loading="lazy"
+                    sx={{
+                      display: "block",
+                      width: "100%",
+                      aspectRatio: "3 / 2",
+                      objectFit: "cover",
+                      border: "4px solid",
+                      borderColor: "background.paper",
+                      boxShadow: "0 3px 8px rgba(60, 50, 20, 0.18)",
+                    }}
+                  />
+                  <Box
+                    component="span"
+                    sx={{
+                      mt: 0.5,
+                      fontFamily: HAND,
+                      fontSize: "1.15rem",
+                      lineHeight: 1.2,
+                      color: "warning.dark",
+                      textAlign: "center",
+                    }}
+                  >
+                    {text(item.key)}
+                  </Box>
+                </ButtonBase>
+              ))}
+            </Box>
+
+            <Box sx={{ display: "flex", gap: 1, mt: "auto" }}>
               <IconButton
                 onClick={() => go(-1)}
                 aria-label={t("landing.gallery.previous")}
@@ -212,6 +228,23 @@ export const GallerySection = () => {
             </Box>
           </Box>
         </Box>
+
+        <Box
+          key={photo.key}
+          component="img"
+          src={photo.src}
+          alt={text(photo.key)}
+          sx={{
+            display: "block",
+            width: "100%",
+            aspectRatio: "3 / 2",
+            objectFit: "cover",
+            borderRadius: 1,
+            boxShadow: "0 10px 24px -12px rgba(60, 50, 20, 0.35)",
+            animation: "galleryFade 350ms ease-out",
+            "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+          }}
+        />
       </Box>
     </LandingSection>
   );

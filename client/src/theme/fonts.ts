@@ -8,3 +8,7 @@ import "@fontsource/redaction/400-italic.css";
 import "@fontsource/ibm-plex-sans-arabic/arabic-400.css";
 import "@fontsource/ibm-plex-sans-arabic/arabic-500.css";
 import "@fontsource/ibm-plex-sans-arabic/arabic-700.css";
+// Handwriting, only for the captions in the gallery: Caveat for Latin letters and
+// Aref Ruqaa (a Ruq'ah hand) for Arabic.
+import "@fontsource/caveat/latin-500.css";
+import "@fontsource/aref-ruqaa/arabic-400.css";
