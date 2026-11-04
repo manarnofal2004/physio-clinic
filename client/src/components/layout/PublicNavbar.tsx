@@ -69,7 +69,13 @@ export const PublicNavbar = () => {
   );
 
   const bookButton = (
-    <Button variant="contained" href={`/#${BOOKING_ID}`} onClick={() => setMenuOpen(false)}>
+    <Button
+      variant="contained"
+      size="small"
+      href={`/#${BOOKING_ID}`}
+      onClick={() => setMenuOpen(false)}
+      sx={{ px: 2, py: 0.5, fontSize: "0.95rem" }}
+    >
       {t("nav.book")}
     </Button>
   );

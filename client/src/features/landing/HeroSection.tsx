@@ -80,7 +80,7 @@ export const HeroSection = () => {
         }}
       >
         <Box sx={{ width: { md: "44%" } }}>
-          <Typography variant="h1" sx={{ fontSize: { xs: "2.4rem", md: "3.25rem" } }}>
+          <Typography variant="h1" sx={{ fontSize: { xs: "2.6rem", md: "3.4rem" } }}>
             {t("landing.hero.title")}{" "}
             {/* Second line in italic. Arabic has no true italic (a slanted Arabic
                 font looks broken), so there it stays upright. */}
@@ -90,7 +90,12 @@ export const HeroSection = () => {
           </Typography>
           <Typography
             color="text.secondary"
-            sx={{ mt: 3, fontSize: "1.15rem", lineHeight: 1.7, maxWidth: "34em" }}
+            sx={{
+              mt: 3,
+              fontSize: { xs: "1.15rem", md: "1.2rem" },
+              lineHeight: 1.7,
+              maxWidth: "34em",
+            }}
           >
             {t("landing.hero.subtitle")}
           </Typography>
@@ -123,10 +128,13 @@ export const HeroSection = () => {
           >
             {details.map((detail) => (
               <div key={detail.label}>
-                <Typography component="dt" variant="body2" color="text.secondary">
+                <Typography component="dt" color="text.secondary" sx={{ fontSize: "0.95rem" }}>
                   {detail.label}
                 </Typography>
-                <Typography component="dd" sx={{ m: 0, mt: 0.5, fontWeight: 500 }}>
+                <Typography
+                  component="dd"
+                  sx={{ m: 0, mt: 0.5, fontWeight: 500, fontSize: "1.1rem" }}
+                >
                   {detail.value}
                 </Typography>
               </div>
