@@ -70,7 +70,10 @@ export const HeroSection = () => {
           maxWidth: 1200,
           mx: "auto",
           px: { xs: 2, md: 4 },
-          py: { xs: 7, md: 10 },
+          // More space below than above on wide screens, so the text sits a
+          // little higher than the middle of the screen.
+          pt: { xs: 7, md: 4 },
+          pb: { xs: 7, md: 14 },
           minHeight: { md: SCREEN_HEIGHT },
           display: "flex",
           alignItems: "center",
