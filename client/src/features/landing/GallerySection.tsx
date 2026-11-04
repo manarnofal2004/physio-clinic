@@ -54,29 +54,60 @@ export const GallerySection = () => {
   const Next = isRtl ? ChevronLeft : ChevronRight;
   const arrow = { border: 1, borderColor: "divider", "&:hover": { bgcolor: "action.selected" } };
 
-  // One print in the stack: a white border, a soft shadow and a slight tilt.
-  const print = (offset: 1 | 2 | 3, sx: object) => {
+  // One print in the stack, made like an instant photo: a white frame with a wider
+  // bottom edge carrying the place's name, tilted by `turn` degrees. When the photos
+  // move on, each print drops into its new place.
+  const print = (offset: 1 | 2 | 3, turn: number, sx: object) => {
     const item = at(offset);
     return (
       <Box
         key={`${item.key}-${offset}`}
-        component="img"
-        src={item.src}
-        alt=""
         sx={{
           position: "absolute",
-          width: "70%",
-          aspectRatio: "3 / 2",
-          objectFit: "cover",
-          borderRadius: 2.5,
-          border: "5px solid",
-          borderColor: "background.paper",
-          boxShadow: "0 18px 40px -18px rgba(40, 50, 20, 0.45)",
+          width: "62%",
+          p: "6px",
+          pb: 0,
+          bgcolor: "background.paper",
+          borderRadius: 1.5,
+          boxShadow: "0 16px 34px -16px rgba(40, 50, 20, 0.5)",
+          "--turn": `${turn}deg`,
+          transform: "rotate(var(--turn))",
           transition: "transform 300ms ease-out",
-          animation: "galleryFade 350ms ease-out",
+          animation: "printIn 450ms cubic-bezier(0.2, 0.8, 0.2, 1)",
+          "@keyframes printIn": {
+            from: { opacity: 0, transform: "translateY(-18px) rotate(calc(var(--turn) * 2))" },
+            to: { opacity: 1, transform: "rotate(var(--turn))" },
+          },
+          "@media (prefers-reduced-motion: reduce)": { animation: "none" },
           ...sx,
         }}
-      />
+      >
+        <Box
+          component="img"
+          src={item.src}
+          alt=""
+          sx={{
+            display: "block",
+            width: "100%",
+            aspectRatio: "3 / 2",
+            objectFit: "cover",
+            borderRadius: 1,
+          }}
+        />
+        <Box
+          sx={{
+            py: 0.75,
+            textAlign: "center",
+            fontSize: "0.85rem",
+            color: "text.secondary",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {text(item.key)}
+        </Box>
+      </Box>
     );
   };
 
@@ -131,16 +162,19 @@ export const GallerySection = () => {
             sx={{
               display: { xs: "none", md: "block" },
               position: "relative",
-              width: `min(100%, calc((${FEATURE_HEIGHT} - 230px) * 1.5))`,
-              aspectRatio: "3 / 2",
+              width: `min(100%, calc((${FEATURE_HEIGHT} - 230px) * 1.33))`,
+              aspectRatio: "4 / 3",
               borderRadius: 3,
-              "&:hover img:last-of-type": { transform: "rotate(-1deg) translateY(-6px)" },
+              // Hovering fans the prints out a little.
+              "&:hover > div:nth-of-type(1)": { transform: "rotate(12deg) translateX(8px)" },
+              "&:hover > div:nth-of-type(2)": { transform: "rotate(-8deg) translateX(-8px)" },
+              "&:hover > div:nth-of-type(3)": { transform: "rotate(1deg) translateY(-8px)" },
               "&:focus-visible": { outline: 2, outlineColor: "primary.main", outlineOffset: 4 },
             }}
           >
-            {print(3, { top: 0, insetInlineEnd: 0, transform: "rotate(6deg)" })}
-            {print(2, { top: "12%", insetInlineStart: "15%", transform: "rotate(-1deg)" })}
-            {print(1, { top: "26%", insetInlineStart: 0, transform: "rotate(-5deg)" })}
+            {print(3, 8, { top: 0, insetInlineEnd: "2%" })}
+            {print(2, -4, { top: "10%", insetInlineStart: "4%" })}
+            {print(1, 3, { top: "24%", insetInlineStart: "26%" })}
           </ButtonBase>
 
           {/* The number, name and a line about the photo shown large, with arrows. */}
