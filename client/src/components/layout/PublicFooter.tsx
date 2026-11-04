@@ -33,7 +33,7 @@ export const PublicFooter = () => {
         <Box>
           <Box
             component="img"
-            src={mode === "dark" ? "/logo-full-dark.png" : "/logo-full.png"}
+            src={mode === "dark" ? "/logo-full-dark.png?v=3" : "/logo-full.png?v=3"}
             alt={t("brand.name")}
             sx={{ height: 56, width: "auto", display: "block" }}
           />

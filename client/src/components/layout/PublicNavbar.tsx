@@ -61,9 +61,9 @@ export const PublicNavbar = () => {
           dark mode uses a copy in lighter colours so it stays readable on the dark bar. */}
       <Box
         component="img"
-        src={mode === "dark" ? "/logo-full-dark.png" : "/logo-full.png"}
+        src={mode === "dark" ? "/logo-full-dark.png?v=3" : "/logo-full.png?v=3"}
         alt={t("brand.name")}
-        sx={{ height: 48, width: "auto", display: "block" }}
+        sx={{ height: 54, width: "auto", display: "block" }}
       />
     </Link>
   );
