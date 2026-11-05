@@ -302,8 +302,11 @@ export const FaqSection = () => {
                 width: 34,
                 height: 34,
                 borderRadius: "50%",
-                bgcolor: "primary.main",
-                color: "primary.contrastText",
+                // Pale olive like the bubbles; fills with olive on hover.
+                bgcolor: "action.selected",
+                color: "primary.dark",
+                transition: "background-color 150ms, color 150ms",
+                ".MuiButtonBase-root:hover &": { bgcolor: "primary.main", color: "#fff" },
                 ms: 2,
               }}
             >
