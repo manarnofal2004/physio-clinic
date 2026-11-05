@@ -133,6 +133,9 @@ export const en = {
     },
     contact: {
       title: "Visit us",
+      intro: "We are in Nablus. Move the map around, or open it for directions.",
+      mapTitle: "Map showing where Sanad clinic is",
+      directions: "Get directions",
       addressLabel: "Address",
       address: "Main Street, Nablus, Palestine",
       phoneLabel: "Phone",

@@ -131,6 +131,9 @@ export const ar: Translation = {
     },
     contact: {
       title: "زورونا",
+      intro: "نحن في نابلس. حرّك الخريطة، أو افتحها لتعرف الطريق.",
+      mapTitle: "خريطة تبيّن مكان عيادة سَنَد",
+      directions: "اعرف الطريق",
       addressLabel: "العنوان",
       address: "الشارع الرئيسي، نابلس، فلسطين",
       phoneLabel: "الهاتف",
