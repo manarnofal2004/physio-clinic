@@ -115,6 +115,8 @@ export const en = {
     },
     faq: {
       title: "Before you come",
+      intro: "Tap a question, and we answer the way we would on the phone.",
+      typing: "Sanad is typing",
       q1: "Do I need an account to book?",
       a1: "No. Choose a free time and enter your name and phone number. The clinic confirms the booking with you.",
       q2: "How long is a session?",
