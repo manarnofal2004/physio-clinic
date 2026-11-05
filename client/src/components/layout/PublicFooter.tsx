@@ -1,19 +1,15 @@
-import { Box, ButtonBase, Link, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
+import { SCREEN_HEIGHT } from "./navbarHeight";
 import { useTranslation } from "react-i18next";
 import { useColorMode } from "@/theme/colorModeContext";
 import { landingSections } from "./landingSections";
 
-// Four photos of the clinic for the strip at the top of the footer (the same ones
-// as the gallery).
-const strip = [
-  { key: "treatment", src: "/images/gallery/treatment.webp?v=2" },
-  { key: "waiting", src: "/images/gallery/waiting.webp?v=2" },
-  { key: "exercise", src: "/images/gallery/exercise.webp?v=2" },
-  { key: "reception", src: "/images/gallery/reception.webp?v=2" },
-] as const;
+// Four photos for the strip at the top of the footer, all different from the
+// gallery: the entrance, a treatment-room shelf, an exercise band, tea by the window.
+const strip = ["entrance", "shelf", "band", "tea"] as const;
 
-// The bottom of public pages, on the page's own beige: a strip of clinic photos
-// (each opens the gallery), then the logo and tagline on one side and the section
+// The bottom of public pages, on the page's own beige and one screen tall on wide
+// screens, so nothing of the section above shows: a strip of clinic photos, then the logo and tagline on one side and the section
 // links, phone and hours on the other, and the copyright under a honey line.
 export const PublicFooter = () => {
   const { t } = useTranslation();
@@ -21,8 +17,19 @@ export const PublicFooter = () => {
   const phone = t("landing.contact.phone");
 
   return (
-    <Box component="footer" sx={{ px: { xs: 2, md: 4 }, pt: { xs: 5, md: 7 }, pb: 4 }}>
-      <Box sx={{ maxWidth: 1200, mx: "auto" }}>
+    <Box
+      component="footer"
+      sx={{
+        px: { xs: 2, md: 4 },
+        pt: { xs: 5, md: 4 },
+        pb: 4,
+        minHeight: { md: SCREEN_HEIGHT },
+        boxSizing: "border-box",
+        display: { md: "flex" },
+        alignItems: "center",
+      }}
+    >
+      <Box sx={{ maxWidth: 1200, mx: "auto", width: "100%" }}>
         <Box
           sx={{
             display: "grid",
@@ -30,35 +37,21 @@ export const PublicFooter = () => {
             gap: { xs: 1.5, md: 2 },
           }}
         >
-          {strip.map((photo) => (
-            <ButtonBase
-              key={photo.key}
-              href="/#gallery"
-              aria-label={t(`landing.gallery.${photo.key}`)}
+          {strip.map((name) => (
+            <Box
+              key={name}
+              component="img"
+              src={`/images/footer/${name}.webp`}
+              alt=""
+              loading="lazy"
               sx={{
                 display: "block",
+                width: "100%",
+                aspectRatio: "1 / 1",
+                objectFit: "cover",
                 borderRadius: "16px",
-                overflow: "hidden",
-                "& img": { transition: "transform 400ms ease-out" },
-                "&:hover img": { transform: "scale(1.04)" },
-                "&.Mui-focusVisible": {
-                  outline: 2,
-                  outlineColor: "primary.main",
-                  outlineOffset: 3,
-                },
-                "@media (prefers-reduced-motion: reduce)": {
-                  "& img": { transition: "none" },
-                },
               }}
-            >
-              <Box
-                component="img"
-                src={photo.src}
-                alt=""
-                loading="lazy"
-                sx={{ display: "block", width: "100%", aspectRatio: "4 / 3", objectFit: "cover" }}
-              />
-            </ButtonBase>
+            />
           ))}
         </Box>
 
