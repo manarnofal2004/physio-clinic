@@ -1,5 +1,11 @@
 // English texts. ar.ts must have the same keys (TypeScript checks it).
 export const en = {
+  banner: {
+    label: "Clinic announcements",
+    previous: "Previous announcement",
+    next: "Next announcement",
+    close: "Close announcements",
+  },
   brand: {
     name: "Sanad",
     fullName: "Sanad Physiotherapy",

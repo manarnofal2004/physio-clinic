@@ -2,6 +2,12 @@ import type { Translation } from "./en";
 
 // Arabic texts, same keys as en.ts.
 export const ar: Translation = {
+  banner: {
+    label: "إعلانات العيادة",
+    previous: "الإعلان السابق",
+    next: "الإعلان التالي",
+    close: "إغلاق الإعلانات",
+  },
   brand: {
     name: "سَنَد",
     fullName: "سَنَد للعلاج الطبيعي",

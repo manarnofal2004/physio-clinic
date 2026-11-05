@@ -74,7 +74,8 @@ export const HeroSection = () => {
           // little higher than the middle of the screen.
           pt: { xs: 7, md: 4 },
           pb: { xs: 7, md: 14 },
-          minHeight: { md: SCREEN_HEIGHT },
+          // Leaves room for the announcement bar above the navbar while it shows.
+          minHeight: { md: `calc(${SCREEN_HEIGHT} - var(--banner-height, 0px))` },
           display: "flex",
           alignItems: "center",
         }}
