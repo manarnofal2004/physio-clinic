@@ -1,20 +1,23 @@
-import { Box, Link, Typography } from "@mui/material";
-import { SCREEN_HEIGHT } from "./navbarHeight";
+import { useState } from "react";
+import { Box, ButtonBase, Link, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useColorMode } from "@/theme/colorModeContext";
 import { landingSections } from "./landingSections";
+import { SCREEN_HEIGHT } from "./navbarHeight";
 
 // Four photos for the strip at the top of the footer, all different from the
 // gallery: the entrance, a treatment-room shelf, an exercise band, tea by the window.
 const strip = ["entrance", "shelf", "band", "tea"] as const;
 
 // The bottom of public pages, on the page's own beige and one screen tall on wide
-// screens, so nothing of the section above shows: a strip of clinic photos, then the logo and tagline on one side and the section
-// links, phone and hours on the other, and the copyright under a honey line.
+// screens, so nothing of the section above shows: a strip of clinic photos (a tapped
+// photo grows a little), then the logo and tagline on one side and the section links,
+// phone and hours on the other, and the copyright under a honey line.
 export const PublicFooter = () => {
   const { t } = useTranslation();
   const { mode } = useColorMode();
   const phone = t("landing.contact.phone");
+  const [enlarged, setEnlarged] = useState<string | null>(null);
 
   return (
     <Box
@@ -37,22 +40,40 @@ export const PublicFooter = () => {
             gap: { xs: 1.5, md: 2 },
           }}
         >
-          {strip.map((name) => (
-            <Box
-              key={name}
-              component="img"
-              src={`/images/footer/${name}.webp`}
-              alt=""
-              loading="lazy"
-              sx={{
-                display: "block",
-                width: "100%",
-                aspectRatio: "1 / 1",
-                objectFit: "cover",
-                borderRadius: "16px",
-              }}
-            />
-          ))}
+          {strip.map((name) => {
+            const big = enlarged === name;
+            return (
+              <ButtonBase
+                key={name}
+                onClick={() => setEnlarged(big ? null : name)}
+                aria-pressed={big}
+                aria-label={t(`landing.footer.${name}`)}
+                sx={{
+                  display: "block",
+                  position: "relative",
+                  zIndex: big ? 1 : 0,
+                  borderRadius: "16px",
+                  overflow: "hidden",
+                  transform: big ? "scale(1.12)" : "none",
+                  transition: "transform 300ms ease-out",
+                  "&.Mui-focusVisible": {
+                    outline: 2,
+                    outlineColor: "primary.main",
+                    outlineOffset: 3,
+                  },
+                  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+                }}
+              >
+                <Box
+                  component="img"
+                  src={`/images/footer/${name}.webp`}
+                  alt=""
+                  loading="lazy"
+                  sx={{ display: "block", width: "100%", aspectRatio: "1 / 1", objectFit: "cover" }}
+                />
+              </ButtonBase>
+            );
+          })}
         </Box>
 
         <Box

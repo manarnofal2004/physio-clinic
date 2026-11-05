@@ -158,6 +158,10 @@ export const en = {
     footer: {
       tagline: "Physiotherapy that gets you moving again.",
       pages: "On this page",
+      entrance: "The clinic entrance",
+      shelf: "A shelf in a treatment room",
+      band: "Hands holding an exercise band",
+      tea: "Tea by the waiting-room window",
       rights: "© {{year}} Sanad Physiotherapy. All rights reserved.",
     },
   },
