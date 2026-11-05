@@ -131,12 +131,17 @@ export const FaqSection = () => {
           // A shade darker than the page, so it reads as a chat window.
           bgcolor: (th) => (th.palette.mode === "light" ? "#ede3d1" : th.palette.background.paper),
           overflow: "hidden",
+          // A pale olive frame, the colour of the bubbles, like the mat around the
+          // gallery photo.
+          border: "10px solid",
+          borderColor: "action.selected",
+          boxSizing: "border-box",
           minHeight: { md: "calc(100svh - 240px)" },
           display: "flex",
           flexDirection: "column",
           // Short laptop screens: a tighter thread so the section fits one screen.
           "@media (min-width: 900px) and (max-height: 820px)": {
-            "& .faq-body": { py: 1.25 },
+            "& .faq-body": { py: 0.75 },
             "& .faq-thread": { gap: 1 },
             "& .faq-thread .MuiButtonBase-root": { py: 0.75 },
             "& .faq-bar": { py: 0.75 },
