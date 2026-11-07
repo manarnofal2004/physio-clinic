@@ -20,6 +20,7 @@ export function FormSelect<T extends FieldValues>({
   control,
   options,
   helperText,
+  onChange,
   ...textFieldProps
 }: FormSelectProps<T>) {
   const { field, fieldState } = useController({ name, control });
@@ -30,6 +31,10 @@ export function FormSelect<T extends FieldValues>({
       fullWidth
       {...textFieldProps}
       {...field}
+      onChange={(event) => {
+        field.onChange(event);
+        onChange?.(event);
+      }}
       value={field.value ?? ""}
       error={Boolean(fieldState.error)}
       helperText={fieldState.error?.message ?? helperText}
