@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 // Handwriting for the filled-in lines: Caveat for Latin, Aref Ruqaa for Arabic.
@@ -12,12 +12,14 @@ interface AppointmentCardProps {
   sent: boolean; // the request went out: the stamp is pressed on
 }
 
-// A clinic appointment card on torn paper that fills in, in honey handwriting, while
-// the visitor fills the form. Once the request is sent a round stamp says it is waiting
-// for the clinic to confirm.
+// A clinic appointment card on torn paper, with the logo at the top, that fills in, in
+// dark honey handwriting, while the visitor fills the form. Once the request is sent a
+// round stamp over the lines says it is waiting for the clinic to confirm.
 export const AppointmentCard = ({ name, day, time, sent }: AppointmentCardProps) => {
   const { t } = useTranslation();
   const theme = useTheme();
+  const light = theme.palette.mode === "light";
+  const rule = `1px solid ${alpha(theme.palette.primary.dark, 0.25)}`;
   const rows = [
     { label: t("booking.card.name"), value: name },
     { label: t("booking.card.day"), value: day },
@@ -43,96 +45,106 @@ export const AppointmentCard = ({ name, day, time, sent }: AppointmentCardProps)
           position: "relative",
           // The same torn paper as the gallery sheet. Separate properties: the RTL
           // plugin garbles the shorthand.
-          backgroundImage: `url(/images/${theme.palette.mode === "light" ? "paper" : "paper-dark"}.webp)`,
+          backgroundImage: `url(/images/${light ? "paper" : "paper-dark"}.webp)`,
           backgroundSize: "100% 100%",
           backgroundRepeat: "no-repeat",
           px: { xs: 3, md: 4 },
-          pt: 5,
-          pb: 6,
+          pt: 3.5,
+          pb: 4.5,
         }}
       >
-        <Typography
-          sx={{
-            textAlign: "center",
-            letterSpacing: "0.3em",
-            fontSize: "0.85rem",
-            color: "primary.dark",
-          }}
-        >
-          SANAD · سَنَد
-        </Typography>
+        <Box
+          component="img"
+          src={light ? "/logo-full.png?v=3" : "/logo-full-dark.png?v=3"}
+          alt=""
+          sx={{ display: "block", height: 48, width: "auto", mx: "auto" }}
+        />
         <Typography
           component="p"
           variant="h3"
-          sx={{ textAlign: "center", color: "primary.dark", mt: 0.5, mb: 2.5 }}
+          sx={{
+            textAlign: "center",
+            color: "primary.dark",
+            mt: 0.75,
+            mb: 1.75,
+            fontSize: "1.8rem",
+          }}
         >
           {t("booking.card.title")}
         </Typography>
 
-        <Box component="dl" sx={{ m: 0 }}>
-          {rows.map((row) => (
-            <Box
-              key={row.label}
-              sx={{
-                display: "flex",
-                alignItems: "baseline",
-                gap: 1.5,
-                py: 0.75,
-                borderTop: 1,
-                borderColor: "divider",
-                "&:last-of-type": { borderBottom: 1, borderColor: "divider" },
-              }}
-            >
-              <Box component="dt" sx={{ color: "text.secondary", minWidth: 64 }}>
-                {row.label}
-              </Box>
+        <Box sx={{ position: "relative" }}>
+          <Box component="dl" sx={{ m: 0 }}>
+            {rows.map((row) => (
               <Box
-                component="dd"
+                key={row.label}
                 sx={{
-                  m: 0,
-                  fontFamily: HAND,
-                  fontSize: "1.45rem",
-                  lineHeight: 1.2,
-                  color: "warning.dark",
-                  minHeight: "1.2em",
+                  display: "flex",
+                  alignItems: "baseline",
+                  gap: 1.5,
+                  py: 0.75,
+                  // Ruled lines like a printed card.
+                  borderTop: rule,
+                  "&:last-of-type": { borderBottom: rule },
                 }}
               >
-                {row.value}
+                <Box component="dt" sx={{ color: "text.primary", minWidth: 60 }}>
+                  {row.label}
+                </Box>
+                <Box
+                  component="dd"
+                  sx={{
+                    m: 0,
+                    fontFamily: HAND,
+                    fontSize: "1.6rem",
+                    lineHeight: 1.15,
+                    minHeight: "1.15em",
+                    // Dark honey ink, clear on the cream paper (lighter on the dark paper).
+                    color: light ? "#6b4a12" : "#e7c98f",
+                    "&:lang(ar)": { fontSize: "1.45rem" },
+                  }}
+                >
+                  {row.value}
+                </Box>
               </Box>
-            </Box>
-          ))}
-        </Box>
+            ))}
+          </Box>
 
-        {/* The stamp: faint while the visitor is still choosing, pressed on once sent. */}
-        <Box
-          aria-hidden={!sent}
-          sx={{
-            width: 130,
-            height: 130,
-            mx: "auto",
-            mt: 3,
-            borderRadius: "50%",
-            border: "3px double",
-            borderColor: "primary.main",
-            color: "primary.main",
-            display: "grid",
-            placeItems: "center",
-            textAlign: "center",
-            fontSize: "0.95rem",
-            lineHeight: 1.3,
-            px: 2,
-            transform: "rotate(-12deg)",
-            opacity: sent ? 0.85 : 0.18,
-            transition: "opacity 300ms",
-            "@keyframes stampIn": {
-              from: { transform: "rotate(-12deg) scale(1.4)", opacity: 0 },
-              to: { transform: "rotate(-12deg) scale(1)", opacity: 0.85 },
-            },
-            ...(sent && { animation: "stampIn 350ms cubic-bezier(0.22, 1, 0.36, 1)" }),
-            "@media (prefers-reduced-motion: reduce)": { animation: "none" },
-          }}
-        >
-          {t("booking.card.stamp")}
+          {/* The stamp over the bottom corner of the lines: faint while the visitor is
+              still choosing, pressed on once the request is sent. */}
+          <Box
+            aria-hidden={!sent}
+            sx={{
+              position: "absolute",
+              insetInlineEnd: -8,
+              bottom: -36,
+              width: 104,
+              height: 104,
+              borderRadius: "50%",
+              border: "3px double",
+              borderColor: "primary.main",
+              color: "primary.main",
+              display: "grid",
+              placeItems: "center",
+              textAlign: "center",
+              fontSize: "0.85rem",
+              fontWeight: 700,
+              lineHeight: 1.3,
+              px: 1.5,
+              transform: "rotate(-12deg)",
+              opacity: sent ? 0.9 : 0.28,
+              transition: "opacity 300ms",
+              pointerEvents: "none",
+              "@keyframes stampIn": {
+                from: { transform: "rotate(-12deg) scale(1.4)", opacity: 0 },
+                to: { transform: "rotate(-12deg) scale(1)", opacity: 0.9 },
+              },
+              ...(sent && { animation: "stampIn 350ms cubic-bezier(0.22, 1, 0.36, 1)" }),
+              "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+            }}
+          >
+            {t("booking.card.stamp")}
+          </Box>
         </Box>
       </Box>
     </Box>

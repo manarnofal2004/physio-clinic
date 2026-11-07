@@ -168,7 +168,7 @@ export const BookingForm = () => {
     return <EmptyState title={t("booking.noDates")} description={t("booking.noDatesHint")} />;
   }
 
-  const pickerLabel = { mb: 1, fontSize: "1.05rem", color: "primary.dark" };
+  const pickerLabel = { mb: 0.75, fontSize: "1.05rem", color: "primary.dark" };
 
   // What to say under the time field while it has nothing to choose from.
   const timeHint = !date
@@ -181,7 +181,7 @@ export const BookingForm = () => {
     <Stack
       component="form"
       noValidate
-      spacing={2}
+      spacing={{ xs: 2, md: 1.75 }}
       onSubmit={(event) => void handleSubmit(onSubmit)(event)}
     >
       <Box>
@@ -222,14 +222,21 @@ export const BookingForm = () => {
           </Typography>
         )}
       </Box>
-      <FormTextField
-        name="fullName"
-        control={control}
-        label={t("booking.fullName")}
-        autoComplete="name"
-        required
-      />
-      <Box sx={{ display: "grid", gap: 2, gridTemplateColumns: { sm: "2fr 1fr" } }}>
+      {/* Name, phone and age on one line on wide screens. */}
+      <Box
+        sx={{
+          display: "grid",
+          gap: 2,
+          gridTemplateColumns: { sm: "1fr 1fr", md: "1.4fr 1.2fr 0.6fr" },
+        }}
+      >
+        <FormTextField
+          name="fullName"
+          control={control}
+          label={t("booking.fullName")}
+          autoComplete="name"
+          required
+        />
         <FormTextField
           name="phone"
           control={control}
@@ -263,7 +270,8 @@ export const BookingForm = () => {
         control={control}
         label={t("booking.notes")}
         multiline
-        minRows={2}
+        minRows={1}
+        maxRows={3}
       />
       {bookingError && <Alert severity="error">{t(`booking.errors.${bookingError}`)}</Alert>}
       <Button

@@ -15,11 +15,11 @@ export const Bubble = ({ selected, onClick, children, label }: BubbleProps) => (
     aria-pressed={selected}
     aria-label={label}
     sx={{
-      px: 1.75,
-      py: 0.9,
+      px: 1.5,
+      py: 0.6,
       borderRadius: 999,
       fontFamily: "inherit",
-      fontSize: "0.98rem",
+      fontSize: "0.95rem",
       whiteSpace: "nowrap",
       bgcolor: selected ? "primary.main" : "action.selected",
       color: selected ? "primary.contrastText" : "primary.dark",

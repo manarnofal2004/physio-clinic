@@ -4,13 +4,14 @@ import { useTranslation } from "react-i18next";
 import type { Slot } from "@shared/api-types";
 import { Bubble } from "./Bubble";
 
-type Period = "morning" | "midday" | "evening";
+type Period = "morning" | "midday" | "afternoon" | "evening";
 
 // Which part of the day a "HH:MM" clinic time falls in.
 const periodOf = (time: string): Period => {
   const hour = Number(time.slice(0, 2));
-  if (hour < 12) return "morning";
-  if (hour < 15) return "midday";
+  if (hour < 11) return "morning";
+  if (hour < 14) return "midday";
+  if (hour < 17) return "afternoon";
   return "evening";
 };
 
@@ -20,11 +21,11 @@ interface TimePickerProps {
   onChange: (scheduledAt: string) => void;
 }
 
-// The free times of the chosen day as bubbles, split into morning, midday and evening
-// so a long day does not show forty bubbles at once.
+// The free times of the chosen day as bubbles, split into four parts of the day (about
+// twelve times each) so a long day never shows forty bubbles at once.
 export const TimePicker = ({ slots, value, onChange }: TimePickerProps) => {
   const { t } = useTranslation();
-  const periods = (["morning", "midday", "evening"] as const).filter((p) =>
+  const periods = (["morning", "midday", "afternoon", "evening"] as const).filter((p) =>
     slots.some((slot) => periodOf(slot.time) === p),
   );
   const chosen = slots.find((slot) => slot.scheduledAt === value);
@@ -40,7 +41,7 @@ export const TimePicker = ({ slots, value, onChange }: TimePickerProps) => {
         size="small"
         value={current}
         onChange={(_, next: Period | null) => next && setPeriod(next)}
-        sx={{ mb: 1.25, "& .MuiToggleButton-root": { px: 1.75, py: 0.25, textTransform: "none" } }}
+        sx={{ mb: 1, "& .MuiToggleButton-root": { px: 1.75, py: 0.25, textTransform: "none" } }}
       >
         {periods.map((p) => (
           <ToggleButton key={p} value={p}>

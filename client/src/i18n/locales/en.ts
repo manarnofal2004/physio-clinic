@@ -203,7 +203,7 @@ export const en = {
     chooseTime: "Choose a time",
     earlierDays: "Earlier days",
     laterDays: "Later days",
-    periods: { morning: "Morning", midday: "Midday", evening: "Evening" },
+    periods: { morning: "Morning", midday: "Midday", afternoon: "Afternoon", evening: "Evening" },
     card: {
       label: "Your appointment so far",
       title: "Appointment",

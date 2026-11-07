@@ -200,7 +200,7 @@ export const ar: Translation = {
     chooseTime: "اختر الوقت",
     earlierDays: "أيام سابقة",
     laterDays: "أيام لاحقة",
-    periods: { morning: "صباحاً", midday: "ظهراً", evening: "مساءً" },
+    periods: { morning: "صباحاً", midday: "ظهراً", afternoon: "عصراً", evening: "مساءً" },
     card: {
       label: "موعدك حتى الآن",
       title: "موعد",
