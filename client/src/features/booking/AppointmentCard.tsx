@@ -49,8 +49,8 @@ export const AppointmentCard = ({ name, day, time, sent }: AppointmentCardProps)
           backgroundSize: "100% 100%",
           backgroundRepeat: "no-repeat",
           px: { xs: 3, md: 4 },
-          pt: 3.5,
-          pb: 4.5,
+          pt: 4.5,
+          pb: 5.5,
         }}
       >
         <Box
@@ -82,7 +82,7 @@ export const AppointmentCard = ({ name, day, time, sent }: AppointmentCardProps)
                   display: "flex",
                   alignItems: "baseline",
                   gap: 1.5,
-                  py: 0.75,
+                  py: 1,
                   // Ruled lines like a printed card.
                   borderTop: rule,
                   "&:last-of-type": { borderBottom: rule },
@@ -110,16 +110,15 @@ export const AppointmentCard = ({ name, day, time, sent }: AppointmentCardProps)
             ))}
           </Box>
 
-          {/* The stamp over the bottom corner of the lines: faint while the visitor is
-              still choosing, pressed on once the request is sent. */}
+          {/* The stamp under the lines: faint while the visitor is still choosing,
+              pressed on once the request is sent. */}
           <Box
             aria-hidden={!sent}
             sx={{
-              position: "absolute",
-              insetInlineEnd: -8,
-              bottom: -36,
-              width: 104,
-              height: 104,
+              mx: "auto",
+              mt: 3,
+              width: 118,
+              height: 118,
               borderRadius: "50%",
               border: "3px double",
               borderColor: "primary.main",

@@ -118,18 +118,21 @@ export const BookingForm = () => {
       }}
     >
       {content}
-      <AppointmentCard
-        name={booked ? booked.name : fullName}
-        day={
-          booked
-            ? formatDay(booked.date, i18n.language)
-            : date
-              ? formatDay(date, i18n.language)
-              : ""
-        }
-        time={booked ? booked.time : chosenTime}
-        sent={Boolean(booked)}
-      />
+      {/* Wide screens: the card starts up by the section title, so it can be tall. */}
+      <Box sx={{ alignSelf: "start", mt: { md: "-96px" } }}>
+        <AppointmentCard
+          name={booked ? booked.name : fullName}
+          day={
+            booked
+              ? formatDay(booked.date, i18n.language)
+              : date
+                ? formatDay(date, i18n.language)
+                : ""
+          }
+          time={booked ? booked.time : chosenTime}
+          sent={Boolean(booked)}
+        />
+      </Box>
     </Box>
   );
 
