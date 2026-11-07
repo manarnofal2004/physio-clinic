@@ -46,6 +46,7 @@ export const PublicFooter = () => {
               <ButtonBase
                 key={name}
                 onClick={() => setEnlarged(big ? null : name)}
+                disableRipple // no dark ripple on click; the photo just grows
                 aria-pressed={big}
                 aria-label={t(`landing.footer.${name}`)}
                 sx={{
