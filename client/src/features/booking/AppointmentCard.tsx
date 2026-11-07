@@ -117,8 +117,8 @@ export const AppointmentCard = ({ name, day, time, sent }: AppointmentCardProps)
             sx={{
               mx: "auto",
               mt: 3,
-              width: 132,
-              height: 132,
+              width: 140,
+              height: 140,
               boxSizing: "border-box",
               borderRadius: "50%",
               // Deep olive ink, in capitals like a rubber stamp.
@@ -131,12 +131,12 @@ export const AppointmentCard = ({ name, day, time, sent }: AppointmentCardProps)
               display: "grid",
               placeItems: "center",
               textAlign: "center",
-              fontSize: "0.72rem",
+              fontSize: "0.7rem",
               fontWeight: 700,
               lineHeight: 1.3,
-              // Room inside the ring so long words wrap instead of spilling out.
-              p: 2.25,
-              overflowWrap: "break-word",
+              // Wide enough inside the ring for the longest word ("CONFIRMATION"),
+              // so both lines stay centred.
+              p: 1,
               transform: "rotate(-12deg)",
               opacity: sent ? 1 : 0.75,
               transition: "opacity 300ms",
