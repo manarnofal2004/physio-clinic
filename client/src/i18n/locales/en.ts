@@ -24,6 +24,14 @@ export const en = {
     book: "Book a session",
     openMenu: "Open menu",
     closeMenu: "Close menu",
+    account: "Account menu",
+    dashboard: "My dashboard",
+    logOut: "Log out",
+  },
+  roles: {
+    admin: "Admin",
+    therapist: "Physiotherapist",
+    patient: "Patient",
   },
   panel: {
     navigation: "Panel navigation",

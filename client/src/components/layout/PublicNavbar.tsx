@@ -14,15 +14,18 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Menu as MenuIcon, X as CloseIcon } from "lucide-react";
+import { LayoutDashboard, LogOut, Menu as MenuIcon, X as CloseIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Link as RouterLink, useLocation } from "react-router-dom";
+import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
+import { homePathFor } from "@/features/auth/homePath";
+import { useAuth } from "@/features/auth/useAuth";
 import { landingSections } from "./landingSections";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { NAVBAR_HEIGHT } from "./navbarHeight";
 import { useColorMode } from "@/theme/colorModeContext";
 import { ThemeToggle } from "./ThemeToggle";
 import { useActiveSection } from "./useActiveSection";
+import { UserAvatar, UserMenu } from "./UserMenu";
 
 const sections = landingSections;
 const sectionIds = sections.map((section) => section.id);
@@ -37,6 +40,8 @@ export const PublicNavbar = () => {
   const { mode } = useColorMode();
   const active = useActiveSection(sectionIds);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   // On the home page the logo scrolls back to the top (and clears "#services" etc.);
   // on other pages it is a normal link home.
@@ -143,7 +148,7 @@ export const PublicNavbar = () => {
         <Stack direction="row" spacing={1} sx={{ alignItems: "center", marginInlineStart: "auto" }}>
           <LanguageSwitcher />
           <ThemeToggle />
-          {isDesktop && loginButton}
+          {isDesktop && (user ? <UserMenu user={user} /> : loginButton)}
           {isDesktop && bookButton}
           {!isDesktop && (
             <IconButton edge="end" onClick={() => setMenuOpen(true)} aria-label={t("nav.openMenu")}>
@@ -185,8 +190,47 @@ export const PublicNavbar = () => {
         </List>
         <Stack spacing={1} sx={{ mt: 2 }}>
           {bookButton}
-          {loginButton}
+          {!user && loginButton}
         </Stack>
+
+        {/* Logged in: who you are, your dashboard and "Log out". */}
+        {user && (
+          <Box sx={{ mt: 3, pt: 2, borderTop: 1, borderColor: "divider" }}>
+            <Stack direction="row" spacing={1.5} sx={{ alignItems: "center", mb: 1.5 }}>
+              <UserAvatar user={user} size={40} />
+              <Box>
+                <Box sx={{ fontWeight: 700 }}>{user.fullName}</Box>
+                <Box sx={{ color: "text.secondary", fontSize: "0.9rem" }}>
+                  {t(`roles.${user.role}`)}
+                </Box>
+              </Box>
+            </Stack>
+            {homePathFor(user.role) !== "/" && (
+              <Button
+                component={RouterLink}
+                to={homePathFor(user.role)}
+                onClick={() => setMenuOpen(false)}
+                startIcon={<LayoutDashboard size={18} />}
+                fullWidth
+                sx={{ justifyContent: "flex-start" }}
+              >
+                {t("nav.dashboard")}
+              </Button>
+            )}
+            <Button
+              onClick={() => {
+                setMenuOpen(false);
+                logout();
+                navigate("/");
+              }}
+              startIcon={<LogOut size={18} />}
+              fullWidth
+              sx={{ justifyContent: "flex-start", color: "text.secondary" }}
+            >
+              {t("nav.logOut")}
+            </Button>
+          </Box>
+        )}
       </Drawer>
     </AppBar>
   );

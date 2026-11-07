@@ -26,6 +26,14 @@ export const ar: Translation = {
     book: "احجز جلسة",
     openMenu: "فتح القائمة",
     closeMenu: "إغلاق القائمة",
+    account: "قائمة الحساب",
+    dashboard: "لوحة التحكم",
+    logOut: "تسجيل الخروج",
+  },
+  roles: {
+    admin: "مدير",
+    therapist: "أخصائي علاج طبيعي",
+    patient: "مريض",
   },
   panel: {
     navigation: "قائمة اللوحة",
