@@ -54,8 +54,8 @@ export const PublicFooter = () => {
                   zIndex: big ? 1 : 0,
                   borderRadius: "16px",
                   overflow: "hidden",
-                  transform: big ? "scale(1.12)" : "none",
-                  transition: "transform 300ms ease-out",
+                  transform: big ? "scale(1.05)" : "none",
+                  transition: "transform 450ms cubic-bezier(0.22, 1, 0.36, 1)",
                   "&.Mui-focusVisible": {
                     outline: 2,
                     outlineColor: "primary.main",
