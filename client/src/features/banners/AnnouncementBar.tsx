@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Box, IconButton, Typography } from "@mui/material";
-import { alpha, useTheme } from "@mui/material/styles";
-import { ChevronLeft, ChevronRight, Clock, Megaphone, X } from "lucide-react";
+import { useTheme } from "@mui/material/styles";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { usePublicBanners, type Banner } from "./api";
+import { bannerColors } from "./bannerStyle";
+import { BannerTypeIcon } from "./BannerTypeIcon";
 
 export const BAR_HEIGHT = 38;
 const AUTO_MS = 6000; // several banners take turns every 6 seconds
@@ -69,12 +71,7 @@ export const AnnouncementBar = () => {
     }
   };
 
-  const isSchedule = banner.type === "schedule_update";
-  const Icon = isSchedule ? Clock : Megaphone;
-  const light = theme.palette.mode === "light";
-  const colors = isSchedule
-    ? { bg: light ? "#f3e6cc" : alpha("#d4a24c", 0.16), fg: light ? "#6b4a12" : "#e7c98f" }
-    : { bg: "action.selected", fg: "primary.dark" };
+  const colors = bannerColors(banner.type, theme.palette.mode);
   // Arrows point the way the banners move: in Arabic "next" is to the left.
   const Prev = isRtl ? ChevronRight : ChevronLeft;
   const Next = isRtl ? ChevronLeft : ChevronRight;
@@ -146,7 +143,7 @@ export const AnnouncementBar = () => {
         }}
       >
         <Box component="span" aria-hidden sx={{ display: "flex", color: "warning.main" }}>
-          <Icon size={17} />
+          <BannerTypeIcon type={banner.type} size={17} />
         </Box>
         <Typography sx={{ fontSize: "0.95rem", lineHeight: 1.4 }}>
           {i18n.language.startsWith("ar") ? banner.messageAr : banner.messageEn}
