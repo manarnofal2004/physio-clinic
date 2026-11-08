@@ -101,7 +101,8 @@ export const LoginPage = () => {
           width: "100%",
           height: "100%",
           objectFit: "cover",
-          objectPosition: "center",
+          // Short wide screens crop the photo; keep its top so the arch stays whole.
+          objectPosition: "50% 8%",
           transform: theme.direction === "rtl" ? "scaleX(-1)" : "none",
         }}
       />
