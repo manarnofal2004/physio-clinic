@@ -86,7 +86,20 @@ export const PublicNavbar = () => {
   );
 
   const loginButton = (
-    <Button component={RouterLink} to="/login" color="inherit" onClick={() => setMenuOpen(false)}>
+    <Button
+      component={RouterLink}
+      to="/login"
+      color="inherit"
+      onClick={() => setMenuOpen(false)}
+      // A roomy pill, so a click near the word still counts.
+      sx={{
+        px: 2,
+        py: 0.75,
+        minHeight: 38,
+        borderRadius: 999,
+        "&:hover": { bgcolor: "action.hover" },
+      }}
+    >
       {t("nav.logIn")}
     </Button>
   );
