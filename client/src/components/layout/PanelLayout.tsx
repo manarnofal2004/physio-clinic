@@ -20,7 +20,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import { UserMenu } from "./UserMenu";
 import type { PanelNavItem } from "./panelNavItem";
 
-const DRAWER_WIDTH = 260;
+const DRAWER_WIDTH = 220;
 const CURVE = 22; // radius of the curves where the chosen tab meets the page
 // The sidebar's deep olive, a shade darker at night; its text is cream.
 const SIDEBAR_BG = { light: "#3f5622", dark: "#10150c" };
