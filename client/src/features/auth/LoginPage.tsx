@@ -86,14 +86,28 @@ export const LoginPage = () => {
         justifyContent: { xs: "center", md: "flex-end" },
         px: { xs: 2, md: 8 },
         py: { xs: 4, md: 3 },
-        // Separate properties: the RTL plugin garbles the shorthand.
-        backgroundImage: "url(/images/login-door.webp)",
-        backgroundSize: "cover",
-        backgroundPosition: "left center",
+        overflow: "hidden",
       }}
     >
+      {/* The door is on the photo's left and a quiet wall on its right, where the
+          note sits. In Arabic the note moves to the left, so the photo is mirrored. */}
+      <Box
+        component="img"
+        src="/images/login-door.webp?v=2"
+        alt=""
+        sx={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "center",
+          transform: theme.direction === "rtl" ? "scaleX(-1)" : "none",
+        }}
+      />
       <Box
         sx={{
+          position: "relative",
           width: "100%",
           maxWidth: 480,
           filter: "drop-shadow(0 18px 30px rgba(40, 30, 10, 0.35))",
