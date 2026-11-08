@@ -51,6 +51,12 @@ export const AppointmentCard = ({ name, day, time, sent }: AppointmentCardProps)
           px: { xs: 3, md: 4 },
           pt: 4.5,
           pb: 5.5,
+          // Short laptop screens: a slightly shorter card so the section fits one screen.
+          "@media (min-width: 900px) and (max-height: 700px)": {
+            pt: 3.5,
+            pb: 4,
+            "& dl > div": { py: 0.75 },
+          },
         }}
       >
         <Box

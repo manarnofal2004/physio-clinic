@@ -74,6 +74,13 @@ export const HeroSection = () => {
           // little higher than the middle of the screen.
           pt: { xs: 7, md: 4 },
           pb: { xs: 7, md: 14 },
+          // Short laptop screens: less space around the text so it fits one screen.
+          "@media (min-width: 900px) and (max-height: 700px)": {
+            pt: 2,
+            pb: 6,
+            "& .hero-details": { mt: 4 },
+            "& .hero-actions": { mt: 3 },
+          },
           // Leaves room for the announcement bar above the navbar while it shows.
           minHeight: { md: `calc(${SCREEN_HEIGHT} - var(--banner-height, 0px))` },
           display: "flex",
@@ -101,7 +108,7 @@ export const HeroSection = () => {
             {t("landing.hero.subtitle")}
           </Typography>
 
-          <Stack direction="row" sx={{ mt: 5, gap: 1, flexWrap: "wrap" }}>
+          <Stack className="hero-actions" direction="row" sx={{ mt: 5, gap: 1, flexWrap: "wrap" }}>
             <Button variant="contained" size="large" href="/#booking" sx={{ px: 3.5, py: 1.25 }}>
               {t("landing.hero.book")}
             </Button>
@@ -114,6 +121,7 @@ export const HeroSection = () => {
               label/value list under a thin line. */}
           <Box
             component="dl"
+            className="hero-details"
             sx={{
               mt: { xs: 6, md: 8 },
               mb: 0,

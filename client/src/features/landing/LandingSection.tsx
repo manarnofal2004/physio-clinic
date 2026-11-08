@@ -60,6 +60,8 @@ export const LandingSection = ({
       display: { md: "flex" },
       flexDirection: "column",
       justifyContent: alignTop ? "flex-start" : "center",
+      // Short laptop screens: a little less space above and below.
+      "@media (min-width: 900px) and (max-height: 700px)": { pt: 1.5, pb: 1.5 },
     }}
   >
     <Box sx={{ maxWidth: 1200, mx: "auto", width: "100%" }}>
