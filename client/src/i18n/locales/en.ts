@@ -278,6 +278,7 @@ export const en = {
     email: "Email",
     password: "Password",
     submit: "Log in",
+    welcome: "Welcome back",
     noAccount: "Here to book a session? No account needed.",
     bookLink: "Book a session",
     photoAlt: "The entrance of Sanad clinic",

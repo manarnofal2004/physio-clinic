@@ -275,6 +275,7 @@ export const ar: Translation = {
     email: "البريد الإلكتروني",
     password: "كلمة المرور",
     submit: "دخول",
+    welcome: "أهلاً بعودتك",
     noAccount: "جئت لتحجز جلسة؟ لا تحتاج إلى حساب.",
     bookLink: "احجز جلسة",
     photoAlt: "مدخل عيادة سَنَد",
