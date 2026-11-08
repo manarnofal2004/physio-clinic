@@ -307,7 +307,7 @@ export const FaqSection = () => {
                 color: "primary.dark",
                 transition: "background-color 150ms, color 150ms",
                 ".MuiButtonBase-root:hover &": { bgcolor: "primary.main", color: "#fff" },
-                ms: 2,
+                marginInlineStart: "16px",
               }}
             >
               {/* The paper plane points the way the text runs. */}

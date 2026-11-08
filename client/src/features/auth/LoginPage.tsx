@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Alert, Box, Button, Paper, Stack, Typography } from "@mui/material";
+import { Alert, Box, Button, Link, Stack, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Navigate, useLocation, type Location } from "react-router-dom";
 import { LoadingState } from "@/components/feedback/LoadingState";
+import { SCREEN_HEIGHT } from "@/components/layout/navbarHeight";
 import { FormTextField } from "@/components/form/FormTextField";
 import type { Translation } from "@/i18n/locales/en";
 import { ApiError } from "@/lib/api/apiError";
@@ -71,13 +72,67 @@ export const LoginPage = () => {
     return <Navigate to={from ?? homePathFor(user.role)} replace />;
   }
 
+  // The clinic entrance in a pale olive frame beside the form, one screen tall.
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", px: 2, py: { xs: 6, md: 10 } }}>
-      <Paper variant="outlined" sx={{ width: "100%", maxWidth: 420, p: { xs: 3, sm: 4 } }}>
-        <Typography variant="h4" component="h1">
+    <Box
+      sx={{
+        minHeight: { md: SCREEN_HEIGHT },
+        display: "grid",
+        gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+        alignItems: "center",
+        gap: { xs: 4, md: 8 },
+        maxWidth: 1200,
+        mx: "auto",
+        px: { xs: 2, md: 4 },
+        py: { xs: 4, md: 3 },
+      }}
+    >
+      <Box
+        sx={{
+          display: { xs: "none", md: "block" },
+          p: "10px",
+          borderRadius: "28px",
+          bgcolor: "action.selected",
+        }}
+      >
+        <Box
+          component="img"
+          src="/images/footer/entrance.webp"
+          alt={t("login.photoAlt")}
+          sx={{
+            display: "block",
+            width: "100%",
+            height: `calc(${SCREEN_HEIGHT} - var(--banner-height, 0px) - 100px)`,
+            objectFit: "cover",
+            borderRadius: "20px",
+          }}
+        />
+      </Box>
+
+      <Box sx={{ width: "100%", maxWidth: 420, mx: "auto" }}>
+        <Typography
+          variant="h2"
+          component="h1"
+          sx={{
+            color: "primary.dark",
+            fontFamily: '"Redaction", "El Messiri", serif',
+            fontStyle: "italic",
+            "&:lang(ar)": { fontStyle: "normal", fontWeight: 600 },
+          }}
+        >
           {t("login.title")}
         </Typography>
-        <Typography color="text.secondary" sx={{ mt: 1, mb: 3 }}>
+        <Typography
+          sx={{
+            mt: 0.5,
+            mb: 4,
+            fontFamily: '"Redaction", "Amiri", serif',
+            fontStyle: "italic",
+            fontSize: "1.2rem",
+            color: "warning.dark",
+            "&:lang(ar)": { fontStyle: "normal" },
+          }}
+        >
           {t("login.subtitle")}
         </Typography>
 
@@ -95,6 +150,7 @@ export const LoginPage = () => {
             label={t("login.email")}
             autoComplete="username"
             required
+            slotProps={{ htmlInput: { dir: "ltr" } }}
           />
           <FormTextField
             name="password"
@@ -104,11 +160,28 @@ export const LoginPage = () => {
             autoComplete="current-password"
             required
           />
-          <Button type="submit" variant="contained" size="large" loading={isSubmitting}>
+          <Button
+            type="submit"
+            variant="contained"
+            size="large"
+            loading={isSubmitting}
+            sx={{ py: 1.25 }}
+          >
             {t("login.submit")}
           </Button>
         </Stack>
-      </Paper>
+
+        {/* Visitors do not need an account: send them to the booking form. */}
+        <Typography
+          color="text.secondary"
+          sx={{ mt: 4, pt: 3, borderTop: 1, borderColor: "divider" }}
+        >
+          {t("login.noAccount")}{" "}
+          <Link href="/#booking" underline="hover" sx={{ fontWeight: 700 }}>
+            {t("login.bookLink")}
+          </Link>
+        </Typography>
+      </Box>
     </Box>
   );
 };

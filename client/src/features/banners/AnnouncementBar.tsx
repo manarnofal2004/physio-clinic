@@ -119,7 +119,7 @@ export const AnnouncementBar = () => {
             </IconButton>
             <Typography
               variant="body2"
-              sx={{ opacity: 0.7, display: { xs: "none", sm: "block" }, ms: 0.5 }}
+              sx={{ opacity: 0.7, display: { xs: "none", sm: "block" }, marginInlineStart: "4px" }}
             >
               {(index % count) + 1} / {count}
             </Typography>

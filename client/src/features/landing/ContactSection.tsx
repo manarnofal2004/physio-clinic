@@ -133,7 +133,10 @@ export const ContactSection = () => {
                 {isOpen ? t("landing.contact.openNow") : t("landing.contact.closedNow")}
               </Typography>
             </Box>
-            <Typography color="text.secondary" sx={{ mt: 0.25, ms: 3.25, fontSize: "1.1rem" }}>
+            <Typography
+              color="text.secondary"
+              sx={{ mt: 0.25, marginInlineStart: "26px", fontSize: "1.1rem" }}
+            >
               {isOpen ? t("landing.contact.closesAt") : nextOpen()}
             </Typography>
           </Box>
@@ -240,8 +243,8 @@ export const ContactSection = () => {
                 display: "flex",
                 alignItems: "center",
                 gap: 1,
-                ps: 0.75,
-                pe: 2,
+                paddingInlineStart: "6px",
+                paddingInlineEnd: "16px",
                 py: 0.75,
                 borderRadius: 999,
                 bgcolor: "#fbf7ef",
