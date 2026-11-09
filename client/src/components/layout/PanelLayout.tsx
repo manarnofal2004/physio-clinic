@@ -20,7 +20,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import { UserMenu } from "./UserMenu";
 import type { PanelNavItem } from "./panelNavItem";
 
-const DRAWER_WIDTH = 220;
+const DRAWER_WIDTH = 190;
 const CURVE = 22; // radius of the curves where the chosen tab meets the page
 // The sidebar's deep olive, a shade darker at night; its text is cream.
 const SIDEBAR_BG = { light: "#3f5622", dark: "#10150c" };
@@ -46,10 +46,10 @@ export const PanelLayout = ({ navItems }: { navItems: PanelNavItem[] }) => {
       <Box
         component={RouterLink}
         to="/"
-        sx={{ display: "block", px: 3, mb: 4 }}
+        sx={{ display: "block", px: 2.5, mb: 4 }}
         aria-label={t("brand.name")}
       >
-        <Box component="img" src="/logo-full-dark.png?v=3" alt="" sx={{ height: 56 }} />
+        <Box component="img" src="/logo-full-dark.png?v=3" alt="" sx={{ height: 48 }} />
       </Box>
       <List
         component="nav"
@@ -104,7 +104,7 @@ export const PanelLayout = ({ navItems }: { navItems: PanelNavItem[] }) => {
               },
             }}
           >
-            <ListItemIcon sx={{ color: "inherit", minWidth: 40 }}>{item.icon}</ListItemIcon>
+            <ListItemIcon sx={{ color: "inherit", minWidth: 34 }}>{item.icon}</ListItemIcon>
             <ListItemText
               primary={t(`panel.${item.labelKey}`)}
               slotProps={{ primary: { sx: { fontWeight: "inherit" } } }}
