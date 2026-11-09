@@ -3,6 +3,7 @@ import { PanelLayout } from "@/components/layout/PanelLayout";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { adminNavItems } from "@/components/layout/adminNavItems";
 import { LoginPage } from "@/features/auth/LoginPage";
+import { BannersPage } from "@/features/banners/BannersPage";
 import { RequireAuth } from "@/features/auth/RequireAuth";
 import { LandingPage } from "@/features/landing/LandingPage";
 import { PageNotReady } from "@/features/therapist/PageNotReady";
@@ -22,7 +23,18 @@ const router = createBrowserRouter([
   },
   {
     element: <RequireAuth roles={["admin"]} />,
-    children: [{ path: "/admin", element: <PanelLayout navItems={adminNavItems} />, children: [] }],
+    children: [
+      {
+        path: "/admin",
+        element: <PanelLayout navItems={adminNavItems} />,
+        children: [
+          {
+            element: <RequireAuth privilege="banners.manage" />,
+            children: [{ path: "banners", element: <BannersPage /> }],
+          },
+        ],
+      },
+    ],
   },
   {
     element: <RequireAuth roles={["therapist"]} />,
