@@ -4,6 +4,7 @@ import { PublicLayout } from "@/components/layout/PublicLayout";
 import { adminNavItems } from "@/components/layout/adminNavItems";
 import { LoginPage } from "@/features/auth/LoginPage";
 import { BannersPage } from "@/features/banners/BannersPage";
+import { TherapistsPage } from "@/features/therapists/TherapistsPage";
 import { UsersPage } from "@/features/users/UsersPage";
 import { RequireAuth } from "@/features/auth/RequireAuth";
 import { LandingPage } from "@/features/landing/LandingPage";
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
         children: [
           // Managing accounts is for admins only, and this whole branch is admin-only.
           { path: "users", element: <UsersPage /> },
+          { path: "therapists", element: <TherapistsPage /> },
           {
             element: <RequireAuth privilege="banners.manage" />,
             children: [{ path: "banners", element: <BannersPage /> }],
