@@ -23,6 +23,15 @@ const readyPages: Record<string, ReactNode> = {
   "/therapist/banners": <BannersPage />,
 };
 
+// Admin pages that are built (the dashboard at "/admin" is not yet).
+const builtAdminPages = [
+  "/admin",
+  "/admin/users",
+  "/admin/therapists",
+  "/admin/reports",
+  "/admin/banners",
+];
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -44,6 +53,11 @@ const router = createBrowserRouter([
           { path: "therapists", element: <TherapistsPage /> },
           { path: "reports", element: <ReportsPage /> },
           { path: "reports/:id", element: <ReportDetailsPage /> },
+          // Pages in the menu that are not built yet say so, instead of "not found".
+          { index: true, element: <PageNotReady /> },
+          ...adminNavItems
+            .filter((item) => !builtAdminPages.includes(item.path))
+            .map((item) => ({ path: item.path, element: <PageNotReady /> })),
           {
             element: <RequireAuth privilege="banners.manage" />,
             children: [{ path: "banners", element: <BannersPage /> }],
