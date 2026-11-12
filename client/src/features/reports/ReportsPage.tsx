@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/feedback/EmptyState";
 import { ErrorState } from "@/components/feedback/ErrorState";
 import { LoadingState } from "@/components/feedback/LoadingState";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { DateInput } from "@/components/form/DateInput";
 import { useNotify } from "@/components/notifications/useNotify";
 import { useAuth } from "@/features/auth/useAuth";
 import { downloadReportsCsv, useReports, type ReportsFilter } from "./api";
@@ -167,21 +168,19 @@ export const ReportsPage = () => {
             </MenuItem>
           ))}
         </TextField>
-        <TextField
+        <DateInput
           size="small"
-          type="date"
+          clearable
           label={t("reportsAdmin.from")}
           value={filter.from}
-          onChange={(e) => set({ from: e.target.value })}
-          slotProps={{ inputLabel: { shrink: true } }}
+          onChange={(from) => set({ from })}
         />
-        <TextField
+        <DateInput
           size="small"
-          type="date"
+          clearable
           label={t("reportsAdmin.to")}
           value={filter.to}
-          onChange={(e) => set({ to: e.target.value })}
-          slotProps={{ inputLabel: { shrink: true } }}
+          onChange={(to) => set({ to })}
         />
       </Stack>
 

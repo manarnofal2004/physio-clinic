@@ -34,6 +34,12 @@ const initials = (name: string) =>
 
 // One therapist's week: for each clinic day, a track from opening to closing with
 // their working hours filled in olive, and the hours written under it.
+// "08:00" → "8", "08:30" → "8:30"
+const shortTime = (time: string) => {
+  const [hours, minutes] = time.split(":");
+  return minutes === "00" ? String(Number(hours)) : `${Number(hours)}:${minutes}`;
+};
+
 const WeekStrip = ({ therapist }: { therapist: Therapist }) => {
   const { t, i18n } = useTranslation();
   return (
@@ -75,9 +81,21 @@ const WeekStrip = ({ therapist }: { therapist: Therapist }) => {
               variant="caption"
               color="text.secondary"
               dir="ltr"
-              sx={{ display: "block", textAlign: "start" }}
+              sx={{ display: "block", textAlign: "start", whiteSpace: "nowrap" }}
             >
-              {h ? `${h.start}–${h.end}` : t("therapistsAdmin.dayOff")}
+              {h ? (
+                <>
+                  {/* Phones have room for "8–16" only, not "08:00–16:00". */}
+                  <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
+                    {`${h.start}–${h.end}`}
+                  </Box>
+                  <Box component="span" sx={{ display: { xs: "inline", sm: "none" } }}>
+                    {`${shortTime(h.start)}–${shortTime(h.end)}`}
+                  </Box>
+                </>
+              ) : (
+                t("therapistsAdmin.dayOff")
+              )}
             </Typography>
           </Box>
         );

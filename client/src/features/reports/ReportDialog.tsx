@@ -17,6 +17,8 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { Attachment, PatientSummary, Report, ReportProgress } from "@shared/api-types";
+import dayjs from "dayjs";
+import { DateInput } from "@/components/form/DateInput";
 import { useAuth } from "@/features/auth/useAuth";
 import { usePatientOptions, useTherapistOptions } from "@/features/users/api";
 import { useReportMutations } from "./api";
@@ -24,7 +26,7 @@ import { FileUploader } from "./FileUploader";
 import { ProgressChip } from "./ProgressChip";
 
 const PROGRESS: ReportProgress[] = ["improving", "stable", "worse"];
-const today = () => new Date().toISOString().slice(0, 10);
+const today = () => dayjs().format("YYYY-MM-DD"); // local day, not UTC
 // Midday, so the calendar day never shifts with the time zone.
 const toIso = (day: string) => new Date(`${day}T12:00:00`).toISOString();
 
@@ -118,14 +120,13 @@ export const ReportDialog = ({
                 />
               )}
             />
-            <TextField
+            <DateInput
               sx={{ flex: 1 }}
-              type="date"
               label={t("reportsAdmin.date")}
               value={day}
-              onChange={(e) => setDay(e.target.value)}
+              onChange={setDay}
               error={tried && errors.day}
-              slotProps={{ inputLabel: { shrink: true }, htmlInput: { max: today() } }}
+              max={today()}
             />
           </Stack>
 

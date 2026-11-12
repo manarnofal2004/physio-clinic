@@ -1,5 +1,6 @@
 import { arSD, enUS } from "@mui/material/locale";
 import { createTheme, type Direction, type PaletteMode } from "@mui/material/styles";
+import type {} from "@mui/x-date-pickers/themeAugmentation"; // lets the theme style the date picker
 
 // The clinic's look: "olive and stone" colours with a layout inspired by jane.app.
 // - stone grey is the "air" (sidebar, tinted areas); one olive green marks everything you can press
@@ -141,6 +142,13 @@ export const createAppTheme = (
         },
         // Fields are white on the beige page, so they read as places to type.
         MuiOutlinedInput: {
+          styleOverrides: {
+            root: { backgroundColor: c.paper, borderRadius: 10 },
+            notchedOutline: { borderColor: c.line },
+          },
+        },
+        // The date picker draws its own field, so it needs the same look.
+        MuiPickersOutlinedInput: {
           styleOverrides: {
             root: { backgroundColor: c.paper, borderRadius: 10 },
             notchedOutline: { borderColor: c.line },
