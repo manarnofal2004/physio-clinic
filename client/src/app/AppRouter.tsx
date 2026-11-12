@@ -1,9 +1,12 @@
+import type { ReactNode } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { PanelLayout } from "@/components/layout/PanelLayout";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { adminNavItems } from "@/components/layout/adminNavItems";
 import { LoginPage } from "@/features/auth/LoginPage";
 import { BannersPage } from "@/features/banners/BannersPage";
+import { ReportDetailsPage } from "@/features/reports/ReportDetailsPage";
+import { ReportsPage } from "@/features/reports/ReportsPage";
 import { TherapistsPage } from "@/features/therapists/TherapistsPage";
 import { UsersPage } from "@/features/users/UsersPage";
 import { RequireAuth } from "@/features/auth/RequireAuth";
@@ -13,6 +16,12 @@ import { TherapistHomePage } from "@/features/therapist/TherapistHomePage";
 import { TherapistLayout } from "@/features/therapist/TherapistLayout";
 import { therapistNavItems } from "@/features/therapist/therapistNavItems";
 import { NotFoundPage } from "@/routes/NotFoundPage";
+
+// Therapist pages that are built; the rest show "not ready yet".
+const readyPages: Record<string, ReactNode> = {
+  "/therapist/reports": <ReportsPage />,
+  "/therapist/banners": <BannersPage />,
+};
 
 const router = createBrowserRouter([
   {
@@ -33,6 +42,8 @@ const router = createBrowserRouter([
           // Managing accounts is for admins only, and this whole branch is admin-only.
           { path: "users", element: <UsersPage /> },
           { path: "therapists", element: <TherapistsPage /> },
+          { path: "reports", element: <ReportsPage /> },
+          { path: "reports/:id", element: <ReportDetailsPage /> },
           {
             element: <RequireAuth privilege="banners.manage" />,
             children: [{ path: "banners", element: <BannersPage /> }],
@@ -54,7 +65,13 @@ const router = createBrowserRouter([
             .filter((item) => item.privilege)
             .map((item) => ({
               element: <RequireAuth privilege={item.privilege} />,
-              children: [{ path: item.path, element: <PageNotReady /> }],
+              children: [
+                { path: item.path, element: readyPages[item.path] ?? <PageNotReady /> },
+                // A report opened from the therapist's reports list.
+                ...(item.path === "/therapist/reports"
+                  ? [{ path: "/therapist/reports/:id", element: <ReportDetailsPage /> }]
+                  : []),
+              ],
             })),
         ],
       },
