@@ -113,7 +113,23 @@ export const createAppTheme = (
         },
         // Dialogs: softer corners, a calm olive title and room around the buttons.
         MuiDialog: {
-          styleOverrides: { paper: { borderRadius: 20, backgroundImage: "none" } },
+          styleOverrides: {
+            paper: ({ ownerState, theme }) => ({
+              borderRadius: 20,
+              backgroundImage: "none",
+              // Forms fill the whole phone screen; small confirm boxes stay small.
+              ...(ownerState.maxWidth !== "xs" && {
+                [theme.breakpoints.down("sm")]: {
+                  margin: 0,
+                  width: "100%",
+                  maxWidth: "100%",
+                  height: "100%",
+                  maxHeight: "100%",
+                  borderRadius: 0,
+                },
+              }),
+            }),
+          },
         },
         MuiDialogTitle: {
           styleOverrides: {

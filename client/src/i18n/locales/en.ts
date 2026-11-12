@@ -373,6 +373,16 @@ export const en = {
       rights: "© {{year}} Sanad Physiotherapy. All rights reserved.",
     },
   },
+  adminHome: {
+    welcome: "Welcome, {{name}}",
+    intro: "The dashboard is on its way. Meanwhile, here is what you can manage.",
+    pages: {
+      users: "Create accounts and choose what each physiotherapist can see and do.",
+      therapists: "Physiotherapists and their working hours.",
+      reports: "Treatment reports, their files and CSV export.",
+      banners: "Announcements shown at the top of the website.",
+    },
+  },
   therapist: {
     welcome: "Welcome, {{name}}",
     welcomeText: "This is your panel. The menu shows the pages you have access to.",

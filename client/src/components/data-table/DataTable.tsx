@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import {
+  Box,
   Paper,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -9,7 +11,10 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
+  Typography,
+  useMediaQuery,
 } from "@mui/material";
+import type { Theme } from "@mui/material";
 
 export type SortDirection = "asc" | "desc";
 
@@ -67,11 +72,72 @@ export function DataTable<T>({
   ariaLabel,
   emptyState,
 }: DataTableProps<T>) {
+  const isPhone = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"));
+
   const handleSort = (columnId: string) => {
     if (!onSortChange) return;
     const isActive = sortBy === columnId;
     onSortChange(columnId, isActive && sortDirection === "asc" ? "desc" : "asc");
   };
+
+  const pagination = !(total === 0 && emptyState) && (
+    <TablePagination
+      component="div"
+      count={total}
+      page={page}
+      rowsPerPage={rowsPerPage}
+      rowsPerPageOptions={rowsPerPageOptions}
+      onPageChange={(_, newPage) => onPageChange(newPage)}
+      onRowsPerPageChange={(event) => onRowsPerPageChange(Number(event.target.value))}
+      labelRowsPerPage={paginationLabels?.rowsPerPage}
+      labelDisplayedRows={paginationLabels?.displayedRows}
+    />
+  );
+
+  // On phones a wide table hides its last columns, so each row becomes a short
+  // stack: the first column as its title, then "label  value" lines.
+  if (isPhone) {
+    const [first, ...rest] = columns;
+    return (
+      <Paper variant="outlined" aria-label={ariaLabel} role="list">
+        {rows.length === 0 && emptyState}
+        {rows.map((row) => (
+          <Box
+            key={getRowId(row)}
+            role="listitem"
+            onClick={onRowClick ? () => onRowClick(row) : undefined}
+            sx={{
+              px: 2,
+              py: 1.5,
+              borderBottom: 1,
+              borderColor: "divider",
+              cursor: onRowClick ? "pointer" : undefined,
+            }}
+          >
+            {first && <Box sx={{ mb: 0.75, fontWeight: 600 }}>{first.render(row)}</Box>}
+            {rest.map((column) => (
+              <Stack
+                key={column.id}
+                direction="row"
+                spacing={2}
+                sx={{ justifyContent: "space-between", alignItems: "center", py: 0.4 }}
+              >
+                {column.header ? (
+                  <Typography variant="body2" color="text.secondary" sx={{ flexShrink: 0 }}>
+                    {column.header}
+                  </Typography>
+                ) : (
+                  <span />
+                )}
+                <Box sx={{ minWidth: 0, textAlign: "end" }}>{column.render(row)}</Box>
+              </Stack>
+            ))}
+          </Box>
+        ))}
+        {pagination}
+      </Paper>
+    );
+  }
 
   return (
     <Paper variant="outlined">
@@ -126,19 +192,7 @@ export function DataTable<T>({
           </TableBody>
         </Table>
       </TableContainer>
-      {!(total === 0 && emptyState) && (
-        <TablePagination
-          component="div"
-          count={total}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          rowsPerPageOptions={rowsPerPageOptions}
-          onPageChange={(_, newPage) => onPageChange(newPage)}
-          onRowsPerPageChange={(event) => onRowsPerPageChange(Number(event.target.value))}
-          labelRowsPerPage={paginationLabels?.rowsPerPage}
-          labelDisplayedRows={paginationLabels?.displayedRows}
-        />
-      )}
+      {pagination}
     </Paper>
   );
 }
