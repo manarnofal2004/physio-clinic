@@ -18,11 +18,23 @@ export const PageHeader = ({ title, subtitle, actions }: PageHeaderProps) => (
     }}
   >
     <Box>
-      <Typography variant="h4" component="h1">
+      {/* The same title style as the site's sections: Redaction italic, or El
+          Messiri in Arabic. */}
+      <Typography
+        variant="h4"
+        component="h1"
+        sx={{
+          color: "primary.dark",
+          fontSize: { xs: "1.8rem", md: "2.1rem" },
+          fontFamily: '"Redaction", "El Messiri", serif',
+          fontStyle: "italic",
+          "&:lang(ar)": { fontStyle: "normal", fontWeight: 600 },
+        }}
+      >
         {title}
       </Typography>
       {subtitle && (
-        <Typography variant="body2" color="text.secondary">
+        <Typography color="text.secondary" sx={{ mt: 0.5 }}>
           {subtitle}
         </Typography>
       )}

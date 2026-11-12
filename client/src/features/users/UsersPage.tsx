@@ -18,6 +18,7 @@ import type { Role, User } from "@shared/api-types";
 import { DataTable, type DataTableColumn } from "@/components/data-table/DataTable";
 import { EmptyState } from "@/components/feedback/EmptyState";
 import { ErrorState } from "@/components/feedback/ErrorState";
+import { LoadingState } from "@/components/feedback/LoadingState";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { UserAvatar } from "@/components/layout/UserMenu";
 import { useNotify } from "@/components/notifications/useNotify";
@@ -231,7 +232,9 @@ export const UsersPage = () => {
           onPageChange={(p) => setFilter((f) => ({ ...f, page: p + 1 }))}
           onRowsPerPageChange={(n) => setFilter((f) => ({ ...f, limit: n, page: 1 }))}
           emptyState={
-            users.isPending ? undefined : (
+            users.isPending ? (
+              <LoadingState label={t("common.loading")} />
+            ) : (
               <EmptyState title={t("usersAdmin.empty")} description={t("usersAdmin.emptyHint")} />
             )
           }

@@ -98,11 +98,74 @@ export const createAppTheme = (
           styleOverrides: { root: { paddingInline: 16 } },
         },
         MuiAppBar: { defaultProps: { elevation: 0, color: "inherit" } },
-        // Depth is kept for things that float above the page (dialogs, menus); content
-        // panels stay flat. An outlined Paper (used to wrap tables) loses its frame.
+        // Depth is kept for things that float above the page (dialogs, menus). An
+        // outlined Paper (used to wrap tables) is a calm sheet: white on the beige page,
+        // rounded, with a hairline frame and no shadow.
         MuiPaper: {
           styleOverrides: {
-            outlined: { border: 0, borderRadius: 0, backgroundColor: "transparent" },
+            outlined: {
+              border: `1px solid ${c.line}`,
+              borderRadius: 16,
+              backgroundColor: c.paper,
+              overflow: "hidden",
+            },
+          },
+        },
+        // Dialogs: softer corners, a calm olive title and room around the buttons.
+        MuiDialog: {
+          styleOverrides: { paper: { borderRadius: 20, backgroundImage: "none" } },
+        },
+        MuiDialogTitle: {
+          styleOverrides: {
+            root: { fontSize: "1.35rem", fontWeight: 600, color: c.primaryDark, paddingTop: 22 },
+          },
+        },
+        MuiDialogActions: {
+          styleOverrides: { root: { padding: "8px 24px 20px", gap: 4 } },
+        },
+        // Fields are white on the beige page, so they read as places to type.
+        MuiOutlinedInput: {
+          styleOverrides: {
+            root: { backgroundColor: c.paper, borderRadius: 10 },
+            notchedOutline: { borderColor: c.line },
+          },
+        },
+        MuiToggleButton: {
+          styleOverrides: {
+            root: {
+              borderColor: c.line,
+              color: c.textMuted,
+              "&.Mui-selected": { backgroundColor: c.tint, color: c.primaryDark, fontWeight: 600 },
+            },
+          },
+        },
+        MuiTooltip: {
+          styleOverrides: {
+            tooltip: {
+              backgroundColor: c.primaryDark,
+              color: mode === "light" ? c.wash : c.text,
+              fontSize: "0.8rem",
+            },
+          },
+        },
+        // Notifications in the clinic's colours instead of Material's bright green and blue.
+        MuiAlert: {
+          styleOverrides: {
+            root: {
+              variants: [
+                {
+                  props: { variant: "filled", severity: "success" },
+                  style: { backgroundColor: c.primary, color: mode === "light" ? "#fff" : c.wash },
+                },
+                {
+                  props: { variant: "filled", severity: "info" },
+                  style: {
+                    backgroundColor: c.primaryDark,
+                    color: mode === "light" ? "#fff" : c.wash,
+                  },
+                },
+              ],
+            },
           },
         },
         // A card is a single object you act on (one appointment, one report): a tinted
@@ -122,10 +185,31 @@ export const createAppTheme = (
             },
           },
         },
+        // Tables: a pale olive header row, soft lines, and a tint on the row under the
+        // pointer.
         MuiTableCell: {
           styleOverrides: {
-            root: { borderBottom: `1px solid ${c.line}` },
-            head: { color: c.textMuted, fontWeight: 500, borderBottom: `1px solid ${c.text}` },
+            root: { borderBottom: `1px solid ${c.line}`, paddingTop: 14, paddingBottom: 14 },
+            head: {
+              backgroundColor: mode === "light" ? "#eef1e7" : c.tint,
+              color: c.primaryDark,
+              fontWeight: 700,
+              fontSize: "0.85rem",
+              paddingTop: 12,
+              paddingBottom: 12,
+              borderBottom: `1px solid ${c.line}`,
+            },
+          },
+        },
+        MuiTableRow: {
+          styleOverrides: {
+            root: {
+              "&:last-of-type td": { borderBottom: 0 },
+              "&.MuiTableRow-hover:hover": {
+                backgroundColor:
+                  mode === "light" ? "rgba(79, 106, 42, 0.04)" : "rgba(169, 194, 122, 0.06)",
+              },
+            },
           },
         },
         MuiChip: {

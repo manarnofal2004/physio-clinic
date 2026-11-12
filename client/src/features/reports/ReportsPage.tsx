@@ -7,6 +7,7 @@ import type { Report, ReportProgress } from "@shared/api-types";
 import { DataTable, type DataTableColumn } from "@/components/data-table/DataTable";
 import { EmptyState } from "@/components/feedback/EmptyState";
 import { ErrorState } from "@/components/feedback/ErrorState";
+import { LoadingState } from "@/components/feedback/LoadingState";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { useNotify } from "@/components/notifications/useNotify";
 import { useAuth } from "@/features/auth/useAuth";
@@ -203,7 +204,9 @@ export const ReportsPage = () => {
           onRowsPerPageChange={(n) => set({ limit: n })}
           onRowClick={(r) => navigate(`${pathname}/${r.id}`)}
           emptyState={
-            reports.isPending ? undefined : (
+            reports.isPending ? (
+              <LoadingState label={t("common.loading")} />
+            ) : (
               <EmptyState
                 title={t("reportsAdmin.empty")}
                 description={t("reportsAdmin.emptyHint")}
