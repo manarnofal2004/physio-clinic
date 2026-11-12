@@ -44,4 +44,4 @@ Loading, error with retry, empty state. Day names from `Intl.DateTimeFormat` in 
 
 ## Known limitations
 
-One working block per day (no split shifts). On narrow phones the hours under each day wrap onto two lines.
+One working block per day (no split shifts). On phones the hours are shortened (`8–16`) so each day stays on one line.

@@ -47,9 +47,8 @@ Client checks: profile chosen, name 2–120, valid email, password ≥ 8. Server
 
 ## States, languages, responsive
 
-Loading spinner inside the table, error with retry, "no accounts match". Arabic plural forms for the counts. On phones the filters stack; the table scrolls sideways (see limitations).
+Loading spinner inside the table, error with retry, "no accounts match". Arabic plural forms for the counts. On phones the filters stack, each table row becomes a stacked block (so the switch and key button stay visible), and the dialogs fill the screen.
 
 ## Known limitations
 
-- On phones the table hides the last columns (switch and key button) until scrolled sideways; a card layout for phones is planned.
 - No password reset from this page yet.

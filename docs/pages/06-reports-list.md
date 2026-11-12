@@ -49,8 +49,8 @@ Patient required; diagnosis and plan 2–2000; notes ≤ 5000; upload errors (to
 
 Loading spinner in the table, error with retry, "no reports match". Without `reports.edit` the write button is hidden. On phones the filters stack.
 
+Dates use the shared `DateInput` (`@mui/x-date-pickers` + dayjs): `DD/MM/YYYY` in both languages, an Arabic calendar with Latin digits, weeks starting on Sunday. On phones each table row becomes a stacked block (label and value per column).
+
 ## Known limitations
 
-- Date inputs use the browser's own format (`mm/dd/yyyy`) even in Arabic.
-- On phones the last table columns need sideways scrolling.
 - Task 4.12 (reports inside the patient page) waits for the patients pages.
