@@ -23,7 +23,7 @@ export const ConditionsChart = ({ data }: { data: DashboardStats["conditionCount
             <Box
               sx={{
                 display: "grid",
-                gridTemplateColumns: "minmax(0, 2fr) minmax(0, 3fr) 2.5em",
+                gridTemplateColumns: "minmax(0, 3fr) minmax(0, 2fr) 2em",
                 alignItems: "center",
                 columnGap: 1.5,
                 "&:hover .bar": { bgcolor: "primary.dark" },

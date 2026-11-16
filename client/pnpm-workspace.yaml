@@ -1,0 +1,3 @@
+minimumReleaseAgeExclude:
+  - '@mui/x-charts-vendor@9.18.1'
+  - '@mui/x-charts@9.18.1'

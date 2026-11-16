@@ -5,8 +5,9 @@ import { apiClient } from "@/lib/api/client";
 const THERAPISTS_KEY = ["therapists"];
 
 // Every physiotherapist, active or not, by name. A clinic has a handful.
-export const useTherapists = () =>
+export const useTherapists = (enabled = true) =>
   useQuery({
+    enabled,
     queryKey: [...THERAPISTS_KEY, "admin"],
     queryFn: async () => {
       const { data } = await apiClient.get<ApiPaginated<Therapist>>("/therapists", {

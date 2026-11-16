@@ -29,6 +29,36 @@ export const clinicHour = (now = new Date()) =>
     }).format(now),
   );
 
+// The weekday (0 = Sunday) and minutes since midnight in the clinic right now.
+export const clinicNow = (now = new Date()) => {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    weekday: "short",
+    hour: "numeric",
+    minute: "numeric",
+    hourCycle: "h23",
+    timeZone: "Asia/Hebron",
+  }).formatToParts(now);
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  return {
+    day: days.indexOf(get("weekday")),
+    minutes: Number(get("hour")) * 60 + Number(get("minute")),
+  };
+};
+
+// "09:30" for a session, in clinic time.
+export const clinicTime = (iso: string) =>
+  new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+    timeZone: "Asia/Hebron",
+  }).format(new Date(iso));
+
+// "2026-11-16" for the clinic day a moment falls on.
+export const clinicDay = (iso: string | Date) =>
+  new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Hebron" }).format(new Date(iso));
+
 // "Monday, 16 November" in the clinic's time zone.
 export const clinicToday = (language: string, now = new Date()) =>
   new Intl.DateTimeFormat(locale(language), {
