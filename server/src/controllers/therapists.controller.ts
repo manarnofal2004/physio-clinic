@@ -1,7 +1,10 @@
 import type { RequestHandler } from "express";
+import type { PhotoMimeType } from "../constants.js";
 import { Therapist, type TherapistDocument } from "../models/therapist.model.js";
 import { User } from "../models/user.model.js";
+import { deletePhoto, sendPhoto, storePhoto } from "../services/photos.service.js";
 import { freeTherapists } from "../services/schedule.service.js";
+import { contentMatchesType } from "../services/uploads.service.js";
 import { AppError } from "../utils/app-error.js";
 import { buildPaginationMeta, getSkip } from "../utils/pagination.js";
 import { sendSuccess } from "../utils/response.js";
@@ -17,6 +20,7 @@ function toTherapistDto(therapist: TherapistDocument, hasAccount: boolean) {
     isActive: therapist.isActive,
     hasAccount,
     schedule: therapist.schedule.map(({ day, start, end }) => ({ day, start, end })),
+    photoId: therapist.photoId ? String(therapist.photoId) : null,
     createdAt: therapist.createdAt,
     updatedAt: therapist.updatedAt,
   };
@@ -79,6 +83,39 @@ export const createTherapist: RequestHandler = async (req, res) => {
 
 export const getTherapist: RequestHandler = async (req, res) => {
   const therapist = await findTherapistOr404(req.params.id as string);
+  sendSuccess(res, toTherapistDto(therapist, await hasAccount(therapist.id as string)));
+};
+
+// The photo itself. Any logged-in user may see it: staff pages show it next to
+// sessions and on the dashboard.
+export const getTherapistPhoto: RequestHandler = async (req, res) => {
+  const therapist = await findTherapistOr404(req.params.id as string);
+  if (!therapist.photoId || !(await sendPhoto(res, therapist.photoId))) {
+    throw new AppError(404, "NOT_FOUND", "This therapist has no photo");
+  }
+};
+
+// Adds or replaces the photo; the old one is deleted after the new one is saved.
+export const putTherapistPhoto: RequestHandler = async (req, res) => {
+  const therapist = await findTherapistOr404(req.params.id as string);
+  const file = req.file as Express.Multer.File & { mimetype: PhotoMimeType };
+  if (!contentMatchesType(file.buffer, file.mimetype)) {
+    throw new AppError(400, "UNSUPPORTED_FILE_TYPE", `This is not a real ${file.mimetype} image`);
+  }
+
+  const previous = therapist.photoId;
+  therapist.photoId = await storePhoto(file.buffer, file.mimetype, therapist._id);
+  await therapist.save();
+  if (previous) await deletePhoto(previous);
+  sendSuccess(res, toTherapistDto(therapist, await hasAccount(therapist.id as string)));
+};
+
+export const deleteTherapistPhoto: RequestHandler = async (req, res) => {
+  const therapist = await findTherapistOr404(req.params.id as string);
+  const previous = therapist.photoId;
+  therapist.photoId = null;
+  await therapist.save();
+  if (previous) await deletePhoto(previous);
   sendSuccess(res, toTherapistDto(therapist, await hasAccount(therapist.id as string)));
 };
 

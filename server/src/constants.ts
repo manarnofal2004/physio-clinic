@@ -37,6 +37,11 @@ export type UploadMimeType = (typeof UPLOAD_MIME_TYPES)[number];
 export const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 export const MAX_FILES = 5;
 
+// A physiotherapist's photo: one image, 2 MB at most.
+export const PHOTO_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
+export type PhotoMimeType = (typeof PHOTO_MIME_TYPES)[number];
+export const MAX_PHOTO_BYTES = 2 * 1024 * 1024;
+
 // 0 = Sunday ... 4 = Thursday. The clinic is closed Friday and Saturday.
 export const WORK_DAYS = [0, 1, 2, 3, 4] as const;
 export type WorkDay = (typeof WORK_DAYS)[number];

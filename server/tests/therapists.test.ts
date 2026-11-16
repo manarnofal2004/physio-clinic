@@ -91,4 +91,71 @@ describe("therapists", () => {
     expect(unknown.status).toBe(404);
     expect(malformed.status).toBe(400);
   });
+
+  it("stores, replaces and removes a therapist's photo", async () => {
+    const admin = await createUser();
+    const therapist = await createTherapistProfile();
+    const url = `/api/therapists/${therapist.id as string}/photo`;
+    const PNG = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2, 3, 4]);
+
+    expect((await api.get(url).set(bearer(admin.token))).status).toBe(404);
+
+    const first = await api
+      .put(url)
+      .set(bearer(admin.token))
+      .attach("photo", PNG, { filename: "lina.png", contentType: "image/png" });
+    expect(first.status).toBe(200);
+    const firstId = first.body.data.photoId as string;
+    expect(firstId).toEqual(expect.any(String));
+
+    const shown = await api.get(url).set(bearer(admin.token));
+    expect(shown.status).toBe(200);
+    expect(shown.headers["content-type"]).toBe("image/png");
+
+    // A new photo gets a new id, so browsers do not keep showing the old one.
+    const second = await api
+      .put(url)
+      .set(bearer(admin.token))
+      .attach("photo", PNG, { filename: "lina-2.png", contentType: "image/png" });
+    expect(second.body.data.photoId).not.toBe(firstId);
+
+    const removed = await api.delete(url).set(bearer(admin.token));
+    expect(removed.body.data.photoId).toBeNull();
+    expect((await api.get(url).set(bearer(admin.token))).status).toBe(404);
+  });
+
+  it("accepts only real images as photos, from the admin only", async () => {
+    const admin = await createUser();
+    const staff = await createUser({ role: "therapist", privileges: ["reservations.view"] });
+    const therapist = await createTherapistProfile();
+    const url = `/api/therapists/${therapist.id as string}/photo`;
+
+    const fake = await api
+      .put(url)
+      .set(bearer(admin.token))
+      .attach("photo", Buffer.from("not an image"), {
+        filename: "x.png",
+        contentType: "image/png",
+      });
+    expect(fake.status).toBe(400);
+    expect(fake.body.error.code).toBe("UNSUPPORTED_FILE_TYPE");
+
+    const pdf = await api
+      .put(url)
+      .set(bearer(admin.token))
+      .attach("photo", Buffer.from("%PDF-1.7"), {
+        filename: "x.pdf",
+        contentType: "application/pdf",
+      });
+    expect(pdf.body.error.code).toBe("UNSUPPORTED_FILE_TYPE");
+
+    const notAdmin = await api
+      .put(url)
+      .set(bearer(staff.token))
+      .attach("photo", Buffer.from([0xff, 0xd8, 0xff, 0]), {
+        filename: "x.jpg",
+        contentType: "image/jpeg",
+      });
+    expect(notAdmin.status).toBe(403);
+  });
 });

@@ -1,12 +1,16 @@
 import { Router } from "express";
 import {
   createTherapist,
+  deleteTherapistPhoto,
   getTherapist,
+  getTherapistPhoto,
   listFreeTherapists,
   listTherapists,
+  putTherapistPhoto,
   updateTherapist,
 } from "../controllers/therapists.controller.js";
 import { authenticate, authorize, requirePrivilege } from "../middleware/auth.js";
+import { receivePhoto } from "../middleware/upload.js";
 import { validate } from "../middleware/validate.js";
 import { idParams } from "../validators/common.js";
 import { freeTherapistsQuery } from "../validators/reservations.validators.js";
@@ -42,4 +46,20 @@ therapistsRouter.put(
   authorize("admin"),
   validate({ params: idParams, body: therapistBody }),
   updateTherapist,
+);
+
+// The therapist's photo: anyone logged in sees it, only the admin changes it.
+therapistsRouter.get("/:id/photo", validate({ params: idParams }), getTherapistPhoto);
+therapistsRouter.put(
+  "/:id/photo",
+  authorize("admin"),
+  validate({ params: idParams }),
+  receivePhoto,
+  putTherapistPhoto,
+);
+therapistsRouter.delete(
+  "/:id/photo",
+  authorize("admin"),
+  validate({ params: idParams }),
+  deleteTherapistPhoto,
 );

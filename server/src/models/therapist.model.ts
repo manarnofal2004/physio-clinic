@@ -1,4 +1,4 @@
-import { Schema, model, type HydratedDocument } from "mongoose";
+import { Schema, model, type HydratedDocument, type Types } from "mongoose";
 import { WORK_DAYS, type WorkDay } from "../constants.js";
 
 export interface WorkingHours {
@@ -13,6 +13,7 @@ export interface ITherapist {
   specialty: string | null;
   isActive: boolean;
   schedule: WorkingHours[];
+  photoId: Types.ObjectId | null; // in the "photos" GridFS bucket
   createdAt: Date;
   updatedAt: Date;
 }
@@ -35,6 +36,7 @@ const therapistSchema = new Schema<ITherapist>(
     specialty: { type: String, default: null, trim: true },
     isActive: { type: Boolean, default: true },
     schedule: { type: [workingHoursSchema], default: [] },
+    photoId: { type: Schema.Types.ObjectId, default: null },
   },
   { timestamps: true },
 );

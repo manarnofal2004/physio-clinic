@@ -228,6 +228,7 @@ export interface Therapist {
   isActive: boolean;
   hasAccount: boolean; // true once the admin creates a login for this therapist
   schedule: WorkingHours[];
+  photoId: string | null; // changes with every new photo; GET /therapists/:id/photo
   createdAt: string;
   updatedAt: string;
 }
