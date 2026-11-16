@@ -56,6 +56,14 @@ export const ar: Translation = {
     },
   },
   therapistsAdmin: {
+    photo: {
+      add: "إضافة صورة",
+      change: "تغيير الصورة",
+      remove: "حذف الصورة",
+      hint: "JPEG أو PNG أو WebP، حتى 2 ميغابايت.",
+      tooBig: "يجب ألا يزيد حجم الصورة عن 2 ميغابايت.",
+      wrongType: "اختر صورة بصيغة JPEG أو PNG أو WebP.",
+    },
     title: "الأخصائيون",
     subtitle: "من يعمل في العيادة ومتى. الحجوزات تذهب فقط للأخصائيين الذين يعملون في ذلك الوقت.",
     add: "إضافة أخصائي",

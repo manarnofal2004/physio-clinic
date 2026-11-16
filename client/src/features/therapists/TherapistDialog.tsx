@@ -15,10 +15,16 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { Camera } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Therapist, WorkDay, WorkingHours } from "@shared/api-types";
 import { toInput, useTherapistMutations } from "./api";
 import { CLOSE, DAYS, OPEN, TIMES, dayName, toMinutes } from "./schedule";
+import { TherapistAvatar } from "./TherapistAvatar";
+
+// The same limits as the server.
+const PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const MAX_PHOTO_BYTES = 2 * 1024 * 1024;
 
 type Hours = Record<WorkDay, { on: boolean; start: string; end: string }>;
 
@@ -45,7 +51,7 @@ export const TherapistDialog = ({
   onSaved: () => void;
 }) => {
   const { t, i18n } = useTranslation();
-  const { create, update } = useTherapistMutations();
+  const { create, update, setPhoto: setPhotoFile, removePhoto } = useTherapistMutations();
   const start = therapist ? toInput(therapist) : null;
   const [fullName, setFullName] = useState(start?.fullName ?? "");
   const [phone, setPhone] = useState(start?.phone ?? "");
@@ -56,7 +62,19 @@ export const TherapistDialog = ({
   );
   const [tried, setTried] = useState(false);
   const [error, setError] = useState(false);
-  const saving = create.isPending || update.isPending;
+  // The photo is sent after the profile is saved: a new file, a removal, or nothing.
+  const [photo, setPhoto] = useState<{ file: File; preview: string } | "remove" | null>(null);
+  const [photoError, setPhotoError] = useState<"tooBig" | "wrongType" | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  const pickPhoto = (file: File | undefined) => {
+    if (!file) return;
+    if (!PHOTO_TYPES.includes(file.type)) return setPhotoError("wrongType");
+    if (file.size > MAX_PHOTO_BYTES) return setPhotoError("tooBig");
+    setPhotoError(null);
+    setPhoto({ file, preview: URL.createObjectURL(file) });
+  };
+  const hasPhoto = photo === "remove" ? false : Boolean(photo || therapist?.photoId);
 
   const setDay = (day: WorkDay, patch: Partial<Hours[WorkDay]>) =>
     setHours((h) => ({ ...h, [day]: { ...h[day], ...patch } }));
@@ -69,7 +87,7 @@ export const TherapistDialog = ({
     times: DAYS.some((d) => hours[d].on && toMinutes(hours[d].end) <= toMinutes(hours[d].start)),
   };
 
-  const save = () => {
+  const save = async () => {
     setTried(true);
     setError(false);
     if (Object.values(errors).some(Boolean)) return;
@@ -84,9 +102,20 @@ export const TherapistDialog = ({
         end: hours[day].end,
       })),
     };
-    const done = { onSuccess: onSaved, onError: () => setError(true) };
-    if (therapist) update.mutate({ id: therapist.id, input }, done);
-    else create.mutate(input, done);
+    setSaving(true);
+    try {
+      const saved = therapist
+        ? await update.mutateAsync({ id: therapist.id, input })
+        : await create.mutateAsync(input);
+      const id = saved.data.data.id;
+      if (photo === "remove") await removePhoto.mutateAsync(id);
+      else if (photo) await setPhotoFile.mutateAsync({ id, file: photo.file });
+      onSaved();
+    } catch {
+      setError(true);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -94,6 +123,53 @@ export const TherapistDialog = ({
       <DialogTitle>{therapist ? t("therapistsAdmin.edit") : t("therapistsAdmin.add")}</DialogTitle>
       <DialogContent>
         <Stack spacing={2.5} sx={{ pt: 1 }}>
+          <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
+            <TherapistAvatar
+              therapist={{
+                id: therapist?.id ?? "new",
+                fullName: fullName || "?",
+                photoId: photo === "remove" ? null : (therapist?.photoId ?? null),
+              }}
+              src={photo && photo !== "remove" ? photo.preview : undefined}
+              size={72}
+            />
+            <Box>
+              <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap" }}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  component="label"
+                  startIcon={<Camera size={16} />}
+                >
+                  {hasPhoto ? t("therapistsAdmin.photo.change") : t("therapistsAdmin.photo.add")}
+                  <input
+                    hidden
+                    type="file"
+                    accept={PHOTO_TYPES.join(",")}
+                    onChange={(e) => {
+                      pickPhoto(e.target.files?.[0]);
+                      e.target.value = "";
+                    }}
+                  />
+                </Button>
+                {hasPhoto && (
+                  <Button size="small" color="error" onClick={() => setPhoto("remove")}>
+                    {t("therapistsAdmin.photo.remove")}
+                  </Button>
+                )}
+              </Stack>
+              <Typography
+                variant="body2"
+                color={photoError ? "error" : "text.secondary"}
+                sx={{ mt: 0.75 }}
+              >
+                {photoError
+                  ? t(`therapistsAdmin.photo.${photoError}`)
+                  : t("therapistsAdmin.photo.hint")}
+              </Typography>
+            </Box>
+          </Stack>
+
           <TextField
             label={t("therapistsAdmin.fullName")}
             value={fullName}

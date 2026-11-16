@@ -54,6 +54,14 @@ export const en = {
     },
   },
   therapistsAdmin: {
+    photo: {
+      add: "Add a photo",
+      change: "Change photo",
+      remove: "Remove photo",
+      hint: "JPEG, PNG or WebP, up to 2 MB.",
+      tooBig: "The photo must be 2 MB or less.",
+      wrongType: "Choose a JPEG, PNG or WebP image.",
+    },
     title: "Physiotherapists",
     subtitle:
       "Who works at the clinic and when. Bookings only go to therapists who are working at that time.",

@@ -1,15 +1,5 @@
 import { useState } from "react";
-import {
-  Avatar,
-  Box,
-  Button,
-  Chip,
-  IconButton,
-  Stack,
-  Switch,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Chip, IconButton, Stack, Switch, Tooltip, Typography } from "@mui/material";
 import { Pencil, Phone, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
@@ -21,16 +11,8 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { useNotify } from "@/components/notifications/useNotify";
 import { toInput, useTherapistMutations, useTherapists } from "./api";
 import { DAYS, dayName, position } from "./schedule";
+import { TherapistAvatar } from "./TherapistAvatar";
 import { TherapistDialog } from "./TherapistDialog";
-
-const initials = (name: string) =>
-  name
-    .replace(/^Dr\.?\s+/i, "")
-    .split(/\s+/)
-    .map((p) => p[0] ?? "")
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
 
 // One therapist's week: for each clinic day, a track from opening to closing with
 // their working hours filled in olive, and the hours written under it.
@@ -149,9 +131,7 @@ export const TherapistsPage = () => {
             }}
           >
             <Stack direction="row" spacing={1.5} sx={{ alignItems: "center", minWidth: 0 }}>
-              <Avatar sx={{ bgcolor: "action.selected", color: "primary.dark", fontWeight: 700 }}>
-                {initials(th.fullName)}
-              </Avatar>
+              <TherapistAvatar therapist={th} size={44} />
               <Box sx={{ minWidth: 0 }}>
                 <Typography sx={{ fontWeight: 700 }}>{th.fullName}</Typography>
                 <Typography variant="body2" color="text.secondary">

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { ApiPaginated, Therapist, TherapistInput } from "@shared/api-types";
+import type { ApiPaginated, ApiSuccess, Therapist, TherapistInput } from "@shared/api-types";
 import { apiClient } from "@/lib/api/client";
 
 const THERAPISTS_KEY = ["therapists"];
@@ -16,18 +16,51 @@ export const useTherapists = () =>
     },
   });
 
-// Add a physiotherapist or replace one's details (PUT sends the whole profile).
+// The photo as an object URL. The photo is behind the login, so <img> cannot load
+// it by itself; photoId is in the key, so a new photo is fetched once and kept.
+export const useTherapistPhoto = (therapist: Pick<Therapist, "id" | "photoId">) =>
+  useQuery({
+    queryKey: [...THERAPISTS_KEY, "photo", therapist.id, therapist.photoId],
+    queryFn: async () => {
+      const { data } = await apiClient.get<Blob>(`/therapists/${therapist.id}/photo`, {
+        params: { v: therapist.photoId },
+        responseType: "blob",
+      });
+      return URL.createObjectURL(data);
+    },
+    enabled: Boolean(therapist.photoId),
+    staleTime: Infinity,
+  });
+
+// Add a physiotherapist or replace one's details (PUT sends the whole profile), and
+// set or remove their photo.
 export const useTherapistMutations = () => {
   const queryClient = useQueryClient();
   const onSettled = () => queryClient.invalidateQueries({ queryKey: THERAPISTS_KEY });
   return {
     create: useMutation({
-      mutationFn: (input: TherapistInput) => apiClient.post("/therapists", input),
+      mutationFn: (input: TherapistInput) =>
+        apiClient.post<ApiSuccess<Therapist>>("/therapists", input),
       onSettled,
     }),
     update: useMutation({
       mutationFn: ({ id, input }: { id: string; input: TherapistInput }) =>
-        apiClient.put(`/therapists/${id}`, input),
+        apiClient.put<ApiSuccess<Therapist>>(`/therapists/${id}`, input),
+      onSettled,
+    }),
+    setPhoto: useMutation({
+      mutationFn: ({ id, file }: { id: string; file: File }) => {
+        const form = new FormData();
+        form.append("photo", file);
+        // The client sends JSON by default; a file needs multipart.
+        return apiClient.put(`/therapists/${id}/photo`, form, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      },
+      onSettled,
+    }),
+    removePhoto: useMutation({
+      mutationFn: (id: string) => apiClient.delete(`/therapists/${id}/photo`),
       onSettled,
     }),
   };
