@@ -29,4 +29,4 @@ The physiotherapist's workspace. The menu shows only the pages the admin allowed
 
 ## Not built yet
 
-Dashboard, patients and reservations pages show "This page is not ready yet".
+Patients and reservations pages show "This page is not ready yet". The dashboard is built ([report 10](10-dashboard.md)).

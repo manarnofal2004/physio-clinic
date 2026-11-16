@@ -13,8 +13,9 @@ One technical report per page of the Sanad web app: what the page does, who buil
 | 7 | [Report details](07-report-details.md) | `/admin/reports/:id`, `/therapist/reports/:id` | Manar |
 | 8 | [Banners](08-admin-banners.md) | `/admin/banners`, `/therapist/banners` | Manar |
 | 9 | [Therapist panel](09-therapist-panel.md) | `/therapist` | Bayan |
+| 10 | [Dashboard](10-dashboard.md) | `/admin`, `/therapist/dashboard` | Manar |
 
-Not built yet (they show a "This page is not ready yet" message): admin dashboard, patients and reservations pages, and the patient portal pages.
+Not built yet (they show a "This page is not ready yet" message): patients and reservations pages, and the patient portal pages.
 
 ## Stack
 

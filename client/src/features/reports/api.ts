@@ -59,6 +59,8 @@ export const useReportMutations = () => {
     Promise.all([
       queryClient.invalidateQueries({ queryKey: REPORTS_KEY }),
       queryClient.invalidateQueries({ queryKey: ["patients"] }),
+      // The dashboard counts reports and shows their progress.
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] }),
     ]);
   return {
     create: useMutation({

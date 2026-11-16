@@ -3,7 +3,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { PanelLayout } from "@/components/layout/PanelLayout";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { adminNavItems } from "@/components/layout/adminNavItems";
-import { AdminHomePage } from "@/features/admin/AdminHomePage";
+import { DashboardPage } from "@/features/dashboard/DashboardPage";
 import { LoginPage } from "@/features/auth/LoginPage";
 import { BannersPage } from "@/features/banners/BannersPage";
 import { ReportDetailsPage } from "@/features/reports/ReportDetailsPage";
@@ -20,11 +20,12 @@ import { NotFoundPage } from "@/routes/NotFoundPage";
 
 // Therapist pages that are built; the rest show "not ready yet".
 const readyPages: Record<string, ReactNode> = {
+  "/therapist/dashboard": <DashboardPage />,
   "/therapist/reports": <ReportsPage />,
   "/therapist/banners": <BannersPage />,
 };
 
-// Admin pages that are built ("/admin" shows a welcome page until the dashboard).
+// Admin pages that are built ("/admin" is the dashboard).
 const builtAdminPages = [
   "/admin",
   "/admin/users",
@@ -55,7 +56,7 @@ const router = createBrowserRouter([
           { path: "reports", element: <ReportsPage /> },
           { path: "reports/:id", element: <ReportDetailsPage /> },
           // Pages in the menu that are not built yet say so, instead of "not found".
-          { index: true, element: <AdminHomePage /> },
+          { index: true, element: <DashboardPage /> },
           ...adminNavItems
             .filter((item) => !builtAdminPages.includes(item.path))
             .map((item) => ({ path: item.path, element: <PageNotReady /> })),
