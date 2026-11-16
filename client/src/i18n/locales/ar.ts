@@ -244,6 +244,8 @@ export const ar: Translation = {
   },
   panel: {
     navigation: "قائمة اللوحة",
+    collapse: "تصغير القائمة",
+    expand: "توسيع القائمة",
     home: "الرئيسية",
     dashboard: "لوحة التحكم",
     patients: "المرضى",

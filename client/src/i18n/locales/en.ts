@@ -245,6 +245,8 @@ export const en = {
   },
   panel: {
     navigation: "Panel navigation",
+    collapse: "Narrow the menu",
+    expand: "Widen the menu",
     home: "Home",
     dashboard: "Dashboard",
     patients: "Patients",
