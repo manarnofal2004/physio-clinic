@@ -84,7 +84,9 @@ export const LandingSection = ({
                 fontStyle: "italic",
                 fontSize: { xs: "1.2rem", md: "1.3rem" },
                 lineHeight: 1.5,
-                color: "warning.dark",
+                // Dark honey on beige; on the dark page it needs the bright honey to be readable.
+                color: (th) =>
+                  th.palette.mode === "dark" ? th.palette.warning.main : th.palette.warning.dark,
                 "&:lang(ar)": { fontStyle: "normal", fontSize: { xs: "1.3rem", md: "1.4rem" } },
               }}
             >

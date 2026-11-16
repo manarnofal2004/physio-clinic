@@ -161,7 +161,11 @@ export const ContactSection = () => {
                     borderRadius: 2,
                     fontSize: "0.9rem",
                     bgcolor: today ? "primary.main" : open ? "action.selected" : "transparent",
-                    color: today ? "primary.contrastText" : open ? "primary.dark" : "text.disabled",
+                    color: today
+                      ? "primary.contrastText"
+                      : open
+                        ? "primary.dark"
+                        : "text.secondary",
                     border: open || today ? 0 : "1px dashed",
                     borderColor: "divider",
                   }}

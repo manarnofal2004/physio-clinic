@@ -50,7 +50,7 @@ const WeekStrip = ({ therapist }: { therapist: Therapist }) => {
           <Box key={day}>
             <Typography
               variant="body2"
-              sx={{ fontWeight: 600, color: h ? "primary.dark" : "text.disabled" }}
+              sx={{ fontWeight: 600, color: h ? "primary.dark" : "text.secondary" }}
             >
               {dayName(day, i18n.language, "short")}
             </Typography>

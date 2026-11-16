@@ -1,4 +1,5 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import type {
   ApiPaginated,
   ApiSuccess,
@@ -102,7 +103,7 @@ export const downloadReportsCsv = async (filter: Omit<ReportsFilter, "page" | "l
   const url = URL.createObjectURL(data);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `reports-${new Date().toISOString().slice(0, 10)}.csv`;
+  link.download = `reports-${dayjs().format("YYYY-MM-DD")}.csv`;
   link.click();
   URL.revokeObjectURL(url);
 };

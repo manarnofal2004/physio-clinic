@@ -103,10 +103,12 @@ export const BannersPage = () => {
                 gap: 2,
                 p: 2,
                 borderRadius: 2,
-                border: 1,
+                // A hidden banner has a dashed outline and no sheet behind it. Fading it
+                // instead made its text too faint to read.
+                border: "1px solid",
+                borderStyle: banner.isActive ? "solid" : "dashed",
                 borderColor: "divider",
-                bgcolor: "background.paper",
-                opacity: banner.isActive ? 1 : 0.6,
+                bgcolor: banner.isActive ? "background.paper" : "transparent",
               }}
             >
               {/* The order arrows. */}

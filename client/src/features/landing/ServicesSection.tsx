@@ -164,9 +164,7 @@ export const ServicesSection = () => {
           <Typography variant="h3" component="h3" sx={{ fontSize: { xs: "1.9rem", md: "2.3rem" } }}>
             {t(key(service.id))}
           </Typography>
-          <Typography
-            sx={{ mt: 1.5, fontSize: "1.1rem", lineHeight: 1.7, opacity: 0.85, maxWidth: "30em" }}
-          >
+          <Typography sx={{ mt: 1.5, fontSize: "1.1rem", lineHeight: 1.7, maxWidth: "30em" }}>
             {t(key(service.id, "Text"))}
           </Typography>
 

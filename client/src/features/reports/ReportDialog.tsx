@@ -54,7 +54,8 @@ export const ReportDialog = ({
 
   const [chosen, setChosen] = useState<PatientSummary | null>(report?.patient ?? patient ?? null);
   const [therapistId, setTherapistId] = useState(report?.therapistId ?? "");
-  const [day, setDay] = useState(report ? report.date.slice(0, 10) : today());
+  // The local day, not the UTC one: midnight in Palestine is 22:00 the day before in UTC.
+  const [day, setDay] = useState(report ? dayjs(report.date).format("YYYY-MM-DD") : today());
   const [diagnosis, setDiagnosis] = useState(report?.diagnosis ?? "");
   const [plan, setPlan] = useState(report?.treatmentPlan ?? "");
   const [notes, setNotes] = useState(report?.sessionNotes ?? "");

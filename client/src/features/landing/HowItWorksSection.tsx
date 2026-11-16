@@ -116,14 +116,10 @@ export const HowItWorksSection = () => {
     >
       {/* Wide screens: the spine with the steps around it. */}
       <Box
-        component="ol"
         sx={{
           display: { xs: "none", md: "block" },
           position: "relative",
           height: SPINE_HEIGHT,
-          m: 0,
-          p: 0,
-          listStyle: "none",
         }}
       >
         {/* A soft pale olive glow behind the spine, fading into the beige. */}
@@ -150,43 +146,46 @@ export const HowItWorksSection = () => {
             transform: `translateX(-50%)${isRtl ? " scaleX(-1)" : ""}`,
           }}
         />
-        {steps.map((step, index) => {
-          // Distance of the spine point from the middle of the section.
-          const offset = `(${SPINE_WIDTH} * ${(step.x - 50) / 100})`;
-          const atStart = step.side === "start";
-          return (
-            <Box
-              component="li"
-              key={step.title}
-              sx={{
-                position: "absolute",
-                top: `${step.top}%`,
-                transform: `translateY(-${DOT / 2}px)`,
-                display: "flex",
-                alignItems: "flex-start",
-                flexDirection: atStart ? "row-reverse" : "row",
-                // The marker's centre sits on the spine; the text runs away from it.
-                ...(atStart
-                  ? { insetInlineEnd: `calc(50% - ${offset} - ${DOT / 2}px)` }
-                  : { insetInlineStart: `calc(50% + ${offset} - ${DOT / 2}px)` }),
-                width: `calc(50% - ${DOT / 2}px)`,
-              }}
-            >
-              {marker}
+        {/* Only the steps are in the list, so screen readers count three items. */}
+        <Box component="ol" sx={{ position: "absolute", inset: 0, m: 0, p: 0, listStyle: "none" }}>
+          {steps.map((step, index) => {
+            // Distance of the spine point from the middle of the section.
+            const offset = `(${SPINE_WIDTH} * ${(step.x - 50) / 100})`;
+            const atStart = step.side === "start";
+            return (
               <Box
-                aria-hidden
+                component="li"
+                key={step.title}
                 sx={{
-                  width: LINE,
-                  mt: `${DOT / 2}px`,
-                  borderTop: 1.5,
-                  borderColor: "warning.main",
-                  flexShrink: 0,
+                  position: "absolute",
+                  top: `${step.top}%`,
+                  transform: `translateY(-${DOT / 2}px)`,
+                  display: "flex",
+                  alignItems: "flex-start",
+                  flexDirection: atStart ? "row-reverse" : "row",
+                  // The marker's centre sits on the spine; the text runs away from it.
+                  ...(atStart
+                    ? { insetInlineEnd: `calc(50% - ${offset} - ${DOT / 2}px)` }
+                    : { insetInlineStart: `calc(50% + ${offset} - ${DOT / 2}px)` }),
+                  width: `calc(50% - ${DOT / 2}px)`,
                 }}
-              />
-              <Box sx={{ px: 2.5, mt: "-4.4rem", maxWidth: 460 }}>{stepText(step, index)}</Box>
-            </Box>
-          );
-        })}
+              >
+                {marker}
+                <Box
+                  aria-hidden
+                  sx={{
+                    width: LINE,
+                    mt: `${DOT / 2}px`,
+                    borderTop: 1.5,
+                    borderColor: "warning.main",
+                    flexShrink: 0,
+                  }}
+                />
+                <Box sx={{ px: 2.5, mt: "-4.4rem", maxWidth: 460 }}>{stepText(step, index)}</Box>
+              </Box>
+            );
+          })}
+        </Box>
       </Box>
 
       {/* Phones: the steps one under another, joined by a dashed honey line. */}
