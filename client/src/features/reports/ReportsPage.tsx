@@ -41,6 +41,7 @@ export const ReportsPage = () => {
   const [exporting, setExporting] = useState(false);
   const reports = useReports(filter);
   const set = (patch: Partial<ReportsFilter>) => setFilter((f) => ({ ...f, ...patch, page: 1 }));
+  const filtered = Boolean(filter.search || filter.progress || filter.from || filter.to);
 
   useEffect(() => {
     const id = window.setTimeout(
@@ -206,9 +207,10 @@ export const ReportsPage = () => {
             reports.isPending ? (
               <LoadingState label={t("common.loading")} />
             ) : (
+              // "No match" only makes sense after a search or filter.
               <EmptyState
-                title={t("reportsAdmin.empty")}
-                description={t("reportsAdmin.emptyHint")}
+                title={t(filtered ? "reportsAdmin.empty" : "reportsAdmin.none")}
+                description={t(filtered ? "reportsAdmin.emptyHint" : "reportsAdmin.noneHint")}
               />
             )
           }

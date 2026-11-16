@@ -31,6 +31,8 @@ export const en = {
     deleted: "Report deleted",
     empty: "No reports match",
     emptyHint: "Try another search, or clear the filters.",
+    none: "No reports yet",
+    noneHint: "Reports written after treatment sessions appear here.",
     retry: "Try again",
     files: {
       title: "Files",
