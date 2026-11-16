@@ -245,5 +245,25 @@ export const createAppTheme = (
       },
     },
     language === "ar" ? arSD : enUS,
+    // MUI's Arabic texts write "١–٣ من ٣"; the site uses Latin digits everywhere.
+    language === "ar"
+      ? {
+          components: {
+            MuiTablePagination: {
+              defaultProps: {
+                labelDisplayedRows: ({
+                  from,
+                  to,
+                  count,
+                }: {
+                  from: number;
+                  to: number;
+                  count: number;
+                }) => `${from}–${to} من ${count === -1 ? `أكثر من ${to}` : count}`,
+              },
+            },
+          },
+        }
+      : {},
   );
 };
