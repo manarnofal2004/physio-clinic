@@ -1,3 +1,4 @@
+import { AvailabilitySection } from "./AvailabilitySection";
 import { BookingSection } from "./BookingSection";
 import { ContactSection } from "./ContactSection";
 import { FaqSection } from "./FaqSection";
@@ -6,13 +7,14 @@ import { HeroSection } from "./HeroSection";
 import { HowItWorksSection } from "./HowItWorksSection";
 import { ServicesSection } from "./ServicesSection";
 
-// Sections are added here as they are built (6.6); 6.11 finishes the page.
-// Booking comes right after "How it works", which explains it.
+// Booking comes right after "How it works", which explains it, and today's
+// availability sits just above the form, so a visitor sees what is free before booking.
 export const LandingPage = () => (
   <>
     <HeroSection />
     <ServicesSection />
     <HowItWorksSection />
+    <AvailabilitySection />
     <BookingSection />
     <GallerySection />
     <FaqSection />
