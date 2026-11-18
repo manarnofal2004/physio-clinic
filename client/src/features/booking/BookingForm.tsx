@@ -1,17 +1,19 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Alert, Box, Button, Stack, Typography } from "@mui/material";
-import { useForm, useWatch } from "react-hook-form";
+import { useController, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { EmptyState } from "@/components/feedback/EmptyState";
 import { ErrorState } from "@/components/feedback/ErrorState";
 import { LoadingState } from "@/components/feedback/LoadingState";
-import { FormSelect } from "@/components/form/FormSelect";
 import { FormTextField } from "@/components/form/FormTextField";
 import type { Translation } from "@/i18n/locales/en";
 import { ApiError } from "@/lib/api/apiError";
+import { AppointmentCard } from "./AppointmentCard";
 import { createBookingSchema, type BookingValues } from "./bookingSchema";
+import { DayPicker } from "./DayPicker";
 import { useAvailability, useCreateReservation, useDateOptions } from "./hooks";
+import { TimePicker } from "./TimePicker";
 
 type BookingError = keyof Translation["booking"]["errors"];
 
@@ -56,7 +58,7 @@ const formatDay = (date: string, language: string) =>
 export const BookingForm = () => {
   const { t, i18n } = useTranslation();
   const [bookingError, setBookingError] = useState<BookingError | null>(null);
-  const [booked, setBooked] = useState<{ date: string; time: string } | null>(null);
+  const [booked, setBooked] = useState<{ name: string; date: string; time: string } | null>(null);
 
   const schema = useMemo(() => createBookingSchema(t), [t]);
   const {
@@ -69,10 +71,15 @@ export const BookingForm = () => {
   } = useForm<BookingValues>({ resolver: zodResolver(schema), defaultValues: EMPTY_FORM });
 
   const date = useWatch({ control, name: "date" });
+  const fullName = useWatch({ control, name: "fullName" });
+  // The day and time are picked with bubbles instead of typed, so they are wired here.
+  const dateField = useController({ name: "date", control });
+  const timeField = useController({ name: "scheduledAt", control });
   const dateOptions = useDateOptions();
   const availability = useAvailability(date);
   const createMutation = useCreateReservation();
   const slots = availability.data?.slots ?? [];
+  const chosenTime = slots.find((slot) => slot.scheduledAt === timeField.field.value)?.time ?? "";
 
   // Field messages are made when the form validates, so redo them when the language changes.
   useEffect(() => {
@@ -90,7 +97,7 @@ export const BookingForm = () => {
         scheduledAt: values.scheduledAt,
         ...(values.notes && { notes: values.notes }),
       });
-      setBooked({ date: values.date, time });
+      setBooked({ name: values.fullName, date: values.date, time });
       reset(EMPTY_FORM);
     } catch (error) {
       const code = bookingErrorFor(error);
@@ -100,8 +107,37 @@ export const BookingForm = () => {
     }
   };
 
+  // The form (or the thank-you after sending) beside the appointment card.
+  const withCard = (content: ReactNode) => (
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: { xs: "1fr", md: "minmax(0, 1.25fr) minmax(0, 1fr)" },
+        gap: { xs: 4, md: 8 },
+        alignItems: "center",
+      }}
+    >
+      {content}
+      {/* Wide screens: the card starts up by the section title, so it can be tall. */}
+      <Box sx={{ alignSelf: "start", mt: { md: "-96px" } }}>
+        <AppointmentCard
+          name={booked ? booked.name : fullName}
+          day={
+            booked
+              ? formatDay(booked.date, i18n.language)
+              : date
+                ? formatDay(date, i18n.language)
+                : ""
+          }
+          time={booked ? booked.time : chosenTime}
+          sent={Boolean(booked)}
+        />
+      </Box>
+    </Box>
+  );
+
   if (booked) {
-    return (
+    return withCard(
       <Stack spacing={2} role="status" sx={{ alignItems: "flex-start" }}>
         <Typography variant="h5" component="p">
           {t("booking.success.title")}
@@ -115,7 +151,7 @@ export const BookingForm = () => {
         <Button variant="outlined" onClick={() => setBooked(null)}>
           {t("booking.success.another")}
         </Button>
-      </Stack>
+      </Stack>,
     );
   }
 
@@ -135,6 +171,8 @@ export const BookingForm = () => {
     return <EmptyState title={t("booking.noDates")} description={t("booking.noDatesHint")} />;
   }
 
+  const pickerLabel = { mb: 0.75, fontSize: "1.05rem", color: "primary.dark" };
+
   // What to say under the time field while it has nothing to choose from.
   const timeHint = !date
     ? t("booking.pickDayFirst")
@@ -142,21 +180,66 @@ export const BookingForm = () => {
       ? t("common.loading")
       : undefined;
 
-  return (
+  return withCard(
     <Stack
       component="form"
       noValidate
-      spacing={2}
+      spacing={{ xs: 2, md: 1.75 }}
       onSubmit={(event) => void handleSubmit(onSubmit)(event)}
     >
-      <FormTextField
-        name="fullName"
-        control={control}
-        label={t("booking.fullName")}
-        autoComplete="name"
-        required
-      />
-      <Box sx={{ display: "grid", gap: 2, gridTemplateColumns: { sm: "2fr 1fr" } }}>
+      <Box>
+        <Typography sx={pickerLabel}>{t("booking.chooseDay")}</Typography>
+        <DayPicker
+          days={dateOptions.data}
+          value={dateField.field.value}
+          onChange={(day) => {
+            dateField.field.onChange(day);
+            // A time belongs to one day, so choosing another day clears it.
+            setValue("scheduledAt", "");
+          }}
+        />
+        {dateField.fieldState.error && (
+          <Typography color="error" variant="body2" sx={{ mt: 0.5 }}>
+            {dateField.fieldState.error.message}
+          </Typography>
+        )}
+      </Box>
+      <Box>
+        <Typography sx={pickerLabel}>{t("booking.chooseTime")}</Typography>
+        {timeHint ? (
+          <Typography color="text.secondary" variant="body2">
+            {timeHint}
+          </Typography>
+        ) : (
+          slots.length > 0 && (
+            <TimePicker
+              slots={slots}
+              value={timeField.field.value}
+              onChange={timeField.field.onChange}
+            />
+          )
+        )}
+        {timeField.fieldState.error && (
+          <Typography color="error" variant="body2" sx={{ mt: 0.5 }}>
+            {timeField.fieldState.error.message}
+          </Typography>
+        )}
+      </Box>
+      {/* Name, phone and age on one line on wide screens. */}
+      <Box
+        sx={{
+          display: "grid",
+          gap: 2,
+          gridTemplateColumns: { sm: "1fr 1fr", md: "1.4fr 1.2fr 0.6fr" },
+        }}
+      >
+        <FormTextField
+          name="fullName"
+          control={control}
+          label={t("booking.fullName")}
+          autoComplete="name"
+          required
+        />
         <FormTextField
           name="phone"
           control={control}
@@ -175,29 +258,6 @@ export const BookingForm = () => {
           slotProps={{ htmlInput: { inputMode: "numeric" } }}
         />
       </Box>
-      <Box sx={{ display: "grid", gap: 2, gridTemplateColumns: { sm: "1fr 1fr" } }}>
-        <FormSelect
-          name="date"
-          control={control}
-          label={t("booking.date")}
-          required
-          options={dateOptions.data.map((day) => ({
-            value: day,
-            label: formatDay(day, i18n.language),
-          }))}
-          // A time belongs to one day, so choosing another day clears it.
-          onChange={() => setValue("scheduledAt", "")}
-        />
-        <FormSelect
-          name="scheduledAt"
-          control={control}
-          label={t("booking.time")}
-          required
-          disabled={slots.length === 0}
-          helperText={timeHint}
-          options={slots.map((slot) => ({ value: slot.scheduledAt, label: slot.time }))}
-        />
-      </Box>
       {availability.isError && (
         <ErrorState
           title={t("booking.loadTimesFailed")}
@@ -213,7 +273,8 @@ export const BookingForm = () => {
         control={control}
         label={t("booking.notes")}
         multiline
-        minRows={3}
+        minRows={1}
+        maxRows={3}
       />
       {bookingError && <Alert severity="error">{t(`booking.errors.${bookingError}`)}</Alert>}
       <Button
@@ -225,6 +286,6 @@ export const BookingForm = () => {
       >
         {t("booking.submit")}
       </Button>
-    </Stack>
+    </Stack>,
   );
 };

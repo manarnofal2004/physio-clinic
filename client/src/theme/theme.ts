@@ -4,7 +4,7 @@ import { createTheme, type Direction, type PaletteMode } from "@mui/material/sty
 // The clinic's look: "olive and stone" colours with a layout inspired by jane.app.
 // - stone grey is the "air" (sidebar, tinted areas); one olive green marks everything you can press
 // - honey marks waiting states (pending reservations)
-// - one font, Redaction, for headings, text and controls (Marhey for Arabic)
+// - one font, Redaction, for headings, text and controls (IBM Plex Sans Arabic for Arabic)
 // - no boxes: content is grouped by space, type and thin lines, not by bordered or shadowed cards
 // - quiet buttons: regular weight, 8px corners
 const colors = {
@@ -42,8 +42,8 @@ declare module "@mui/material/styles" {
   }
 }
 
-// Redaction has no Arabic letters, so Arabic text falls back to Marhey.
-const font = '"Redaction", "Marhey", serif';
+// Redaction has no Arabic letters, so Arabic text falls back to IBM Plex Sans Arabic.
+const font = '"Redaction", "IBM Plex Sans Arabic", serif';
 
 export const createAppTheme = (
   mode: PaletteMode,

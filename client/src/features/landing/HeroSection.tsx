@@ -1,6 +1,7 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
+import { SCREEN_HEIGHT } from "@/components/layout/navbarHeight";
 import { WaveClipPath } from "./wave";
 
 // The photo fills the far half of the hero, with a wave on the edge facing the text.
@@ -69,14 +70,25 @@ export const HeroSection = () => {
           maxWidth: 1200,
           mx: "auto",
           px: { xs: 2, md: 4 },
-          py: { xs: 7, md: 10 },
-          minHeight: { md: 600 },
+          // More space below than above on wide screens, so the text sits a
+          // little higher than the middle of the screen.
+          pt: { xs: 7, md: 4 },
+          pb: { xs: 7, md: 14 },
+          // Short laptop screens: less space around the text so it fits one screen.
+          "@media (min-width: 900px) and (max-height: 700px)": {
+            pt: 2,
+            pb: 6,
+            "& .hero-details": { mt: 4 },
+            "& .hero-actions": { mt: 3 },
+          },
+          // Leaves room for the announcement bar above the navbar while it shows.
+          minHeight: { md: `calc(${SCREEN_HEIGHT} - var(--banner-height, 0px))` },
           display: "flex",
           alignItems: "center",
         }}
       >
         <Box sx={{ width: { md: "44%" } }}>
-          <Typography variant="h1" sx={{ fontSize: { xs: "2.4rem", md: "3.25rem" } }}>
+          <Typography variant="h1" sx={{ fontSize: { xs: "2.6rem", md: "3.4rem" } }}>
             {t("landing.hero.title")}{" "}
             {/* Second line in italic. Arabic has no true italic (a slanted Arabic
                 font looks broken), so there it stays upright. */}
@@ -86,12 +98,17 @@ export const HeroSection = () => {
           </Typography>
           <Typography
             color="text.secondary"
-            sx={{ mt: 3, fontSize: "1.15rem", lineHeight: 1.7, maxWidth: "34em" }}
+            sx={{
+              mt: 3,
+              fontSize: { xs: "1.15rem", md: "1.2rem" },
+              lineHeight: 1.7,
+              maxWidth: "34em",
+            }}
           >
             {t("landing.hero.subtitle")}
           </Typography>
 
-          <Stack direction="row" sx={{ mt: 5, gap: 1, flexWrap: "wrap" }}>
+          <Stack className="hero-actions" direction="row" sx={{ mt: 5, gap: 1, flexWrap: "wrap" }}>
             <Button variant="contained" size="large" href="/#booking" sx={{ px: 3.5, py: 1.25 }}>
               {t("landing.hero.book")}
             </Button>
@@ -104,6 +121,7 @@ export const HeroSection = () => {
               label/value list under a thin line. */}
           <Box
             component="dl"
+            className="hero-details"
             sx={{
               mt: { xs: 6, md: 8 },
               mb: 0,
@@ -119,10 +137,13 @@ export const HeroSection = () => {
           >
             {details.map((detail) => (
               <div key={detail.label}>
-                <Typography component="dt" variant="body2" color="text.secondary">
+                <Typography component="dt" color="text.secondary" sx={{ fontSize: "0.95rem" }}>
                   {detail.label}
                 </Typography>
-                <Typography component="dd" sx={{ m: 0, mt: 0.5, fontWeight: 500 }}>
+                <Typography
+                  component="dd"
+                  sx={{ m: 0, mt: 0.5, fontWeight: 500, fontSize: "1.1rem" }}
+                >
                   {detail.value}
                 </Typography>
               </div>
