@@ -511,6 +511,7 @@ export const ar: Translation = {
     email: "البريد الإلكتروني",
     password: "كلمة المرور",
     submit: "دخول",
+    or: "أو",
     welcome: "أهلاً بعودتك",
     noAccount: "جئت لتحجز جلسة؟ لا تحتاج إلى حساب.",
     bookLink: "احجز جلسة",
@@ -520,6 +521,8 @@ export const ar: Translation = {
       passwordRequired: "أدخل كلمة المرور.",
       invalidCredentials: "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
       accountDisabled: "هذا الحساب موقوف. يرجى التواصل مع العيادة.",
+      googleNoAccount:
+        "لا يوجد حساب في العيادة بهذا البريد من Google. ادخل ببريدك وكلمة المرور، أو تواصل مع العيادة.",
       tooManyRequests: "محاولات كثيرة. انتظر بضع دقائق ثم حاول مجدداً.",
       network: "تعذر الوصول إلى الخادم. تحقق من اتصالك وحاول مجدداً.",
       unexpected: "حدث خطأ ما. يرجى المحاولة مجدداً.",

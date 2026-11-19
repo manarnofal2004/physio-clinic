@@ -23,6 +23,13 @@ const envSchema = z
     CLINIC_TIMEZONE: z.string().default("Asia/Hebron"),
     // Behind a hosting proxy, set to the number of proxies so rate limits see the real IP.
     TRUST_PROXY: z.coerce.number().int().min(0).default(0),
+    // OAuth client ID from Google Cloud, for "Sign in with Google". Leave it out and
+    // POST /auth/google answers NOT_FOUND (the client hides its button without its own ID).
+    GOOGLE_CLIENT_ID: z
+      .string()
+      .trim()
+      .optional()
+      .transform((value) => value || undefined),
   })
   .refine(
     (env) =>

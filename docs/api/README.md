@@ -99,6 +99,7 @@ The client shows translated text based on `code`, and puts `details` messages un
 | `UNAUTHORIZED`          | 401    | No token, or the token expired                      |
 | `FORBIDDEN`             | 403    | A therapist without `patients.edit` edits a patient |
 | `ACCOUNT_DISABLED`      | 403    | Login to an account the admin turned off            |
+| `NO_ACCOUNT`            | 403    | Google sign-in with an email that has no account    |
 | `NOT_FOUND`             | 404    | Patient does not exist, is hidden or out of scope   |
 | `CONFLICT`              | 409    | Email already used                                  |
 | `SLOT_UNAVAILABLE`      | 409    | Someone else got that time first                    |

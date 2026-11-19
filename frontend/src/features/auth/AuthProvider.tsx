@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import type { LoginResponse } from "@shared/api-types";
 import { setUnauthorizedHandler } from "@/lib/api/client";
 import { authToken } from "@/lib/authToken";
-import { fetchCurrentUser, loginRequest } from "./api";
+import { fetchCurrentUser, googleLoginRequest, loginRequest } from "./api";
 import { AuthContext, type AuthApi } from "./authContext";
 
 const ME_QUERY_KEY = ["auth", "me"];
@@ -25,9 +26,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     queryClient.removeQueries({ predicate: (query) => query.queryKey[0] !== "auth" });
   }, [queryClient]);
 
-  const login = useCallback(
-    async (email: string, password: string) => {
-      const result = await loginRequest(email, password);
+  // Both ways of logging in end the same: keep the token and remember the user.
+  const startSession = useCallback(
+    async (result: LoginResponse) => {
       authToken.set(result.token);
       // A page-load check still running must not overwrite the new user.
       await queryClient.cancelQueries({ queryKey: ME_QUERY_KEY });
@@ -37,14 +38,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     [queryClient],
   );
 
+  const login = useCallback(
+    async (email: string, password: string) => startSession(await loginRequest(email, password)),
+    [startSession],
+  );
+
+  const loginWithGoogle = useCallback(
+    async (credential: string) => startSession(await googleLoginRequest(credential)),
+    [startSession],
+  );
+
   useEffect(() => {
     setUnauthorizedHandler(logout);
     return () => setUnauthorizedHandler(null);
   }, [logout]);
 
   const api = useMemo<AuthApi>(
-    () => ({ user, isAuthenticated: user !== null, isLoading: isPending, login, logout }),
-    [user, isPending, login, logout],
+    () => ({
+      user,
+      isAuthenticated: user !== null,
+      isLoading: isPending,
+      login,
+      loginWithGoogle,
+      logout,
+    }),
+    [user, isPending, login, loginWithGoogle, logout],
   );
 
   return <AuthContext.Provider value={api}>{children}</AuthContext.Provider>;
