@@ -517,6 +517,7 @@ export const en = {
     email: "Email",
     password: "Password",
     submit: "Log in",
+    or: "or",
     welcome: "Welcome back",
     noAccount: "Here to book a session? No account needed.",
     bookLink: "Book a session",
@@ -526,6 +527,8 @@ export const en = {
       passwordRequired: "Enter your password.",
       invalidCredentials: "The email or password is incorrect.",
       accountDisabled: "This account is turned off. Please contact the clinic.",
+      googleNoAccount:
+        "No clinic account uses this Google email. Log in with your email and password, or ask the clinic.",
       tooManyRequests: "Too many attempts. Please wait a few minutes and try again.",
       network: "We couldn't reach the server. Check your connection and try again.",
       unexpected: "Something went wrong. Please try again.",

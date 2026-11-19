@@ -41,17 +41,18 @@ pnpm dev
 
 ### Environment variables (`backend/.env`)
 
-| Variable              | Required | Default       | What it is                                                                |
-| --------------------- | -------- | ------------- | ------------------------------------------------------------------------- |
-| `MONGODB_URI`         | Yes      |               | Connection string, ending with the database name: `.../physio-clinic?...` |
-| `JWT_SECRET`          | Yes      |               | Random text that signs login tokens. At least 32 characters in production |
-| `CLIENT_URL`          | Yes      |               | The client's address; several can be separated by commas                  |
-| `PORT`                | No       | `5000`        | Port the API listens on                                                   |
-| `JWT_EXPIRES_IN`      | No       | `1d`          | How long a login lasts                                                    |
-| `CLINIC_TIMEZONE`     | No       | `Asia/Hebron` | Timezone for booking days and times                                       |
-| `TRUST_PROXY`         | No       | `0`           | Number of proxies in front of the server when deployed                    |
-| `SEED_ADMIN_EMAIL`    | No       | see below     | Email of the admin `pnpm seed` creates                                    |
-| `SEED_ADMIN_PASSWORD` | No       | see below     | Password of that admin                                                    |
+| Variable              | Required | Default       | What it is                                                                  |
+| --------------------- | -------- | ------------- | --------------------------------------------------------------------------- |
+| `MONGODB_URI`         | Yes      |               | Connection string, ending with the database name: `.../physio-clinic?...`   |
+| `JWT_SECRET`          | Yes      |               | Random text that signs login tokens. At least 32 characters in production   |
+| `CLIENT_URL`          | Yes      |               | The client's address; several can be separated by commas                    |
+| `PORT`                | No       | `5000`        | Port the API listens on                                                     |
+| `JWT_EXPIRES_IN`      | No       | `1d`          | How long a login lasts                                                      |
+| `CLINIC_TIMEZONE`     | No       | `Asia/Hebron` | Timezone for booking days and times                                         |
+| `TRUST_PROXY`         | No       | `0`           | Number of proxies in front of the server when deployed                      |
+| `GOOGLE_CLIENT_ID`    | No       |               | OAuth client ID for "Sign in with Google"; without it Google sign-in is off |
+| `SEED_ADMIN_EMAIL`    | No       | see below     | Email of the admin `pnpm seed` creates                                      |
+| `SEED_ADMIN_PASSWORD` | No       | see below     | Password of that admin                                                      |
 
 The server checks these at startup and stops with a clear message if one is missing or invalid. Never commit `.env`.
 

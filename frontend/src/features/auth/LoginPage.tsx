@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Alert, Box, Button, Link, Stack, Typography } from "@mui/material";
+import { Alert, Box, Button, Divider, Link, Stack, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useTheme } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
@@ -10,6 +10,8 @@ import { SCREEN_HEIGHT } from "@/components/layout/navbarHeight";
 import { FormTextField } from "@/components/form/FormTextField";
 import type { Translation } from "@/i18n/locales/en";
 import { ApiError } from "@/lib/api/apiError";
+import { env } from "@/lib/env";
+import { GoogleButton } from "./GoogleButton";
 import { homePathFor } from "./homePath";
 import { createLoginSchema, type LoginValues } from "./loginSchema";
 import { useAuth } from "./useAuth";
@@ -25,6 +27,8 @@ const loginErrorFor = (error: unknown): LoginError => {
       return "invalidCredentials";
     case "ACCOUNT_DISABLED":
       return "accountDisabled";
+    case "NO_ACCOUNT":
+      return "googleNoAccount";
     case "TOO_MANY_REQUESTS":
       return "tooManyRequests";
     case "NETWORK_ERROR":
@@ -37,7 +41,7 @@ const loginErrorFor = (error: unknown): LoginError => {
 export const LoginPage = () => {
   const theme = useTheme();
   const { t, i18n } = useTranslation();
-  const { user, isLoading, login } = useAuth();
+  const { user, isLoading, login, loginWithGoogle } = useAuth();
   const location = useLocation();
   const [loginError, setLoginError] = useState<LoginError | null>(null);
 
@@ -61,6 +65,15 @@ export const LoginPage = () => {
     setLoginError(null);
     try {
       await login(email, password);
+    } catch (error) {
+      setLoginError(loginErrorFor(error));
+    }
+  };
+
+  const onGoogle = async (credential: string) => {
+    setLoginError(null);
+    try {
+      await loginWithGoogle(credential);
     } catch (error) {
       setLoginError(loginErrorFor(error));
     }
@@ -207,6 +220,16 @@ export const LoginPage = () => {
               {t("login.submit")}
             </Button>
           </Stack>
+
+          {/* Staff and patients whose clinic account uses their Google email. */}
+          {env.googleClientId && (
+            <>
+              <Divider sx={{ my: 2.5, color: "text.secondary", fontSize: "0.9rem" }}>
+                {t("login.or")}
+              </Divider>
+              <GoogleButton onCredential={(credential) => void onGoogle(credential)} />
+            </>
+          )}
 
           {/* Visitors do not need an account: send them to the booking form. */}
           <Typography

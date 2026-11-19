@@ -8,6 +8,8 @@ export interface AuthApi {
   isLoading: boolean;
   /** Rejects with an ApiError, so the login form can show the reason. */
   login: (email: string, password: string) => Promise<User>;
+  /** Logs in with a Google ID token. Rejects with an ApiError like login. */
+  loginWithGoogle: (credential: string) => Promise<User>;
   logout: () => void;
 }
 

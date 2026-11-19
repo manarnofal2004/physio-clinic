@@ -7,6 +7,7 @@ export type ErrorCode =
   | "UNAUTHORIZED"
   | "FORBIDDEN"
   | "ACCOUNT_DISABLED"
+  | "NO_ACCOUNT"
   | "NOT_FOUND"
   | "CONFLICT"
   | "SLOT_UNAVAILABLE"
