@@ -1,10 +1,10 @@
 # 7. Report details
 
-| | |
-| - | - |
-| Route | `/admin/reports/:id`, `/therapist/reports/:id` |
-| Access | `reports.view`; edit and delete need `reports.edit` |
-| Built by | Manar (task 4.11) |
+|          |                                                     |
+| -------- | --------------------------------------------------- |
+| Route    | `/admin/reports/:id`, `/therapist/reports/:id`      |
+| Access   | `reports.view`; edit and delete need `reports.edit` |
+| Built by | Manar (task 4.11)                                   |
 
 ## Purpose
 
@@ -16,12 +16,12 @@ Read one treatment session's report and open its files; edit or delete it.
 
 ## Data and API
 
-| Call | Notes |
-| ---- | ----- |
-| `GET /reports/:id` | `useReport(id)`; a report outside the user's scope returns `NOT_FOUND` |
-| `GET /therapists` | To show the physiotherapist's name |
-| `GET /uploads/:id` | Thumbnails and opening files |
-| `PUT /reports/:id`, `DELETE /reports/:id` | Edit and delete (deleting also deletes the files on the server) |
+| Call                                      | Notes                                                                  |
+| ----------------------------------------- | ---------------------------------------------------------------------- |
+| `GET /reports/:id`                        | `useReport(id)`; a report outside the user's scope returns `NOT_FOUND` |
+| `GET /therapists`                         | To show the physiotherapist's name                                     |
+| `GET /uploads/:id`                        | Thumbnails and opening files                                           |
+| `PUT /reports/:id`, `DELETE /reports/:id` | Edit and delete (deleting also deletes the files on the server)        |
 
 ## How it works
 

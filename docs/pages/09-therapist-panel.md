@@ -1,9 +1,9 @@
 # 9. Therapist panel
 
-| | |
-| - | - |
-| Route | `/therapist` and its pages |
-| Access | Role `therapist`; each page needs its privilege |
+|          |                                                                                                             |
+| -------- | ----------------------------------------------------------------------------------------------------------- |
+| Route    | `/therapist` and its pages                                                                                  |
+| Access   | Role `therapist`; each page needs its privilege                                                             |
 | Built by | Bayan (task 2.6). Manar connected the reports and banners pages to it and restyled the shared panel layout. |
 
 ## Purpose
@@ -12,14 +12,14 @@ The physiotherapist's workspace. The menu shows only the pages the admin allowed
 
 ## Files
 
-| File | Role | By |
-| ---- | ---- | -- |
-| `features/therapist/TherapistLayout.tsx` | Filters `therapistNavItems` by the user's privileges and renders `PanelLayout` | Bayan |
-| `features/therapist/therapistNavItems.tsx` | Home, dashboard, patients, reports, reservations, banners, each with its privilege | Bayan |
-| `features/therapist/TherapistHomePage.tsx` | Welcome message with the therapist's name | Bayan |
-| `features/therapist/PageNotReady.tsx` | Placeholder for pages not built yet | Bayan |
-| `components/layout/PanelLayout.tsx` | Shared admin/therapist shell | Bayan (structure), Manar (design) |
-| `app/AppRouter.tsx` | Maps built pages (`/therapist/reports`, `/therapist/banners`) and placeholders | Bayan / Manar |
+| File                                       | Role                                                                               | By                                |
+| ------------------------------------------ | ---------------------------------------------------------------------------------- | --------------------------------- |
+| `features/therapist/TherapistLayout.tsx`   | Filters `therapistNavItems` by the user's privileges and renders `PanelLayout`     | Bayan                             |
+| `features/therapist/therapistNavItems.tsx` | Home, dashboard, patients, reports, reservations, banners, each with its privilege | Bayan                             |
+| `features/therapist/TherapistHomePage.tsx` | Welcome message with the therapist's name                                          | Bayan                             |
+| `features/therapist/PageNotReady.tsx`      | Placeholder for pages not built yet                                                | Bayan                             |
+| `components/layout/PanelLayout.tsx`        | Shared admin/therapist shell                                                       | Bayan (structure), Manar (design) |
+| `app/AppRouter.tsx`                        | Maps built pages (`/therapist/reports`, `/therapist/banners`) and placeholders     | Bayan / Manar                     |
 
 ## How it works
 

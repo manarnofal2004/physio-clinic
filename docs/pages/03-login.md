@@ -1,9 +1,9 @@
 # 3. Login
 
-| | |
-| - | - |
-| Route | `/login` |
-| Access | Public; logged-in users are sent to their home page |
+|          |                                                                                 |
+| -------- | ------------------------------------------------------------------------------- |
+| Route    | `/login`                                                                        |
+| Access   | Public; logged-in users are sent to their home page                             |
 | Built by | Bayan: form, validation, session handling (tasks 2.5, 2.6). Manar: page design. |
 
 ## Purpose
@@ -12,14 +12,14 @@ Staff and patients with accounts created by the clinic sign in. Visitors who onl
 
 ## Files
 
-| File | Role | By |
-| ---- | ---- | -- |
-| `features/auth/LoginPage.tsx` | Form logic (Bayan); "open door" layout (Manar) | Both |
-| `features/auth/loginSchema.ts` | Zod: valid email, password required | Bayan |
-| `features/auth/AuthProvider.tsx` | `login`, `logout`, current user, session restore | Bayan |
-| `features/auth/api.ts` | `POST /auth/login`, `GET /auth/me` | Bayan |
-| `features/auth/homePath.ts` | Where each role lands: admin `/admin`, therapist `/therapist`, patient `/` | Bayan |
-| `lib/authToken.ts` | Token in `localStorage` | Bayan |
+| File                             | Role                                                                       | By    |
+| -------------------------------- | -------------------------------------------------------------------------- | ----- |
+| `features/auth/LoginPage.tsx`    | Form logic (Bayan); "open door" layout (Manar)                             | Both  |
+| `features/auth/loginSchema.ts`   | Zod: valid email, password required                                        | Bayan |
+| `features/auth/AuthProvider.tsx` | `login`, `logout`, current user, session restore                           | Bayan |
+| `features/auth/api.ts`           | `POST /auth/login`, `GET /auth/me`                                         | Bayan |
+| `features/auth/homePath.ts`      | Where each role lands: admin `/admin`, therapist `/therapist`, patient `/` | Bayan |
+| `lib/authToken.ts`               | Token in `localStorage`                                                    | Bayan |
 
 ## Flow
 

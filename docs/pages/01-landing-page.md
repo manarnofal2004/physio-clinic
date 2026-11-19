@@ -1,11 +1,11 @@
 # 1. Landing page
 
-| | |
-| - | - |
-| Route | `/` |
-| Access | Public |
+|          |                                                                                                                                     |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Route    | `/`                                                                                                                                 |
+| Access   | Public                                                                                                                              |
 | Built by | Manar (all sections, navbar, footer, announcement bar). The booking section's form logic is Bayan's, see [report 2](02-booking.md). |
-| Tasks | 1.6 (theme), 1.8 (i18n/RTL), 6.5, 6.7, 6.8, 6.9, 6.11 |
+| Tasks    | 1.6 (theme), 1.8 (i18n/RTL), 6.5, 6.7, 6.8, 6.9, 6.11                                                                               |
 
 ## Purpose
 
@@ -30,27 +30,27 @@ PublicLayout
 
 ## Files
 
-| File | Role |
-| ---- | ---- |
-| `features/landing/LandingPage.tsx` | Puts the sections in order |
-| `features/landing/LandingSection.tsx` | Shared frame: one screen tall on wide screens, `SectionTitle` (italic Redaction / El Messiri), intro line |
-| `features/landing/HeroSection.tsx` | Headline, buttons, opening hours; photo clipped by a wave (`wave.tsx`) |
-| `features/landing/ServicesSection.tsx` | Six services as folder tabs over an olive panel with a photo |
-| `features/landing/HowItWorksSection.tsx` | Three steps placed along a spine drawing |
-| `features/landing/GallerySection.tsx` | Large photo that changes every 5 s, beside a torn-paper sheet with the other photos and handwritten names |
-| `features/landing/FaqSection.tsx` | FAQ as a chat with the clinic: question bubbles, typing dots, answer bubbles |
-| `features/landing/ContactSection.tsx` | Open/closed status in clinic time, week strip, details, Google map with a custom pin |
-| `components/layout/PublicNavbar.tsx`, `UserMenu.tsx`, `useActiveSection.ts` | Navbar, account menu, highlighting the section in view |
-| `components/layout/PublicFooter.tsx` | Footer with four clinic photos, links, phone, hours |
-| `components/layout/useScrollToHash.ts` | New pages open at the top; `/#section` links land on the section |
-| `features/banners/AnnouncementBar.tsx` | The announcement bar |
+| File                                                                        | Role                                                                                                      |
+| --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `features/landing/LandingPage.tsx`                                          | Puts the sections in order                                                                                |
+| `features/landing/LandingSection.tsx`                                       | Shared frame: one screen tall on wide screens, `SectionTitle` (italic Redaction / El Messiri), intro line |
+| `features/landing/HeroSection.tsx`                                          | Headline, buttons, opening hours; photo clipped by a wave (`wave.tsx`)                                    |
+| `features/landing/ServicesSection.tsx`                                      | Six services as folder tabs over an olive panel with a photo                                              |
+| `features/landing/HowItWorksSection.tsx`                                    | Three steps placed along a spine drawing                                                                  |
+| `features/landing/GallerySection.tsx`                                       | Large photo that changes every 5 s, beside a torn-paper sheet with the other photos and handwritten names |
+| `features/landing/FaqSection.tsx`                                           | FAQ as a chat with the clinic: question bubbles, typing dots, answer bubbles                              |
+| `features/landing/ContactSection.tsx`                                       | Open/closed status in clinic time, week strip, details, Google map with a custom pin                      |
+| `components/layout/PublicNavbar.tsx`, `UserMenu.tsx`, `useActiveSection.ts` | Navbar, account menu, highlighting the section in view                                                    |
+| `components/layout/PublicFooter.tsx`                                        | Footer with four clinic photos, links, phone, hours                                                       |
+| `components/layout/useScrollToHash.ts`                                      | New pages open at the top; `/#section` links land on the section                                          |
+| `features/banners/AnnouncementBar.tsx`                                      | The announcement bar                                                                                      |
 
 ## Data and API
 
-| Call | Used by | Notes |
-| ---- | ------- | ----- |
+| Call                  | Used by           | Notes                                                    |
+| --------------------- | ----------------- | -------------------------------------------------------- |
 | `GET /public/banners` | `AnnouncementBar` | React Query key `["banners","public"]`, cached 5 minutes |
-| Booking calls | `BookingSection` | See [report 2](02-booking.md) |
+| Booking calls         | `BookingSection`  | See [report 2](02-booking.md)                            |
 
 All other content (texts, FAQ answers, opening hours, address) lives in the translation files, so it changes with the language and can be edited without touching components.
 
@@ -66,11 +66,11 @@ All other content (texts, FAQ answers, opening hours, address) lives in the tran
 
 ## States
 
-| State | Handling |
-| ----- | -------- |
-| No banners / API down | The bar does not render; the rest of the page is unaffected |
-| Reduced motion | Gallery, banner rotation and pulsing dots stop |
-| Dark mode | Every colour comes from the theme; images have dark versions where needed (paper, logo) |
+| State                 | Handling                                                                                |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| No banners / API down | The bar does not render; the rest of the page is unaffected                             |
+| Reduced motion        | Gallery, banner rotation and pulsing dots stop                                          |
+| Dark mode             | Every colour comes from the theme; images have dark versions where needed (paper, logo) |
 
 ## Languages and direction
 

@@ -1,10 +1,10 @@
 # 10. Dashboard
 
-| | |
-| - | - |
-| Route | `/admin` (admin), `/therapist/dashboard` (therapist) |
-| Access | Admins always; therapists need the privilege `dashboard.view` |
-| Built by | Manar (tasks 7.3 to 7.7) |
+|          |                                                               |
+| -------- | ------------------------------------------------------------- |
+| Route    | `/admin` (admin), `/therapist/dashboard` (therapist)          |
+| Access   | Admins always; therapists need the privilege `dashboard.view` |
+| Built by | Manar (tasks 7.3 to 7.7)                                      |
 
 ## Purpose
 
@@ -26,28 +26,28 @@ On a 1366×768 laptop the cards, both charts and the calendar fit the first scre
 
 ## Files
 
-| File | Role |
-| ---- | ---- |
-| `features/dashboard/DashboardPage.tsx` | Page: greeting, quick actions, loading/error, layout, privileges |
-| `features/dashboard/api.ts` | `useDashboardStats` (7.3), `useMonthSessions` for the calendar |
-| `features/dashboard/StatCards.tsx` | Four number cards; sparkline on reports; on-duty count with photos |
-| `features/dashboard/ReportsTrend.tsx` | `LineChart` area curve and the 6/12 months toggle |
-| `features/dashboard/ProgressDonut.tsx` | `PieChart` ring with the improving share in the middle, and a row per state |
-| `features/dashboard/ScheduleRail.tsx` | `DateCalendar` with dots on days with sessions, and the chosen day's sessions |
-| `features/dashboard/RecentPatients.tsx` | Five newest patients with condition and last visit |
-| `features/dashboard/ConditionsChart.tsx` | Horizontal bars, top 10 conditions |
-| `features/dashboard/Panel.tsx` | The white card each block sits on, with a place for a control |
-| `features/dashboard/format.ts` | Month names, the clinic's clock and day, screen-reader-only style |
-| `features/therapists/TherapistAvatar.tsx` | A physiotherapist's photo or initials |
+| File                                      | Role                                                                          |
+| ----------------------------------------- | ----------------------------------------------------------------------------- |
+| `features/dashboard/DashboardPage.tsx`    | Page: greeting, quick actions, loading/error, layout, privileges              |
+| `features/dashboard/api.ts`               | `useDashboardStats` (7.3), `useMonthSessions` for the calendar                |
+| `features/dashboard/StatCards.tsx`        | Four number cards; sparkline on reports; on-duty count with photos            |
+| `features/dashboard/ReportsTrend.tsx`     | `LineChart` area curve and the 6/12 months toggle                             |
+| `features/dashboard/ProgressDonut.tsx`    | `PieChart` ring with the improving share in the middle, and a row per state   |
+| `features/dashboard/ScheduleRail.tsx`     | `DateCalendar` with dots on days with sessions, and the chosen day's sessions |
+| `features/dashboard/RecentPatients.tsx`   | Five newest patients with condition and last visit                            |
+| `features/dashboard/ConditionsChart.tsx`  | Horizontal bars, top 10 conditions                                            |
+| `features/dashboard/Panel.tsx`            | The white card each block sits on, with a place for a control                 |
+| `features/dashboard/format.ts`            | Month names, the clinic's clock and day, screen-reader-only style             |
+| `features/therapists/TherapistAvatar.tsx` | A physiotherapist's photo or initials                                         |
 
 ## Data and API
 
-| Call | React Query key | Notes |
-| ---- | --------------- | ----- |
-| `GET /dashboard/stats` | `["dashboard","stats"]` | All numbers and chart data (`DashboardStats`) |
-| `GET /therapists?limit=100` | `["therapists","admin"]` | For "on duty now" and the session list; only with `reservations.view` |
-| `GET /reservations?from&to&limit=100&sort=scheduledAt` | `["reservations","month","YYYY-MM"]` | The calendar month; waiting and confirmed sessions only |
-| `GET /therapists/:id/photo?v=photoId` | `["therapists","photo",id,photoId]` | Photo as a blob (it needs the login); a new photo has a new id |
+| Call                                                   | React Query key                      | Notes                                                                 |
+| ------------------------------------------------------ | ------------------------------------ | --------------------------------------------------------------------- |
+| `GET /dashboard/stats`                                 | `["dashboard","stats"]`              | All numbers and chart data (`DashboardStats`)                         |
+| `GET /therapists?limit=100`                            | `["therapists","admin"]`             | For "on duty now" and the session list; only with `reservations.view` |
+| `GET /reservations?from&to&limit=100&sort=scheduledAt` | `["reservations","month","YYYY-MM"]` | The calendar month; waiting and confirmed sessions only               |
+| `GET /therapists/:id/photo?v=photoId`                  | `["therapists","photo",id,photoId]`  | Photo as a blob (it needs the login); a new photo has a new id        |
 
 The server counts only the patients in the user's scope. Writing, editing or deleting a report refreshes the dashboard.
 
@@ -63,11 +63,11 @@ The server counts only the patients in the user's scope. Writing, editing or del
 
 ## States
 
-| State | Shown |
-| ----- | ----- |
-| Loading | Spinner (the calendar has its own) |
-| Server down | "We couldn't load the dashboard." with Try again |
-| No data | Each block shows its own sentence; numbers show 0; a day without sessions says so |
+| State       | Shown                                                                             |
+| ----------- | --------------------------------------------------------------------------------- |
+| Loading     | Spinner (the calendar has its own)                                                |
+| Server down | "We couldn't load the dashboard." with Try again                                  |
+| No data     | Each block shows its own sentence; numbers show 0; a day without sessions says so |
 
 ## Languages, responsive, accessibility
 

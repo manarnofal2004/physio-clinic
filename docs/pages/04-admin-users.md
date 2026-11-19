@@ -1,9 +1,9 @@
 # 4. Users and privileges
 
-| | |
-| - | - |
-| Route | `/admin/users` |
-| Access | Admin only |
+|          |                   |
+| -------- | ----------------- |
+| Route    | `/admin/users`    |
+| Access   | Admin only        |
 | Built by | Manar (task 2.10) |
 
 ## Purpose
@@ -12,24 +12,24 @@ Only the admin creates accounts. This page lists every account, creates logins f
 
 ## Files
 
-| File | Role |
-| ---- | ---- |
-| `features/users/UsersPage.tsx` | Page: filters, table, dialogs |
-| `features/users/CreateUserDialog.tsx` | New therapist or patient account |
-| `features/users/AccessDialog.tsx` | Change a therapist's privileges and patient scope |
-| `features/users/AccessEditor.tsx` | Privileges in groups + patient scope picker (shared by both dialogs) |
-| `features/users/api.ts` | Queries and mutations |
+| File                                  | Role                                                                 |
+| ------------------------------------- | -------------------------------------------------------------------- |
+| `features/users/UsersPage.tsx`        | Page: filters, table, dialogs                                        |
+| `features/users/CreateUserDialog.tsx` | New therapist or patient account                                     |
+| `features/users/AccessDialog.tsx`     | Change a therapist's privileges and patient scope                    |
+| `features/users/AccessEditor.tsx`     | Privileges in groups + patient scope picker (shared by both dialogs) |
+| `features/users/api.ts`               | Queries and mutations                                                |
 
 ## Data and API
 
-| Call | Hook | Notes |
-| ---- | ---- | ----- |
-| `GET /users?page&limit&sort=fullName&search&role&isActive` | `useUsers(filter)` | `keepPreviousData` so the table does not jump between pages |
-| `GET /therapists?limit=100` | `useTherapistOptions` | Profiles to link a therapist account to |
-| `GET /patients?limit=…&search` | `usePatientOptions(search)` | Patients to link or to add to a scope |
-| `POST /users` | `create` | `CreateUserRequest` (therapist or patient variant) |
-| `PUT /users/:id/access` | `access` | `{ privileges, patientScope }` |
-| `PATCH /users/:id/status` | `status` | `{ isActive }` |
+| Call                                                       | Hook                        | Notes                                                       |
+| ---------------------------------------------------------- | --------------------------- | ----------------------------------------------------------- |
+| `GET /users?page&limit&sort=fullName&search&role&isActive` | `useUsers(filter)`          | `keepPreviousData` so the table does not jump between pages |
+| `GET /therapists?limit=100`                                | `useTherapistOptions`       | Profiles to link a therapist account to                     |
+| `GET /patients?limit=…&search`                             | `usePatientOptions(search)` | Patients to link or to add to a scope                       |
+| `POST /users`                                              | `create`                    | `CreateUserRequest` (therapist or patient variant)          |
+| `PUT /users/:id/access`                                    | `access`                    | `{ privileges, patientScope }`                              |
+| `PATCH /users/:id/status`                                  | `status`                    | `{ isActive }`                                              |
 
 After every change the users, therapists and patients queries refresh (an account changes "has an account" on profiles).
 

@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import { afterAll, beforeAll, beforeEach } from "vitest";
 
 const uri = process.env.MONGODB_URI;
-if (!uri) throw new Error("Set MONGODB_URI in server/.env to run the tests");
+if (!uri) throw new Error("Set MONGODB_URI in backend/.env to run the tests");
 
 const testUri = new URL(uri);
 testUri.pathname = "/physio-clinic-test";

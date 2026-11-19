@@ -1,10 +1,10 @@
 # 5. Physiotherapists
 
-| | |
-| - | - |
-| Route | `/admin/therapists` |
-| Access | Admin only |
-| Built by | Manar (task 2.11) |
+|          |                     |
+| -------- | ------------------- |
+| Route    | `/admin/therapists` |
+| Access   | Admin only          |
+| Built by | Manar (task 2.11)   |
 
 ## Purpose
 
@@ -12,20 +12,20 @@ Keep the list of the clinic's physiotherapists and their working hours. The book
 
 ## Files
 
-| File | Role |
-| ---- | ---- |
-| `features/therapists/TherapistsPage.tsx` | List with a week strip per therapist |
-| `features/therapists/TherapistDialog.tsx` | Add / edit form with hours per day |
-| `features/therapists/schedule.ts` | Clinic days, 15-minute times between 08:00 and 19:00, helpers |
-| `features/therapists/api.ts` | `useTherapists`, `create`, `update`, `toInput` |
+| File                                      | Role                                                          |
+| ----------------------------------------- | ------------------------------------------------------------- |
+| `features/therapists/TherapistsPage.tsx`  | List with a week strip per therapist                          |
+| `features/therapists/TherapistDialog.tsx` | Add / edit form with hours per day                            |
+| `features/therapists/schedule.ts`         | Clinic days, 15-minute times between 08:00 and 19:00, helpers |
+| `features/therapists/api.ts`              | `useTherapists`, `create`, `update`, `toInput`                |
 
 ## Data and API
 
-| Call | Notes |
-| ---- | ----- |
-| `GET /therapists?limit=100&sort=fullName` | All therapists, active or not |
-| `POST /therapists` | `TherapistInput { fullName, phone?, specialty?, isActive, schedule[] }` |
-| `PUT /therapists/:id` | Full replacement; the active switch sends the whole profile with `isActive` changed |
+| Call                                      | Notes                                                                               |
+| ----------------------------------------- | ----------------------------------------------------------------------------------- |
+| `GET /therapists?limit=100&sort=fullName` | All therapists, active or not                                                       |
+| `POST /therapists`                        | `TherapistInput { fullName, phone?, specialty?, isActive, schedule[] }`             |
+| `PUT /therapists/:id`                     | Full replacement; the active switch sends the whole profile with `isActive` changed |
 
 ## How it works
 

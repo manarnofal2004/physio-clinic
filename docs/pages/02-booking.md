@@ -1,9 +1,9 @@
 # 2. Booking section
 
-| | |
-| - | - |
-| Route | `/#booking` (a section of the landing page) |
-| Access | Public, no account needed |
+|          |                                                                                                                                    |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Route    | `/#booking` (a section of the landing page)                                                                                        |
+| Access   | Public, no account needed                                                                                                          |
 | Built by | Bayan: API layer, validation, submit and error handling (tasks 5.6, 5.7, 6.10). Manar: day/time bubbles, appointment card, layout. |
 
 ## Purpose
@@ -12,23 +12,23 @@ Let a visitor request a 45-minute session at a free time. The clinic reviews the
 
 ## Files
 
-| File | Role | By |
-| ---- | ---- | -- |
-| `features/landing/BookingSection.tsx` | Section frame | Bayan / Manar |
-| `features/booking/api.ts` | `fetchDateOptions`, `fetchAvailability`, `createReservation` | Bayan |
-| `features/booking/hooks.ts` | `useDateOptions`, `useAvailability`, `useCreateReservation` (React Query) | Bayan |
-| `features/booking/bookingSchema.ts` | Zod schema, same rules as the server, messages from `t()` | Bayan |
-| `features/booking/BookingForm.tsx` | The form: validation, submit, error mapping (Bayan); bubbles and card layout (Manar) | Both |
-| `features/booking/DayPicker.tsx`, `TimePicker.tsx`, `Bubble.tsx` | Days and times as bubbles | Manar |
-| `features/booking/AppointmentCard.tsx` | Card that fills in while typing, stamp after sending | Manar |
+| File                                                             | Role                                                                                 | By            |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------- |
+| `features/landing/BookingSection.tsx`                            | Section frame                                                                        | Bayan / Manar |
+| `features/booking/api.ts`                                        | `fetchDateOptions`, `fetchAvailability`, `createReservation`                         | Bayan         |
+| `features/booking/hooks.ts`                                      | `useDateOptions`, `useAvailability`, `useCreateReservation` (React Query)            | Bayan         |
+| `features/booking/bookingSchema.ts`                              | Zod schema, same rules as the server, messages from `t()`                            | Bayan         |
+| `features/booking/BookingForm.tsx`                               | The form: validation, submit, error mapping (Bayan); bubbles and card layout (Manar) | Both          |
+| `features/booking/DayPicker.tsx`, `TimePicker.tsx`, `Bubble.tsx` | Days and times as bubbles                                                            | Manar         |
+| `features/booking/AppointmentCard.tsx`                           | Card that fills in while typing, stamp after sending                                 | Manar         |
 
 ## Data and API
 
-| Call | When | React Query key |
-| ---- | ---- | --------------- |
-| `GET /public/reservations/date-options` | On load | `["public","reservations","date-options"]` |
-| `GET /public/reservations/availability?date=YYYY-MM-DD` | After a day is chosen | `["public","reservations","availability",date]` |
-| `POST /public/reservations` | Submit | mutation; afterwards all reservation queries refresh |
+| Call                                                    | When                  | React Query key                                      |
+| ------------------------------------------------------- | --------------------- | ---------------------------------------------------- |
+| `GET /public/reservations/date-options`                 | On load               | `["public","reservations","date-options"]`           |
+| `GET /public/reservations/availability?date=YYYY-MM-DD` | After a day is chosen | `["public","reservations","availability",date]`      |
+| `POST /public/reservations`                             | Submit                | mutation; afterwards all reservation queries refresh |
 
 Body sent: `{ fullName, phone, age, scheduledAt, notes? }`. Only free times are returned by the server, so booked times are hidden (not disabled), as the supervisor asked.
 
@@ -42,13 +42,13 @@ Body sent: `{ fullName, phone, age, scheduledAt, notes? }`. Only free times are 
 
 ## Errors
 
-| Server code | Message shown |
-| ----------- | ------------- |
-| `SLOT_UNAVAILABLE` | "That time was just taken" (the time is cleared and the list reloads) |
-| `PENDING_LIMIT_REACHED` | The phone already has 2 requests waiting |
-| `TOO_MANY_REQUESTS` | Too many requests, try later |
-| `VALIDATION_ERROR` | Check your details |
-| `NETWORK_ERROR` | Could not reach the server |
+| Server code             | Message shown                                                         |
+| ----------------------- | --------------------------------------------------------------------- |
+| `SLOT_UNAVAILABLE`      | "That time was just taken" (the time is cleared and the list reloads) |
+| `PENDING_LIMIT_REACHED` | The phone already has 2 requests waiting                              |
+| `TOO_MANY_REQUESTS`     | Too many requests, try later                                          |
+| `VALIDATION_ERROR`      | Check your details                                                    |
+| `NETWORK_ERROR`         | Could not reach the server                                            |
 
 Loading, "no open days" and "no free times on this day" each have their own message with a retry where useful.
 

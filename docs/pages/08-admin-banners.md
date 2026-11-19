@@ -1,10 +1,10 @@
 # 8. Banners
 
-| | |
-| - | - |
-| Route | `/admin/banners`, `/therapist/banners` |
-| Access | Privilege `banners.manage` (admins always) |
-| Built by | Manar (task 6.4) |
+|          |                                            |
+| -------- | ------------------------------------------ |
+| Route    | `/admin/banners`, `/therapist/banners`     |
+| Access   | Privilege `banners.manage` (admins always) |
+| Built by | Manar (task 6.4)                           |
 
 ## Purpose
 
@@ -12,22 +12,22 @@ Manage the messages in the bar at the top of the public site: clinic announcemen
 
 ## Files
 
-| File | Role |
-| ---- | ---- |
-| `features/banners/BannersPage.tsx` | List with order arrows, show/hide switch, edit, delete |
-| `features/banners/BannerDialog.tsx` | Add / edit with a live preview |
-| `features/banners/bannerStyle.ts`, `BannerTypeIcon.tsx` | Colours and icon per type, shared with the public bar |
-| `features/banners/api.ts` | Public and admin queries, mutations |
+| File                                                    | Role                                                   |
+| ------------------------------------------------------- | ------------------------------------------------------ |
+| `features/banners/BannersPage.tsx`                      | List with order arrows, show/hide switch, edit, delete |
+| `features/banners/BannerDialog.tsx`                     | Add / edit with a live preview                         |
+| `features/banners/bannerStyle.ts`, `BannerTypeIcon.tsx` | Colours and icon per type, shared with the public bar  |
+| `features/banners/api.ts`                               | Public and admin queries, mutations                    |
 
 ## Data and API
 
-| Call | Notes |
-| ---- | ----- |
-| `GET /banners?limit=100&sort=order` | Every banner, shown or hidden |
-| `POST /banners` | New banners get `order = last + 1` |
-| `PUT /banners/:id` | Edit |
-| `PATCH /banners/:id` | `{ isActive }` from the switch, `{ order }` from the arrows |
-| `DELETE /banners/:id` | After confirmation |
+| Call                                | Notes                                                       |
+| ----------------------------------- | ----------------------------------------------------------- |
+| `GET /banners?limit=100&sort=order` | Every banner, shown or hidden                               |
+| `POST /banners`                     | New banners get `order = last + 1`                          |
+| `PUT /banners/:id`                  | Edit                                                        |
+| `PATCH /banners/:id`                | `{ isActive }` from the switch, `{ order }` from the arrows |
+| `DELETE /banners/:id`               | After confirmation                                          |
 
 Every change refreshes both the admin list and the public bar (`["banners"]` prefix).
 
