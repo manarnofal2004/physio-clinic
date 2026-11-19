@@ -4,8 +4,8 @@ Physiotherapy Clinic Management System: a public website where visitors book app
 
 ## Tech stack
 
-- **client/**: React, TypeScript, Vite, MUI, React Router, React Query, Axios, React Hook Form, Zod
-- **server/**: Node.js, Express, TypeScript, MongoDB (Mongoose), JWT, Zod
+- **frontend/**: React, TypeScript, Vite, MUI, React Router, React Query, Axios, React Hook Form, Zod
+- **backend/**: Node.js, Express, TypeScript, MongoDB (Mongoose), JWT, Zod
 - **shared/**: TypeScript types for API data, used by both apps
 
 The API contract (every endpoint, request and response) is in [docs/api/](docs/api/README.md).
@@ -24,14 +24,14 @@ cd physio-clinic
 pnpm install
 
 # Server
-cd server
+cd backend
 pnpm install
 cp .env.example .env   # then fill in the values (see below)
 pnpm seed              # first admin and sample data
 pnpm dev               # http://localhost:5000/api/health
 
 # Client (in a second terminal)
-cd client
+cd frontend
 pnpm install
 cp .env.example .env
 pnpm dev
@@ -39,7 +39,7 @@ pnpm dev
 
 ## Server
 
-### Environment variables (`server/.env`)
+### Environment variables (`backend/.env`)
 
 | Variable              | Required | Default       | What it is                                                                |
 | --------------------- | -------- | ------------- | ------------------------------------------------------------------------- |
@@ -67,7 +67,7 @@ The server checks these at startup and stops with a clear message if one is miss
 
 Change these passwords (or set `SEED_ADMIN_*`) before using real data.
 
-### Scripts (`server/`)
+### Scripts (`backend/`)
 
 | Command          | What it does                              |
 | ---------------- | ----------------------------------------- |
@@ -82,7 +82,7 @@ Tests use a separate database, `physio-clinic-test`, on the same server as `MONG
 
 If `pnpm typecheck` stops with "out of memory" on a busy machine, run `npx tsc -p tsconfig.test.json --singleThreaded`.
 
-### Folder structure (`server/src/`)
+### Folder structure (`backend/src/`)
 
 ```
 config/        environment variables, validated with zod
@@ -126,7 +126,7 @@ The client runs at http://localhost:5173. The server must be running for API cal
 
 Restart `pnpm dev` after changing `.env`. Commit only `.env.example`, never `.env`.
 
-### Scripts (client/)
+### Scripts (frontend/)
 
 | Command      | What it does                        |
 | ------------ | ----------------------------------- |
@@ -138,7 +138,7 @@ Restart `pnpm dev` after changing `.env`. Commit only `.env.example`, never `.en
 
 | Alias      | Points to                    |
 | ---------- | ---------------------------- |
-| `@/`       | `client/src/`                |
+| `@/`       | `frontend/src/`              |
 | `@shared/` | `shared/` (shared API types) |
 
 Example: `import { apiClient } from '@/lib/api/client'`
@@ -146,7 +146,7 @@ Example: `import { apiClient } from '@/lib/api/client'`
 ### Folder structure
 
 ```
-client/src/
+frontend/src/
   app/          App providers and router
   features/     One folder per feature (patients, reports, ...)
   components/   Reusable UI components

@@ -1,6 +1,6 @@
 # API Contract
 
-The agreement between `client/` and `server/`: every endpoint, what it takes and what it returns. Both sides code against it, so frontend work never waits on backend work.
+The agreement between `frontend/` and `backend/`: every endpoint, what it takes and what it returns. Both sides code against it, so frontend work never waits on backend work.
 
 - TypeScript types for every shape: [`shared/api-types.ts`](../../shared/api-types.ts)
 - Change these files in the same PR as any API change, and tell the other developer.
