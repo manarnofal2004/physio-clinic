@@ -14,28 +14,20 @@ The API contract (every endpoint, request and response) is in [docs/api/](docs/a
 
 - Node.js 20.19+ (or 22.13+ / 24+), required by ESLint 10
 - pnpm (`npm install -g pnpm`)
-- MongoDB: a MongoDB Atlas connection string (free tier is enough) or a local MongoDB
+- Docker Desktop, running (it provides MongoDB for local development)
 
 ## Setup
 
 ```bash
 git clone https://github.com/manarnofal2004/physio-clinic.git
 cd physio-clinic
-pnpm install
-
-# Server
-cd backend
-pnpm install
-cp .env.example .env   # then fill in the values (see below)
-pnpm seed              # first admin and sample data
-pnpm dev               # http://localhost:5000/api/health
-
-# Client (in a second terminal)
-cd frontend
-pnpm install
-cp .env.example .env
-pnpm dev
+pnpm install   # also installs backend/ and frontend/, and creates their .env files from .env.example
+pnpm dev       # starts MongoDB in Docker, seeds it, then runs the API (:5000) and the client (:5173)
 ```
+
+`pnpm dev` stops the API and the client on Ctrl+C. MongoDB keeps running in Docker until `pnpm db:down`; its data stays in a Docker volume.
+
+To use MongoDB Atlas or your own MongoDB instead, set `MONGODB_URI` in `backend/.env` and run `pnpm dev:backend` and `pnpm dev:frontend` (or `pnpm dev` inside each folder).
 
 ## Server
 
@@ -107,12 +99,18 @@ scripts/       seed
 
 ## Scripts (root)
 
-| Command             | What it does                     |
-| ------------------- | -------------------------------- |
-| `pnpm lint`         | Check the code with ESLint       |
-| `pnpm lint:fix`     | Fix ESLint problems that can be  |
-| `pnpm format`       | Format every file with Prettier  |
-| `pnpm format:check` | Check formatting without writing |
+| Command             | What it does                                     |
+| ------------------- | ------------------------------------------------ |
+| `pnpm lint`         | Check the code with ESLint                       |
+| `pnpm lint:fix`     | Fix ESLint problems that can be                  |
+| `pnpm format`       | Format every file with Prettier                  |
+| `pnpm format:check` | Check formatting without writing                 |
+| `pnpm dev`          | Start MongoDB, seed, then the API and the client |
+| `pnpm dev:backend`  | Start only the API                               |
+| `pnpm dev:frontend` | Start only the client                            |
+| `pnpm db:up`        | Start MongoDB in Docker                          |
+| `pnpm db:down`      | Stop the MongoDB container                       |
+| `pnpm seed`         | Add sample data and accounts (safe to rerun)     |
 
 ## Client
 
