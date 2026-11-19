@@ -47,16 +47,21 @@ export const BannersPage = () => {
     }
   };
 
-  // Swap a banner's order with its neighbour's.
+  // Move a banner one place up or down. Afterwards every banner's order is its place in
+  // the list (0, 1, 2...), so equal orders cannot jump banners past others, and if a
+  // request fails the next move puts the orders right again.
   const move = (index: number, step: -1 | 1) => {
-    const list = banners.data ?? [];
+    const list = [...(banners.data ?? [])];
     const a = list[index];
     const b = list[index + step];
     if (!a || !b) return;
-    // Equal orders (e.g. both 0) would not swap, so fall back to the positions.
-    const [orderA, orderB] = a.order === b.order ? [index, index + step] : [a.order, b.order];
-    patch.mutate({ id: a.id, patch: { order: orderB } }, { onError: failed });
-    patch.mutate({ id: b.id, patch: { order: orderA } }, { onError: failed });
+    list[index] = b;
+    list[index + step] = a;
+    list.forEach((banner, order) => {
+      if (banner.order !== order) {
+        patch.mutate({ id: banner.id, patch: { order } }, { onError: failed });
+      }
+    });
   };
 
   const header = (
