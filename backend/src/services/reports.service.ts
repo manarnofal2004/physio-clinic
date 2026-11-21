@@ -2,6 +2,7 @@ import type { Types } from "mongoose";
 import { env } from "../config/env.js";
 import { Patient } from "../models/patient.model.js";
 import { Report, type ReportDocument } from "../models/report.model.js";
+import { Therapist } from "../models/therapist.model.js";
 import type { UserDocument } from "../models/user.model.js";
 import { AppError } from "../utils/app-error.js";
 import { buildSearchFilter } from "../utils/search.js";
@@ -53,17 +54,23 @@ export async function syncLastVisit(patientId: Types.ObjectId): Promise<void> {
   await Patient.updateOne({ _id: patientId }, { lastVisit: latest?.date ?? null });
 }
 
+// The patient's and physiotherapist's names come with each report, so a user who may
+// read reports needs no other privilege to show who they are about and who wrote them.
 export async function toReportDtos(reports: ReportDocument[]) {
-  const patients = await Patient.find(
-    { _id: { $in: reports.map((r) => r.patientId) } },
-    "fullName",
-  );
+  const [patients, therapists] = await Promise.all([
+    Patient.find({ _id: { $in: reports.map((r) => r.patientId) } }, "fullName"),
+    Therapist.find({ _id: { $in: reports.map((r) => r.therapistId).filter(Boolean) } }, "fullName"),
+  ]);
   const names = new Map(patients.map((p) => [p.id as string, p.fullName]));
+  const therapistNames = new Map(therapists.map((t) => [t.id as string, t.fullName]));
 
   return reports.map((report) => ({
     id: report.id as string,
     patient: { id: String(report.patientId), fullName: names.get(String(report.patientId)) ?? "" },
     therapistId: report.therapistId ? String(report.therapistId) : null,
+    therapistName: report.therapistId
+      ? (therapistNames.get(String(report.therapistId)) ?? null)
+      : null,
     date: report.date,
     diagnosis: report.diagnosis,
     treatmentPlan: report.treatmentPlan,

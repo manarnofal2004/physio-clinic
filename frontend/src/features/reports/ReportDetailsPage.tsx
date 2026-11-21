@@ -9,7 +9,6 @@ import { ErrorState } from "@/components/feedback/ErrorState";
 import { LoadingState } from "@/components/feedback/LoadingState";
 import { useNotify } from "@/components/notifications/useNotify";
 import { useAuth } from "@/features/auth/useAuth";
-import { useTherapistOptions } from "@/features/users/api";
 import { fetchFileUrl, useReport, useReportMutations } from "./api";
 import { AttachmentThumb } from "./FileUploader";
 import { ProgressChip } from "./ProgressChip";
@@ -39,7 +38,6 @@ export const ReportDetailsPage = () => {
   const { user } = useAuth();
   const canEdit = Boolean(user?.privileges.includes("reports.edit"));
   const report = useReport(id);
-  const therapists = useTherapistOptions();
   const { remove } = useReportMutations();
   const [editing, setEditing] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -58,7 +56,6 @@ export const ReportDetailsPage = () => {
     );
 
   const r = report.data;
-  const therapist = therapists.data?.find((x) => x.id === r.therapistId);
   const open = (fileId: string) => {
     // Open the tab now (browsers block tabs opened later), then fill it with the file.
     const tab = window.open("", "_blank");
@@ -93,7 +90,7 @@ export const ReportDetailsPage = () => {
             sx={{ mt: 1, alignItems: "center", flexWrap: "wrap", rowGap: 1 }}
           >
             <Typography color="text.secondary">{formatDay(r.date, i18n.language)}</Typography>
-            {therapist && <Typography color="text.secondary">· {therapist.fullName}</Typography>}
+            {r.therapistName && <Typography color="text.secondary">· {r.therapistName}</Typography>}
             <ProgressChip progress={r.progress} />
           </Stack>
         </Box>

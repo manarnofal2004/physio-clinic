@@ -92,7 +92,7 @@ The client shows translated text based on `code`, and puts `details` messages un
 | `VALIDATION_ERROR`      | 400    | Phone number too short                              |
 | `INVALID_JSON`          | 400    | Broken request body                                 |
 | `PAYLOAD_TOO_LARGE`     | 413    | Request body over 100 kB                            |
-| `FILE_TOO_LARGE`        | 400    | Uploaded file over 5 MB                             |
+| `FILE_TOO_LARGE`        | 400    | Report file over 5 MB, therapist photo over 2 MB    |
 | `UNSUPPORTED_FILE_TYPE` | 400    | Uploaded a `.docx`                                  |
 | `TOO_MANY_FILES`        | 400    | More than 5 files                                   |
 | `INVALID_CREDENTIALS`   | 401    | Wrong email or password                             |

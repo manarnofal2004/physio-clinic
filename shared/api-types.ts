@@ -272,6 +272,7 @@ export interface Report {
   id: string;
   patient: PatientSummary;
   therapistId: string | null;
+  therapistName: string | null;
   date: string;
   diagnosis: string;
   treatmentPlan: string;

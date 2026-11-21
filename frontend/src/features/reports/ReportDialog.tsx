@@ -50,7 +50,8 @@ export const ReportDialog = ({
   const { create, update } = useReportMutations();
   const [search, setSearch] = useState("");
   const patients = usePatientOptions(search);
-  const therapists = useTherapistOptions();
+  // Only the admin picks the physiotherapist; a therapist's reports are their own.
+  const therapists = useTherapistOptions(isAdmin);
 
   const [chosen, setChosen] = useState<PatientSummary | null>(report?.patient ?? patient ?? null);
   const [therapistId, setTherapistId] = useState(report?.therapistId ?? "");
