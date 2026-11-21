@@ -74,6 +74,8 @@ describe("reports: create, read, update, delete", () => {
       .set(bearer(therapist.token))
       .send(reportFor(patient.id as string));
     expect(res.body.data.therapistId).toBe(profile.id);
+    // The name comes with the report, so no other privilege is needed to show it.
+    expect(res.body.data.therapistName).toBe(profile.fullName);
   });
 
   it("keeps the patient's lastVisit in sync on create, update and delete", async () => {

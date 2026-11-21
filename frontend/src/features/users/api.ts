@@ -43,8 +43,10 @@ export const useUsers = (filter: UsersFilter) =>
   });
 
 // Therapist profiles, to link a new therapist account to one.
-export const useTherapistOptions = () =>
+// Needs reservations.view on the server, so pages that also serve therapists pass enabled.
+export const useTherapistOptions = (enabled = true) =>
   useQuery({
+    enabled,
     queryKey: ["therapists", "options"],
     queryFn: async () => {
       const { data } = await apiClient.get<ApiPaginated<Therapist>>("/therapists", {

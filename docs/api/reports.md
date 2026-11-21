@@ -24,6 +24,7 @@ Only reports of patients in the user's [patient scope](users.md#patient-scope) a
   "id": "6730c1...",
   "patient": { "id": "6730a1...", "fullName": "Ahmad Saleh" },
   "therapistId": "6730b1...",
+  "therapistName": "Dr. Lina Khalil",
   "date": "2026-10-20T09:00:00.000Z",
   "diagnosis": "Muscle strain, L4-L5",
   "treatmentPlan": "Heat therapy and core exercises, 2 sessions a week",
