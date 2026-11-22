@@ -15,7 +15,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["server/**/*.ts"],
+    files: ["backend/**/*.ts"],
     languageOptions: { globals: globals.node },
   },
   prettier,
