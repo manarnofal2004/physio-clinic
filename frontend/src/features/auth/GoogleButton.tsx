@@ -67,8 +67,8 @@ export const GoogleButton = ({ onCredential }: { onCredential: (credential: stri
           type: "standard",
           theme: theme.palette.mode === "dark" ? "filled_black" : "outline",
           size: "large",
-          shape: "pill",
-          text: "signin_with",
+          shape: "rectangular", // square-ish corners like the site's buttons
+          text: "continue_with",
           logo_alignment: "center",
           locale: i18n.language,
           width: Math.min(parent.clientWidth || 320, 400),
