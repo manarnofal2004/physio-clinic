@@ -6,6 +6,7 @@ import { adminNavItems } from "@/components/layout/adminNavItems";
 import { DashboardPage } from "@/features/dashboard/DashboardPage";
 import { LoginPage } from "@/features/auth/LoginPage";
 import { BannersPage } from "@/features/banners/BannersPage";
+import { PatientsPage } from "@/features/patients/PatientsPage";
 import { ReportDetailsPage } from "@/features/reports/ReportDetailsPage";
 import { ReportsPage } from "@/features/reports/ReportsPage";
 import { TherapistsPage } from "@/features/therapists/TherapistsPage";
@@ -22,6 +23,7 @@ import { NotFoundPage } from "@/routes/NotFoundPage";
 const readyPages: Record<string, ReactNode> = {
   "/therapist/dashboard": <DashboardPage />,
   "/therapist/reports": <ReportsPage />,
+  "/therapist/patients": <PatientsPage />,
   "/therapist/banners": <BannersPage />,
 };
 
@@ -30,6 +32,7 @@ const builtAdminPages = [
   "/admin",
   "/admin/users",
   "/admin/therapists",
+  "/admin/patients",
   "/admin/reports",
   "/admin/banners",
 ];
@@ -53,6 +56,7 @@ const router = createBrowserRouter([
           // Managing accounts is for admins only, and this whole branch is admin-only.
           { path: "users", element: <UsersPage /> },
           { path: "therapists", element: <TherapistsPage /> },
+          { path: "patients", element: <PatientsPage /> },
           { path: "reports", element: <ReportsPage /> },
           { path: "reports/:id", element: <ReportDetailsPage /> },
           // Pages in the menu that are not built yet say so, instead of "not found".
