@@ -16,7 +16,8 @@ export const createPatientSchema = (t: TFunction) =>
       .string()
       .trim()
       .min(6, t("patientsAdmin.errors.phone"))
-      .max(30, t("patientsAdmin.errors.phone")),
+      .max(30, t("patientsAdmin.errors.phone"))
+      .regex(/^\+?[\d\s-]+$/, t("patientsAdmin.errors.phone")),
     age: z
       .string()
       .trim()

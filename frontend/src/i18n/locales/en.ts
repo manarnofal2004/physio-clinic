@@ -53,7 +53,7 @@ export const en = {
       load: "We couldn't load the patients.",
       notFound: "This patient could not be found.",
       fullName: "Write 2 to 120 characters.",
-      phone: "Enter 6 to 30 characters.",
+      phone: "Enter a valid phone number (6 to 30 characters).",
       age: "Enter an age from 0 to 120.",
       gender: "Choose the gender.",
       condition: "Write 2 to 200 characters.",
