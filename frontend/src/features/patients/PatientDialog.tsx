@@ -80,7 +80,13 @@ export const PatientDialog = ({
               required
               autoFocus
             />
-            <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "2fr 1fr 1fr" },
+                gap: 2,
+              }}
+            >
               <FormTextField
                 name="phone"
                 control={control}
@@ -102,7 +108,7 @@ export const PatientDialog = ({
                 required
                 options={genderOptions}
               />
-            </Stack>
+            </Box>
             <FormTextField
               name="condition"
               control={control}
