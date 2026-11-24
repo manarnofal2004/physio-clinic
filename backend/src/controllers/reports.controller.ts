@@ -51,7 +51,7 @@ export const exportReports: RequestHandler = async (req, res) => {
   );
 
   const csv = toCsv(reports, [
-    { header: "Date", value: (r) => r.date },
+    { header: "Date", value: (r) => new Date(r.date) },
     { header: "Patient", value: (r) => r.patient.fullName },
     { header: "Diagnosis", value: (r) => r.diagnosis },
     { header: "Treatment plan", value: (r) => r.treatmentPlan },

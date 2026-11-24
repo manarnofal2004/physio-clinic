@@ -227,4 +227,16 @@ describe("GET /api/patients/export", () => {
     expect(lines).toHaveLength(2);
     expect(lines[1]).toContain("أحمد صالح");
   });
+
+  it("keeps the phone's leading 0 and writes dates as a plain day", async () => {
+    const admin = await createUser();
+    await makePatient({ fullName: "Dana Qasem" });
+
+    const res = await api.get("/api/patients/export").set(bearer(admin.token));
+    const row = res.text.slice(1).split("\r\n")[1];
+
+    expect(row).toContain('"=""0599123456"""'); // Excel shows it as text: 0599123456
+    expect(row).toMatch(/,\d{4}-\d{2}-\d{2}$/); // "Created" is a day, not a timestamp
+    expect(row).not.toMatch(/T\d{2}:\d{2}/);
+  });
 });
