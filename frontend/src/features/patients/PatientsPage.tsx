@@ -3,15 +3,17 @@ import {
   Box,
   Button,
   Chip,
+  FormControlLabel,
   IconButton,
   InputAdornment,
   MenuItem,
   Stack,
+  Switch,
   TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Pencil, Plus, Search } from "lucide-react";
+import { Download, Pencil, Plus, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PATIENT_STATUSES, type Patient, type PatientStatus } from "@shared/api-types";
@@ -23,7 +25,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { useNotify } from "@/components/notifications/useNotify";
 import { useAuth } from "@/features/auth/useAuth";
 import { formatDay } from "@/features/reports/format";
-import { usePatients, type PatientsFilter } from "./api";
+import { downloadPatientsCsv, usePatients, type PatientsFilter } from "./api";
 import { PatientDialog } from "./PatientDialog";
 
 // The patients list: search, filter by status, sort and page through the patients,
@@ -36,6 +38,8 @@ export const PatientsPage = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const canEdit = Boolean(user?.privileges.includes("patients.edit"));
+  const isAdmin = user?.role === "admin";
+  const [exporting, setExporting] = useState(false);
 
   // What the user is typing, and the filter actually sent to the API.
   const [typed, setTyped] = useState("");
@@ -53,7 +57,7 @@ export const PatientsPage = () => {
   const patients = usePatients(filter);
   // Any change to the filters goes back to the first page.
   const set = (patch: Partial<PatientsFilter>) => setFilter((f) => ({ ...f, ...patch, page: 1 }));
-  const filtered = Boolean(filter.search || filter.status);
+  const filtered = Boolean(filter.search || filter.status || filter.hidden);
 
   // Search 350 ms after the user stops typing, not on every key.
   useEffect(() => {
@@ -154,15 +158,29 @@ export const PatientsPage = () => {
         title={t("patientsAdmin.title")}
         subtitle={t("patientsAdmin.subtitle")}
         actions={
-          canEdit && (
+          <>
             <Button
-              variant="contained"
-              startIcon={<Plus size={18} />}
-              onClick={() => setEditing(null)}
+              startIcon={<Download size={18} />}
+              loading={exporting}
+              onClick={() => {
+                setExporting(true);
+                downloadPatientsCsv(filter)
+                  .catch(() => notify.error(t("patientsAdmin.errors.export")))
+                  .finally(() => setExporting(false));
+              }}
             >
-              {t("patientsAdmin.add")}
+              {t("patientsAdmin.export")}
             </Button>
-          )
+            {canEdit && (
+              <Button
+                variant="contained"
+                startIcon={<Plus size={18} />}
+                onClick={() => setEditing(null)}
+              >
+                {t("patientsAdmin.add")}
+              </Button>
+            )}
+          </>
         }
       />
 
@@ -198,6 +216,15 @@ export const PatientsPage = () => {
             </MenuItem>
           ))}
         </TextField>
+        {isAdmin && (
+          <FormControlLabel
+            control={
+              <Switch checked={filter.hidden} onChange={(e) => set({ hidden: e.target.checked })} />
+            }
+            label={t("patientsAdmin.showHidden")}
+            sx={{ whiteSpace: "nowrap" }}
+          />
+        )}
       </Stack>
 
       {patients.isError ? (
