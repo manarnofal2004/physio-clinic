@@ -594,7 +594,7 @@ export const en = {
       },
       rights: {
         title: "Your choices",
-        body: "You can ask the clinic to show you, correct or remove what it keeps about you. You can also log in with your email and password instead of Google.",
+        body: "You can ask the clinic to show you what it keeps about you, or to correct it. The clinic can also turn your account off or hide your record. You can also log in with your email and password instead of Google.",
       },
       contact: {
         title: "Questions",
