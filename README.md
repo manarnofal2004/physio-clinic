@@ -12,7 +12,7 @@ The API contract (every endpoint, request and response) is in [docs/api/](docs/a
 
 ## Prerequisites
 
-- Node.js 20.19+ (or 22.13+ / 24+), required by ESLint 10
+- Node.js 22.13+ (or 24+), required by ESLint 10 and concurrently 10
 - pnpm (`npm install -g pnpm`)
 - Docker Desktop, running (it provides MongoDB for local development)
 
@@ -27,7 +27,7 @@ pnpm dev       # starts MongoDB in Docker, seeds it, then runs the API (:5000) a
 
 `pnpm dev` stops the API and the client on Ctrl+C. MongoDB keeps running in Docker until `pnpm db:down`; its data stays in a Docker volume.
 
-To use MongoDB Atlas or your own MongoDB instead, set `MONGODB_URI` in `backend/.env` and run `pnpm dev:backend` and `pnpm dev:frontend` (or `pnpm dev` inside each folder).
+`pnpm dev` starts MongoDB in Docker only when `MONGODB_URI` in `backend/.env` points at this computer (`localhost` or `127.0.0.1`). To use MongoDB Atlas or your own MongoDB server, set `MONGODB_URI` there and run `pnpm dev` as usual: Docker is skipped. You can also start each part on its own with `pnpm dev:backend` and `pnpm dev:frontend`.
 
 ## Server
 
