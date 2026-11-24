@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { Pencil, Plus, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useLocation, useNavigate } from "react-router-dom";
 import { PATIENT_STATUSES, type Patient, type PatientStatus } from "@shared/api-types";
 import { DataTable, type DataTableColumn } from "@/components/data-table/DataTable";
 import { EmptyState } from "@/components/feedback/EmptyState";
@@ -32,6 +33,8 @@ export const PatientsPage = () => {
   const { t, i18n } = useTranslation();
   const notify = useNotify();
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
   const canEdit = Boolean(user?.privileges.includes("patients.edit"));
 
   // What the user is typing, and the filter actually sent to the API.
@@ -130,7 +133,7 @@ export const PatientsPage = () => {
                 <IconButton
                   aria-label={t("patientsAdmin.editAction")}
                   onClick={(e) => {
-                    // Later a row click opens the patient's page, so keep this click
+                    // A row click opens the patient's page, so keep this click
                     // from reaching the row.
                     e.stopPropagation();
                     setEditing(p);
@@ -209,6 +212,7 @@ export const PatientsPage = () => {
           columns={columns}
           rows={patients.data?.data ?? []}
           getRowId={(p) => p.id}
+          onRowClick={(p) => navigate(`${pathname}/${p.id}`)}
           total={patients.data?.meta.total ?? 0}
           page={filter.page - 1}
           rowsPerPage={filter.limit}

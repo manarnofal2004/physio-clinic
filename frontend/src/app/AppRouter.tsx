@@ -7,6 +7,7 @@ import { DashboardPage } from "@/features/dashboard/DashboardPage";
 import { LoginPage } from "@/features/auth/LoginPage";
 import { BannersPage } from "@/features/banners/BannersPage";
 import { PatientsPage } from "@/features/patients/PatientsPage";
+import { PatientDetailsPage } from "@/features/patients/PatientDetailsPage";
 import { ReportDetailsPage } from "@/features/reports/ReportDetailsPage";
 import { ReportsPage } from "@/features/reports/ReportsPage";
 import { TherapistsPage } from "@/features/therapists/TherapistsPage";
@@ -57,6 +58,7 @@ const router = createBrowserRouter([
           { path: "users", element: <UsersPage /> },
           { path: "therapists", element: <TherapistsPage /> },
           { path: "patients", element: <PatientsPage /> },
+          { path: "patients/:id", element: <PatientDetailsPage /> },
           { path: "reports", element: <ReportsPage /> },
           { path: "reports/:id", element: <ReportDetailsPage /> },
           // Pages in the menu that are not built yet say so, instead of "not found".
@@ -90,6 +92,10 @@ const router = createBrowserRouter([
                 // A report opened from the therapist's reports list.
                 ...(item.path === "/therapist/reports"
                   ? [{ path: "/therapist/reports/:id", element: <ReportDetailsPage /> }]
+                  : []),
+                // A patient opened from the therapist's patients list.
+                ...(item.path === "/therapist/patients"
+                  ? [{ path: "/therapist/patients/:id", element: <PatientDetailsPage /> }]
                   : []),
               ],
             })),
