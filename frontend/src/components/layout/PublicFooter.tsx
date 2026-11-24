@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Box, ButtonBase, Link, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { Link as RouterLink } from "react-router-dom";
 import { useColorMode } from "@/theme/colorModeContext";
 import { landingSections } from "./landingSections";
 import { SCREEN_HEIGHT } from "./navbarHeight";
@@ -151,13 +152,31 @@ export const PublicFooter = () => {
           </Box>
         </Box>
 
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ mt: { xs: 4, md: 5 }, pt: 2.5, borderTop: 1, borderColor: "warning.main" }}
+        <Box
+          sx={{
+            mt: { xs: 4, md: 5 },
+            pt: 2.5,
+            borderTop: 1,
+            borderColor: "warning.main",
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+            gap: 1,
+          }}
         >
-          {t("landing.footer.rights", { year: new Date().getFullYear() })}
-        </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {t("landing.footer.rights", { year: new Date().getFullYear() })}
+          </Typography>
+          <Link
+            component={RouterLink}
+            to="/privacy"
+            variant="body2"
+            color="text.secondary"
+            underline="hover"
+          >
+            {t("landing.footer.privacy")}
+          </Link>
+        </Box>
       </Box>
     </Box>
   );

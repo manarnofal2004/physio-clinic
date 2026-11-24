@@ -456,6 +456,7 @@ export const en = {
       band: "Hands holding an exercise band",
       tea: "Tea by the waiting-room window",
       rights: "© {{year}} Sanad Physiotherapy. All rights reserved.",
+      privacy: "Privacy policy",
     },
   },
   dashboard: {
@@ -601,6 +602,7 @@ export const en = {
     email: "Email",
     password: "Password",
     submit: "Log in",
+    or: "or",
     welcome: "Welcome back",
     noAccount: "Here to book a session? No account needed.",
     bookLink: "Book a session",
@@ -610,6 +612,8 @@ export const en = {
       passwordRequired: "Enter your password.",
       invalidCredentials: "The email or password is incorrect.",
       accountDisabled: "This account is turned off. Please contact the clinic.",
+      googleNoAccount:
+        "No clinic account uses this Google email. Log in with your email and password, or ask the clinic.",
       tooManyRequests: "Too many attempts. Please wait a few minutes and try again.",
       network: "We couldn't reach the server. Check your connection and try again.",
       unexpected: "Something went wrong. Please try again.",
@@ -619,6 +623,47 @@ export const en = {
     title: "You don't have access to this page",
     description: "Ask the clinic admin if you need access.",
     backHome: "Back to your panel",
+  },
+  privacy: {
+    title: "Privacy policy",
+    updated: "Last updated: 22 November 2026",
+    intro:
+      "This page explains what the Sanad clinic website keeps about you, why, and who can see it. It covers visitors who book a session and people who have an account made by the clinic.",
+    contactLink: "Contact the clinic",
+    sections: {
+      collect: {
+        title: "What we keep",
+        body: "When you book a session: your name, phone number, age, the reason for the visit and the time you chose.\n\nIf the clinic made an account for you: your name, email address and role. Staff also keep patients' treatment reports and any files attached to them.",
+      },
+      google: {
+        title: "Signing in with Google",
+        body: 'If you choose "Continue with Google", Google tells us your email address and that Google has checked it. We use it only to find the account the clinic already made for that email. We never see your Google password, we do not keep your Google profile, and signing in with Google never creates a new account.',
+      },
+      use: {
+        title: "Why we keep it",
+        body: "Only to run the clinic: to confirm and arrange appointments, to let staff treat patients and follow their progress, and to let each person log in to their own account.",
+      },
+      browser: {
+        title: "What stays in your browser",
+        body: "Your browser keeps your login for one day, your language, light or dark mode, and which announcements you closed. Nothing is used for advertising or tracking.",
+      },
+      sharing: {
+        title: "Who can see it",
+        body: "Clinic staff, each only as far as the clinic allows. We do not sell or share your data. It is stored with the services that host the website (Surge, Vercel and MongoDB Atlas), and Google is used only for signing in.",
+      },
+      keep: {
+        title: "How long we keep it",
+        body: "Booking requests and treatment records stay with the clinic as part of its records. Accounts are not deleted, but the clinic can turn an account off.",
+      },
+      rights: {
+        title: "Your choices",
+        body: "You can ask the clinic to show you what it keeps about you, or to correct it. The clinic can also turn your account off or hide your record. You can also log in with your email and password instead of Google.",
+      },
+      contact: {
+        title: "Questions",
+        body: "For anything about your data, contact the clinic by phone or email.",
+      },
+    },
   },
   notFound: {
     message: "This page could not be found.",

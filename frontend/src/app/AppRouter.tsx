@@ -5,6 +5,7 @@ import { PublicLayout } from "@/components/layout/PublicLayout";
 import { adminNavItems } from "@/components/layout/adminNavItems";
 import { DashboardPage } from "@/features/dashboard/DashboardPage";
 import { LoginPage } from "@/features/auth/LoginPage";
+import { PrivacyPage } from "@/features/privacy/PrivacyPage";
 import { BannersPage } from "@/features/banners/BannersPage";
 import { PatientsPage } from "@/features/patients/PatientsPage";
 import { PatientDetailsPage } from "@/features/patients/PatientDetailsPage";
@@ -45,6 +46,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <LandingPage /> },
       { path: "login", element: <LoginPage /> },
+      { path: "privacy", element: <PrivacyPage /> },
     ],
   },
   {

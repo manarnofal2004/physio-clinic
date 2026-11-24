@@ -8,3 +8,10 @@ export const loginBody = z.object({
 });
 
 export type LoginBody = z.infer<typeof loginBody>;
+
+// The ID token the Google button hands the page.
+export const googleLoginBody = z.object({
+  credential: z.string().min(1).max(4096),
+});
+
+export type GoogleLoginBody = z.infer<typeof googleLoginBody>;
