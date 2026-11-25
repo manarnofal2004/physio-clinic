@@ -16,6 +16,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import type { User } from "@shared/api-types";
 import { homePathFor } from "@/features/auth/homePath";
 import { useAuth } from "@/features/auth/useAuth";
+import { useTherapistPhotoById } from "@/features/therapists/api";
 
 // The first letter of the first and last name, e.g. "Lina Haddad" -> "LH".
 const initials = (fullName: string) => {
@@ -25,21 +26,26 @@ const initials = (fullName: string) => {
   return (first + last).toUpperCase();
 };
 
-// The user's initials in a pale olive circle.
-export const UserAvatar = ({ user, size = 32 }: { user: User; size?: number }) => (
-  <Avatar
-    sx={{
-      width: size,
-      height: size,
-      fontSize: size * 0.4,
-      fontWeight: 700,
-      bgcolor: "action.selected",
-      color: "primary.dark",
-    }}
-  >
-    {initials(user.fullName)}
-  </Avatar>
-);
+// The user's initials in a pale olive circle, or the photo of a physiotherapist.
+export const UserAvatar = ({ user, size = 32 }: { user: User; size?: number }) => {
+  const photo = useTherapistPhotoById(user.role === "therapist" ? user.therapistId : null);
+  return (
+    <Avatar
+      src={photo.data ?? undefined}
+      alt={user.fullName}
+      sx={{
+        width: size,
+        height: size,
+        fontSize: size * 0.4,
+        fontWeight: 700,
+        bgcolor: "action.selected",
+        color: "primary.dark",
+      }}
+    >
+      {initials(user.fullName)}
+    </Avatar>
+  );
+};
 
 // For a logged-in user, in place of the "Log in" button: their initials and first
 // name, opening a menu with their name and role, a link to their dashboard (admins

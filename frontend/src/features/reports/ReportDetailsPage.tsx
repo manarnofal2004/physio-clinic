@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, ButtonBase, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Button, ButtonBase, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { ArrowLeft, ArrowRight, Pencil, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,7 @@ import { ErrorState } from "@/components/feedback/ErrorState";
 import { LoadingState } from "@/components/feedback/LoadingState";
 import { useNotify } from "@/components/notifications/useNotify";
 import { useAuth } from "@/features/auth/useAuth";
+import { useTherapistPhotoById } from "@/features/therapists/api";
 import { fetchFileUrl, useReport, useReportMutations } from "./api";
 import { AttachmentThumb } from "./FileUploader";
 import { ProgressChip } from "./ProgressChip";
@@ -38,6 +39,7 @@ export const ReportDetailsPage = () => {
   const { user } = useAuth();
   const canEdit = Boolean(user?.privileges.includes("reports.edit"));
   const report = useReport(id);
+  const therapistPhoto = useTherapistPhotoById(report.data?.therapistId);
   const { remove } = useReportMutations();
   const [editing, setEditing] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -90,7 +92,24 @@ export const ReportDetailsPage = () => {
             sx={{ mt: 1, alignItems: "center", flexWrap: "wrap", rowGap: 1 }}
           >
             <Typography color="text.secondary">{formatDay(r.date, i18n.language)}</Typography>
-            {r.therapistName && <Typography color="text.secondary">· {r.therapistName}</Typography>}
+            {r.therapistName && (
+              <Stack direction="row" spacing={0.75} sx={{ alignItems: "center" }}>
+                <Avatar
+                  src={therapistPhoto.data ?? undefined}
+                  alt=""
+                  sx={{
+                    width: 24,
+                    height: 24,
+                    fontSize: "0.7rem",
+                    bgcolor: "action.selected",
+                    color: "primary.dark",
+                  }}
+                >
+                  {r.therapistName.replace(/^dr\.?\s+/i, "")[0]}
+                </Avatar>
+                <Typography color="text.secondary">{r.therapistName}</Typography>
+              </Stack>
+            )}
             <ProgressChip progress={r.progress} />
           </Stack>
         </Box>
