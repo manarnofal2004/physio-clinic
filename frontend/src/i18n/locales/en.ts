@@ -483,6 +483,7 @@ export const en = {
     schedule: {
       title: "Sessions on {{day}}",
       empty: "No sessions on this day",
+      error: "We couldn't load the sessions.",
       waiting: "Waiting",
       confirmed: "Confirmed",
       noTherapist: "No physiotherapist yet",

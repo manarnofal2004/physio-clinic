@@ -81,7 +81,8 @@ export const DashboardPage = () => {
 
   let body;
   if (stats.isPending) body = <LoadingState label={t("common.loading")} />;
-  else if (stats.isError)
+  // A failed background refresh keeps the last numbers; the error page shows only when there is nothing to show.
+  else if (!stats.data)
     body = (
       <ErrorState
         title={t("dashboard.error")}

@@ -96,7 +96,12 @@ export const createAppTheme = (
       components: {
         MuiButton: {
           defaultProps: { disableElevation: true },
-          styleOverrides: { root: { paddingInline: 16 } },
+          styleOverrides: {
+            root: { paddingInline: 16 },
+            // Icons are honey everywhere, which disappears on a filled olive button,
+            // so there they take the button's text colour.
+            contained: { "& .lucide": { stroke: "currentColor" } },
+          },
         },
         MuiAppBar: { defaultProps: { elevation: 0, color: "inherit" } },
         // Depth is kept for things that float above the page (dialogs, menus). An

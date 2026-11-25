@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { AvatarGroup, Box, Link, Paper, Stack, Typography, useTheme } from "@mui/material";
 import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
 import { CalendarClock, ClipboardList, Stethoscope, Users } from "lucide-react";
@@ -90,6 +90,12 @@ export const StatCards = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
+  // "On duty now" depends on the clock, so the cards look again every minute.
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setTick((n) => n + 1), 60_000);
+    return () => clearInterval(id);
+  }, []);
   const thisMonth = stats.reportsOverTime.at(-1)?.count ?? 0;
   const onDuty = therapists ? onDutyNow(therapists) : null;
 
