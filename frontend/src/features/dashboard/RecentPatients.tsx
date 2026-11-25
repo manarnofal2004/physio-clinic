@@ -1,5 +1,6 @@
-import { Avatar, Box, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Link, Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { Link as RouterLink } from "react-router-dom";
 import { EmptyState } from "@/components/feedback/EmptyState";
 import { formatDay } from "@/features/reports/format";
 import type { DashboardStats } from "./api";
@@ -13,8 +14,15 @@ const initials = (name: string) =>
     .join("")
     .toUpperCase();
 
-// The five newest patients with their condition and last visit.
-export const RecentPatients = ({ patients }: { patients: DashboardStats["recentPatients"] }) => {
+// The five newest patients with their condition and last visit. Each name opens the
+// patient's page when the user may see patients ("patientsPath" is set).
+export const RecentPatients = ({
+  patients,
+  patientsPath,
+}: {
+  patients: DashboardStats["recentPatients"];
+  patientsPath?: string;
+}) => {
   const { t, i18n } = useTranslation();
 
   if (patients.length === 0)
@@ -52,7 +60,18 @@ export const RecentPatients = ({ patients }: { patients: DashboardStats["recentP
           </Avatar>
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Typography sx={{ fontWeight: 600 }} noWrap>
-              {p.fullName}
+              {patientsPath ? (
+                <Link
+                  component={RouterLink}
+                  to={`${patientsPath}/${p.id}`}
+                  color="inherit"
+                  underline="hover"
+                >
+                  {p.fullName}
+                </Link>
+              ) : (
+                p.fullName
+              )}
             </Typography>
             <Typography variant="body2" color="text.secondary" noWrap>
               {p.condition}

@@ -128,7 +128,10 @@ export const DashboardPage = () => {
           </Box>
           <Box sx={{ display: "grid", gap: 2.5, gridTemplateColumns: twoColumns }}>
             <Panel id="dash-recent" title={t("dashboard.recent.title")}>
-              <RecentPatients patients={s.recentPatients} />
+              <RecentPatients
+                patients={s.recentPatients}
+                patientsPath={can("patients.view") ? `${base}/patients` : undefined}
+              />
             </Panel>
             <Panel
               id="dash-conditions"
