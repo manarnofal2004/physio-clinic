@@ -159,7 +159,7 @@ export const ScheduleRail = ({ therapists }: { therapists: Therapist[] }) => {
         </Typography>
         {sessions.isPending ? (
           <LoadingState label={t("common.loading")} minHeight={120} />
-        ) : sessions.isError ? (
+        ) : sessions.isError && !sessions.data ? (
           // Without this, a failed request would read as "no sessions on this day".
           <Box sx={{ mt: 1 }}>
             <ErrorState
