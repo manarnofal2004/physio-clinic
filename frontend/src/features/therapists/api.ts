@@ -42,8 +42,11 @@ export const useTherapistPhotoById = (therapistId: string | null | undefined) =>
     queryKey: [...THERAPISTS_KEY, "photo-by-id", therapistId],
     queryFn: async () => {
       try {
+        // The server lets the browser cache the photo for a day, so a fresh `t` makes sure a
+        // replaced photo shows. staleTime keeps React Query from fetching it again.
         const { data } = await apiClient.get<Blob>(`/therapists/${therapistId}/photo`, {
           responseType: "blob",
+          params: { t: Date.now() },
         });
         return URL.createObjectURL(data);
       } catch (error) {
