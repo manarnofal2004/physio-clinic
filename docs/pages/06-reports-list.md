@@ -23,13 +23,13 @@ Find a patient's treatment reports, filter them, export them, and write new ones
 
 ## Data and API
 
-| Call                                                                   | Notes                                                                    |
-| ---------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| `GET /reports?page&limit&sort=-date&search&progress&from&to&patientId` | Newest first, server-side paging                                         |
-| `GET /reports/export?…same filters`                                    | CSV fetched as a blob with the token, saved as `reports-YYYY-MM-DD.csv`  |
-| `POST /uploads` (multipart, field `files`)                             | Returns `Attachment[]`; files are stored in MongoDB GridFS               |
-| `GET /uploads/:id`                                                     | Blob → object URL for thumbnails                                         |
-| `POST /reports` / `PUT /reports/:id`                                   | `ReportInput` with `attachmentIds`; on PUT the list replaces the old one |
+| Call                                                                   | Notes                                                                                         |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `GET /reports?page&limit&sort=-date&search&progress&from&to&patientId` | Newest first, server-side paging                                                              |
+| `GET /reports/export?…same filters`                                    | CSV fetched as a blob with the token, saved as `reports-YYYY-MM-DD.csv`; dates are plain days |
+| `POST /uploads` (multipart, field `files`)                             | Returns `Attachment[]`; files are stored in MongoDB GridFS                                    |
+| `GET /uploads/:id`                                                     | Blob → object URL for thumbnails                                                              |
+| `POST /reports` / `PUT /reports/:id`                                   | `ReportInput` with `attachmentIds`; on PUT the list replaces the old one                      |
 
 After saving, the reports and patients queries refresh (a report updates the patient's last visit).
 

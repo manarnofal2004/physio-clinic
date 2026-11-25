@@ -60,6 +60,8 @@ The server checks these at startup and stops with a clear message if one is miss
 
 Change these passwords (or set `SEED_ADMIN_*`) before using real data.
 
+These are the passwords of a fresh local database. On the live site (`sanad-clinic.surge.sh`) the three passwords have been changed, so they no longer work there; ask Manar for them.
+
 ### Scripts (`backend/`)
 
 | Command          | What it does                              |

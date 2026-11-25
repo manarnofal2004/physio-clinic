@@ -2,20 +2,22 @@
 
 One technical report per page of the Sanad web app: what the page does, who built it, how it is built, which API it uses, and how it handles states, languages and screen sizes.
 
-| #   | Page                                       | Route                                          | Built by                      |
-| --- | ------------------------------------------ | ---------------------------------------------- | ----------------------------- |
-| 1   | [Landing page](01-landing-page.md)         | `/`                                            | Manar                         |
-| 2   | [Booking section](02-booking.md)           | `/#booking`                                    | Bayan (logic), Manar (design) |
-| 3   | [Login](03-login.md)                       | `/login`                                       | Bayan (logic), Manar (design) |
-| 4   | [Users and privileges](04-admin-users.md)  | `/admin/users`                                 | Manar                         |
-| 5   | [Physiotherapists](05-admin-therapists.md) | `/admin/therapists`                            | Manar                         |
-| 6   | [Medical reports list](06-reports-list.md) | `/admin/reports`, `/therapist/reports`         | Manar                         |
-| 7   | [Report details](07-report-details.md)     | `/admin/reports/:id`, `/therapist/reports/:id` | Manar                         |
-| 8   | [Banners](08-admin-banners.md)             | `/admin/banners`, `/therapist/banners`         | Manar                         |
-| 9   | [Therapist panel](09-therapist-panel.md)   | `/therapist`                                   | Bayan                         |
-| 10  | [Dashboard](10-dashboard.md)               | `/admin`, `/therapist/dashboard`               | Manar                         |
+| #   | Page                                       | Route                                              | Built by                      |
+| --- | ------------------------------------------ | -------------------------------------------------- | ----------------------------- |
+| 1   | [Landing page](01-landing-page.md)         | `/`                                                | Manar                         |
+| 2   | [Booking section](02-booking.md)           | `/#booking`                                        | Bayan (logic), Manar (design) |
+| 3   | [Login](03-login.md)                       | `/login`                                           | Bayan (logic), Manar (design) |
+| 4   | [Users and privileges](04-admin-users.md)  | `/admin/users`                                     | Manar                         |
+| 5   | [Physiotherapists](05-admin-therapists.md) | `/admin/therapists`                                | Manar                         |
+| 6   | [Medical reports list](06-reports-list.md) | `/admin/reports`, `/therapist/reports`             | Manar                         |
+| 7   | [Report details](07-report-details.md)     | `/admin/reports/:id`, `/therapist/reports/:id`     | Manar                         |
+| 8   | [Banners](08-admin-banners.md)             | `/admin/banners`, `/therapist/banners`             | Manar                         |
+| 9   | [Therapist panel](09-therapist-panel.md)   | `/therapist`                                       | Bayan                         |
+| 10  | [Dashboard](10-dashboard.md)               | `/admin`, `/therapist/dashboard`                   | Manar                         |
+| 11  | [Patients](11-patients.md)                 | `/admin/patients`, `/therapist/patients`, `/…/:id` | Bayan                         |
+| 12  | [Privacy policy](12-privacy.md)            | `/privacy`                                         | Manar                         |
 
-Not built yet (they show a "This page is not ready yet" message): patients and reservations pages, and the patient portal pages.
+Not built yet (they show a "This page is not ready yet" message): the reservations page and the patient portal pages.
 
 ## Stack
 
@@ -38,7 +40,7 @@ Not built yet (they show a "This page is not ready yet" message): patients and r
 frontend/src/
 ├── app/            AppProviders (providers), AppRouter (routes)
 ├── components/     shared UI: layouts, data table, feedback states, form fields, notifications
-├── features/       one folder per feature: landing, booking, auth, banners, users, therapists, reports, therapist
+├── features/       one folder per feature: landing, booking, availability, auth, privacy, banners, users, therapists, patients, reports, dashboard, therapist
 ├── i18n/           i18next setup and the en / ar dictionaries
 ├── lib/            API client, API error type, auth token storage, env
 └── theme/          colours, typography, component overrides, fonts, light/dark + direction
@@ -74,6 +76,8 @@ Each feature folder keeps its own `api.ts` (requests and React Query hooks) next
 - Palette "olive and stone": olive `#4f6a2a`, deep olive `#3a4f1e`, pale olive tint `#e3ead6`, beige `#f5eee3`, honey `#9a6b1f`; matching dark-mode values.
 - Component overrides give tables, dialogs, inputs, toggle buttons, tooltips and alerts the clinic's look, so pages do not repeat styling.
 - Page titles use the same italic Redaction / El Messiri face as the landing section titles.
+- Icons are honey everywhere; on filled buttons (such as "Write a report") they take the button's text colour so they stay visible.
+- Physiotherapists appear with their photo (or initials) wherever they are named: therapists page, users page, user menu, dashboard and reports.
 
 ### Languages and direction
 
@@ -86,5 +90,5 @@ Loading (`LoadingState`), error with retry (`ErrorState`), empty (`EmptyState`),
 
 ### Deployment
 
-- Frontend: built with `VITE_API_BASE_URL=https://sanad-clinic-api.vercel.app/api`, published to Surge (`sanad-clinic.surge.sh`), with `200.html` so deep links work.
+- Frontend: built with `VITE_API_BASE_URL=https://sanad-clinic-api.vercel.app/api` and `VITE_GOOGLE_CLIENT_ID`, published to Surge (`sanad-clinic.surge.sh`), with `200.html` so deep links work.
 - Backend: Vercel serverless function (`backend/api/index.js`), MongoDB Atlas.
