@@ -81,7 +81,8 @@ export const DashboardPage = () => {
 
   let body;
   if (stats.isPending) body = <LoadingState label={t("common.loading")} />;
-  else if (stats.isError)
+  // A failed background refresh keeps the last numbers; the error page shows only when there is nothing to show.
+  else if (!stats.data)
     body = (
       <ErrorState
         title={t("dashboard.error")}
@@ -127,7 +128,10 @@ export const DashboardPage = () => {
           </Box>
           <Box sx={{ display: "grid", gap: 2.5, gridTemplateColumns: twoColumns }}>
             <Panel id="dash-recent" title={t("dashboard.recent.title")}>
-              <RecentPatients patients={s.recentPatients} />
+              <RecentPatients
+                patients={s.recentPatients}
+                patientsPath={can("patients.view") ? `${base}/patients` : undefined}
+              />
             </Panel>
             <Panel
               id="dash-conditions"

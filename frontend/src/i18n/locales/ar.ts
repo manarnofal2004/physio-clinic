@@ -477,6 +477,7 @@ export const ar: Translation = {
     schedule: {
       title: "جلسات {{day}}",
       empty: "لا جلسات في هذا اليوم",
+      error: "تعذّر تحميل الجلسات.",
       waiting: "بانتظار الرد",
       confirmed: "مؤكدة",
       noTherapist: "لم يُحدَّد أخصائي بعد",

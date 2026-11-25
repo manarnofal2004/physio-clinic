@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Avatar, Box, Button, ButtonBase, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Button, ButtonBase, Link, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { ArrowLeft, ArrowRight, Pencil, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -45,6 +45,10 @@ export const ReportDetailsPage = () => {
   const [deleting, setDeleting] = useState(false);
   // The list this report was opened from (/admin/reports or /therapist/reports).
   const listPath = pathname.replace(/\/[^/]+$/, "");
+  // The patient's name opens their page, for users who may see patients.
+  const patientsPath = user?.privileges.includes("patients.view")
+    ? listPath.replace(/reports$/, "patients")
+    : undefined;
   const Back = isRtl ? ArrowRight : ArrowLeft;
 
   if (report.isPending) return <LoadingState label={t("common.loading")} />;
@@ -84,7 +88,18 @@ export const ReportDetailsPage = () => {
       >
         <Box>
           <Typography variant="h4" component="h1" sx={{ color: "primary.dark" }}>
-            {r.patient.fullName}
+            {patientsPath ? (
+              <Link
+                component={RouterLink}
+                to={`${patientsPath}/${r.patient.id}`}
+                color="inherit"
+                underline="hover"
+              >
+                {r.patient.fullName}
+              </Link>
+            ) : (
+              r.patient.fullName
+            )}
           </Typography>
           <Stack
             direction="row"

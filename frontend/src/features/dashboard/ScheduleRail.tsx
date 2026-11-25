@@ -6,6 +6,7 @@ import dayjs, { type Dayjs } from "dayjs";
 import { useTranslation } from "react-i18next";
 import type { Reservation, Therapist } from "@shared/api-types";
 import { EmptyState } from "@/components/feedback/EmptyState";
+import { ErrorState } from "@/components/feedback/ErrorState";
 import { LoadingState } from "@/components/feedback/LoadingState";
 import { TherapistAvatar } from "@/features/therapists/TherapistAvatar";
 import { useMonthSessions } from "./api";
@@ -158,6 +159,15 @@ export const ScheduleRail = ({ therapists }: { therapists: Therapist[] }) => {
         </Typography>
         {sessions.isPending ? (
           <LoadingState label={t("common.loading")} minHeight={120} />
+        ) : sessions.isError && !sessions.data ? (
+          // Without this, a failed request would read as "no sessions on this day".
+          <Box sx={{ mt: 1 }}>
+            <ErrorState
+              title={t("dashboard.schedule.error")}
+              retryLabel={t("dashboard.retry")}
+              onRetry={() => void sessions.refetch()}
+            />
+          </Box>
         ) : chosen.length === 0 ? (
           <EmptyState title={t("dashboard.schedule.empty")} />
         ) : (
