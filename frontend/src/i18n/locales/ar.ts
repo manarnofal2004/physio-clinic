@@ -297,6 +297,7 @@ export const ar: Translation = {
     closeMenu: "إغلاق القائمة",
     account: "قائمة الحساب",
     dashboard: "لوحة التحكم",
+    portal: "صفحتي",
     logOut: "تسجيل الخروج",
   },
   roles: {
@@ -316,6 +317,30 @@ export const ar: Translation = {
     therapists: "الأخصائيون",
     users: "المستخدمون",
     banners: "الإعلانات",
+    myProfile: "ملفي",
+    myReports: "تقاريري",
+  },
+  portal: {
+    retry: "حاول مرة أخرى",
+    profile: {
+      title: "ملفي",
+      subtitle: "بياناتك كما هي عند العيادة. لتغيير أي شيء، يرجى الاتصال بالعيادة.",
+      since: "مريض منذ",
+    },
+    reports: {
+      title: "تقاريري",
+      subtitle: "ما كتبه أخصائي العلاج الطبيعي بعد كل جلسة.",
+      none: "لا تقارير بعد",
+      noneHint: "بعد كل جلسة، يظهر هنا تقرير الأخصائي.",
+      open: "فتح التقرير",
+      backToList: "كل تقاريري",
+    },
+    errors: {
+      profile: "تعذّر تحميل بياناتك.",
+      noRecord: "حسابك غير مرتبط بملف مريض بعد. يرجى التواصل مع العيادة.",
+      reports: "تعذّر تحميل تقاريرك.",
+      report: "تعذّر العثور على هذا التقرير.",
+    },
   },
   settings: {
     lightMode: "التبديل إلى الوضع الفاتح",

@@ -299,6 +299,7 @@ export const en = {
     closeMenu: "Close menu",
     account: "Account menu",
     dashboard: "My dashboard",
+    portal: "My page",
     logOut: "Log out",
   },
   roles: {
@@ -318,6 +319,30 @@ export const en = {
     therapists: "Therapists",
     users: "Users",
     banners: "Banners",
+    myProfile: "My profile",
+    myReports: "My reports",
+  },
+  portal: {
+    retry: "Try again",
+    profile: {
+      title: "My profile",
+      subtitle: "Your details as the clinic has them. To change something, please call the clinic.",
+      since: "Patient since",
+    },
+    reports: {
+      title: "My reports",
+      subtitle: "What your physiotherapist wrote after each session.",
+      none: "No reports yet",
+      noneHint: "After each session, your physiotherapist's report appears here.",
+      open: "Open report",
+      backToList: "All my reports",
+    },
+    errors: {
+      profile: "We couldn't load your details.",
+      noRecord: "Your account isn't linked to a patient record yet. Please contact the clinic.",
+      reports: "We couldn't load your reports.",
+      report: "This report could not be found.",
+    },
   },
   settings: {
     lightMode: "Switch to light mode",
