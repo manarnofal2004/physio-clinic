@@ -40,7 +40,7 @@ export const exportPatients: RequestHandler = async (req, res) => {
 
   const csv = toCsv(patients, [
     { header: "Full name", value: (p) => p.fullName },
-    { header: "Phone", value: (p) => p.phone },
+    { header: "Phone", value: (p) => p.phone, keepAsText: true },
     { header: "Age", value: (p) => p.age },
     { header: "Gender", value: (p) => p.gender },
     { header: "Condition", value: (p) => p.condition },
