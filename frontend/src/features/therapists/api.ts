@@ -32,6 +32,7 @@ export const useTherapistPhoto = (therapist: Pick<Therapist, "id" | "photoId">) 
     },
     enabled: Boolean(therapist.photoId),
     staleTime: Infinity,
+    meta: { objectUrl: true }, // see lib/queryClient.ts
   });
 
 // The photo of a physiotherapist known only by id: the logged-in therapist, or the
@@ -57,6 +58,7 @@ export const useTherapistPhotoById = (therapistId: string | null | undefined) =>
     enabled: Boolean(therapistId),
     staleTime: Infinity,
     retry: false,
+    meta: { objectUrl: true }, // see lib/queryClient.ts
   });
 
 // Add a physiotherapist or replace one's details (PUT sends the whole profile), and
