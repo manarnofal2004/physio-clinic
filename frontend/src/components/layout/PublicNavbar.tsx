@@ -227,7 +227,7 @@ export const PublicNavbar = () => {
                 fullWidth
                 sx={{ justifyContent: "flex-start" }}
               >
-                {t("nav.dashboard")}
+                {t(user.role === "patient" ? "nav.portal" : "nav.dashboard")}
               </Button>
             )}
             <Button

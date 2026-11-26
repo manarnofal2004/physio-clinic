@@ -102,7 +102,7 @@ export const UserMenu = ({ user }: { user: User }) => {
             <ListItemIcon>
               <LayoutDashboard size={18} />
             </ListItemIcon>
-            {t("nav.dashboard")}
+            {t(user.role === "patient" ? "nav.portal" : "nav.dashboard")}
           </MenuItem>
         )}
         <MenuItem
