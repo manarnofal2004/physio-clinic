@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { ApiPaginated, ApiSuccess, Therapist, TherapistInput } from "@shared/api-types";
+import { ApiError } from "@/lib/api/apiError";
 import { apiClient } from "@/lib/api/client";
 
 const THERAPISTS_KEY = ["therapists"];
@@ -31,6 +32,33 @@ export const useTherapistPhoto = (therapist: Pick<Therapist, "id" | "photoId">) 
     },
     enabled: Boolean(therapist.photoId),
     staleTime: Infinity,
+    meta: { objectUrl: true }, // see lib/queryClient.ts
+  });
+
+// The photo of a physiotherapist known only by id: the logged-in therapist, or the
+// one who wrote a report. Without the photoId we can't tell if there is a photo, so
+// we ask; "no photo" (404) gives null and the initials show instead.
+export const useTherapistPhotoById = (therapistId: string | null | undefined) =>
+  useQuery({
+    queryKey: [...THERAPISTS_KEY, "photo-by-id", therapistId],
+    queryFn: async () => {
+      try {
+        // The server lets the browser cache the photo for a day, so a fresh `t` makes sure a
+        // replaced photo shows. staleTime keeps React Query from fetching it again.
+        const { data } = await apiClient.get<Blob>(`/therapists/${therapistId}/photo`, {
+          responseType: "blob",
+          params: { t: Date.now() },
+        });
+        return URL.createObjectURL(data);
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 404) return null;
+        throw error;
+      }
+    },
+    enabled: Boolean(therapistId),
+    staleTime: Infinity,
+    retry: false,
+    meta: { objectUrl: true }, // see lib/queryClient.ts
   });
 
 // Add a physiotherapist or replace one's details (PUT sends the whole profile), and

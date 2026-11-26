@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
   Box,
@@ -65,6 +65,13 @@ export const TherapistDialog = ({
   // The photo is sent after the profile is saved: a new file, a removal, or nothing.
   const [photo, setPhoto] = useState<{ file: File; preview: string } | "remove" | null>(null);
   const [photoError, setPhotoError] = useState<"tooBig" | "wrongType" | null>(null);
+  // Free the preview's memory when another photo is picked or the dialog closes.
+  useEffect(
+    () => () => {
+      if (photo && photo !== "remove") URL.revokeObjectURL(photo.preview);
+    },
+    [photo],
+  );
   const [saving, setSaving] = useState(false);
 
   const pickPhoto = (file: File | undefined) => {
