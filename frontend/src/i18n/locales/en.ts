@@ -321,6 +321,7 @@ export const en = {
     banners: "Banners",
     myProfile: "My profile",
     myReports: "My reports",
+    myReservations: "My reservations",
   },
   portal: {
     retry: "Try again",
@@ -337,11 +338,32 @@ export const en = {
       open: "Open report",
       backToList: "All my reports",
     },
+    reservations: {
+      title: "My reservations",
+      subtitle:
+        "Your session requests and appointments. The clinic confirms each request with you.",
+      book: "Book a session",
+      upcoming: "Upcoming",
+      past: "Past",
+      noneUpcoming: "No upcoming sessions",
+      noneUpcomingHint:
+        "Book a time while you are logged in, and it appears here while the clinic reviews it.",
+      nonePast: "No past sessions yet",
+      movedFrom: "Moved from {{when}}",
+      yourNote: "Your note",
+      statuses: {
+        pending: "Waiting for the clinic",
+        accepted: "Confirmed",
+        rejected: "Declined",
+        cancelled: "Cancelled",
+      },
+    },
     errors: {
       profile: "We couldn't load your details.",
       noRecord: "Your account isn't linked to a patient record yet. Please contact the clinic.",
       reports: "We couldn't load your reports.",
       report: "This report could not be found.",
+      reservations: "We couldn't load your reservations.",
     },
   },
   settings: {

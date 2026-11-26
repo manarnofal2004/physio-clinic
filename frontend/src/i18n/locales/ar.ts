@@ -319,6 +319,7 @@ export const ar: Translation = {
     banners: "الإعلانات",
     myProfile: "ملفي",
     myReports: "تقاريري",
+    myReservations: "حجوزاتي",
   },
   portal: {
     retry: "حاول مرة أخرى",
@@ -335,11 +336,30 @@ export const ar: Translation = {
       open: "فتح التقرير",
       backToList: "كل تقاريري",
     },
+    reservations: {
+      title: "حجوزاتي",
+      subtitle: "طلبات جلساتك ومواعيدك. تؤكد العيادة كل طلب معك.",
+      book: "احجز جلسة",
+      upcoming: "القادمة",
+      past: "السابقة",
+      noneUpcoming: "لا جلسات قادمة",
+      noneUpcomingHint: "احجز موعداً وأنت مسجّل الدخول، وسيظهر هنا بينما تراجعه العيادة.",
+      nonePast: "لا جلسات سابقة بعد",
+      movedFrom: "نُقل من {{when}}",
+      yourNote: "ملاحظتك",
+      statuses: {
+        pending: "بانتظار العيادة",
+        accepted: "مؤكدة",
+        rejected: "مرفوضة",
+        cancelled: "ملغاة",
+      },
+    },
     errors: {
       profile: "تعذّر تحميل بياناتك.",
       noRecord: "حسابك غير مرتبط بملف مريض بعد. يرجى التواصل مع العيادة.",
       reports: "تعذّر تحميل تقاريرك.",
       report: "تعذّر العثور على هذا التقرير.",
+      reservations: "تعذّر تحميل حجوزاتك.",
     },
   },
   settings: {
