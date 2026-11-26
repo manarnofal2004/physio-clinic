@@ -35,7 +35,7 @@ async function patientWithLogin(overrides: Partial<IPatient> = {}) {
 
 describe("/api/me (patient portal)", () => {
   it("returns the patient's own record and reports only", async () => {
-    const me = await patientWithLogin({ fullName: "Me" });
+    const me = await patientWithLogin({ fullName: "Me", notes: "Staff only" });
     const other = await makePatient({ fullName: "Other", phone: "0597001122" });
     const mine = await makeReport(me.patient._id, "Mine");
     const theirs = await makeReport(other._id, "Theirs");
@@ -45,7 +45,7 @@ describe("/api/me (patient portal)", () => {
     const ownReport = await api.get(`/api/me/reports/${mine.id}`).set(bearer(me.token));
     const otherReport = await api.get(`/api/me/reports/${theirs.id}`).set(bearer(me.token));
 
-    expect(record.body.data).toMatchObject({ fullName: "Me", hasAccount: true });
+    expect(record.body.data).toMatchObject({ fullName: "Me", hasAccount: true, notes: null });
     expect(reports.body.data.map((r: { diagnosis: string }) => r.diagnosis)).toEqual(["Mine"]);
     expect(ownReport.status).toBe(200);
     expect(otherReport.status).toBe(404);

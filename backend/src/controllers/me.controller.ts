@@ -21,7 +21,9 @@ export const getMyPatient: RequestHandler = async (req, res) => {
   if (!user.patientId) throw new AppError(404, "NOT_FOUND", "No patient record for this account");
   const patient = await findPatientInScope(user, String(user.patientId));
   const withAccount = await patientIdsWithAccount([patient]);
-  sendSuccess(res, toPatientDto(patient, withAccount.has(patient.id as string)));
+  const dto = toPatientDto(patient, withAccount.has(patient.id as string));
+  // Notes are written by the staff for the staff, so the patient never gets them.
+  sendSuccess(res, { ...dto, notes: null });
 };
 
 export const listMyReports: RequestHandler = async (req, res) => {

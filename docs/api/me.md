@@ -13,7 +13,7 @@ Their reservations are at `GET /reservations` ([reservations.md](reservations.md
 
 ## My record
 
-`GET /api/me/patient` returns the same `Patient` object staff see ([patients.md](patients.md#a-patient)). Returns `NOT_FOUND` if the account has no patient record or the patient is hidden.
+`GET /api/me/patient` returns the same `Patient` object staff see ([patients.md](patients.md#a-patient)), except `notes`, which is always `null`: the notes are for the staff only. Returns `NOT_FOUND` if the account has no patient record or the patient is hidden.
 
 ## My reports
 
