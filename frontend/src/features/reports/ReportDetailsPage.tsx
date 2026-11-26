@@ -16,7 +16,7 @@ import { ReportDialog } from "./ReportDialog";
 import { formatDay } from "./format";
 
 // A labelled block of the report's text, keeping the line breaks it was written with.
-const Part = ({ label, text }: { label: string; text: string }) => (
+export const Part = ({ label, text }: { label: string; text: string }) => (
   <Box>
     <Typography variant="body2" sx={{ color: "warning.dark", fontWeight: 700, mb: 0.5 }}>
       {label}
