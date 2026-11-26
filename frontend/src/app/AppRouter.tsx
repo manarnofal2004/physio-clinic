@@ -22,6 +22,7 @@ import { therapistNavItems } from "@/features/therapist/therapistNavItems";
 import { MyProfilePage } from "@/features/portal/MyProfilePage";
 import { MyReportDetailsPage } from "@/features/portal/MyReportDetailsPage";
 import { MyReportsPage } from "@/features/portal/MyReportsPage";
+import { MyReservationsPage } from "@/features/portal/MyReservationsPage";
 import { portalNavItems } from "@/features/portal/portalNavItems";
 import { NotFoundPage } from "@/routes/NotFoundPage";
 
@@ -121,6 +122,7 @@ const router = createBrowserRouter([
           { path: "profile", element: <MyProfilePage /> },
           { path: "reports", element: <MyReportsPage /> },
           { path: "reports/:id", element: <MyReportDetailsPage /> },
+          { path: "reservations", element: <MyReservationsPage /> },
         ],
       },
     ],
