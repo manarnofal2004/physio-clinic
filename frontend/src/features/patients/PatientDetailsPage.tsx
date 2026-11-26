@@ -15,7 +15,7 @@ import { usePatient, usePatientMutations } from "./api";
 import { PatientDialog } from "./PatientDialog";
 
 // One item of the profile: a small label above its value. "wide" takes the full row.
-const Field = ({
+export const Field = ({
   label,
   wide,
   children,
@@ -35,7 +35,7 @@ const Field = ({
 );
 
 // A white card with a heading, used for the profile and the reports.
-const Section = ({ title, children }: { title: string; children: ReactNode }) => (
+export const Section = ({ title, children }: { title: string; children: ReactNode }) => (
   <Box
     sx={{
       p: { xs: 2.5, md: 3.5 },

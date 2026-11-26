@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom";
 import { PanelLayout } from "@/components/layout/PanelLayout";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { adminNavItems } from "@/components/layout/adminNavItems";
@@ -19,6 +19,10 @@ import { PageNotReady } from "@/features/therapist/PageNotReady";
 import { TherapistHomePage } from "@/features/therapist/TherapistHomePage";
 import { TherapistLayout } from "@/features/therapist/TherapistLayout";
 import { therapistNavItems } from "@/features/therapist/therapistNavItems";
+import { MyProfilePage } from "@/features/portal/MyProfilePage";
+import { MyReportDetailsPage } from "@/features/portal/MyReportDetailsPage";
+import { MyReportsPage } from "@/features/portal/MyReportsPage";
+import { portalNavItems } from "@/features/portal/portalNavItems";
 import { NotFoundPage } from "@/routes/NotFoundPage";
 
 // Therapist pages that are built; the rest show "not ready yet".
@@ -101,6 +105,22 @@ const router = createBrowserRouter([
                   : []),
               ],
             })),
+        ],
+      },
+    ],
+  },
+  {
+    element: <RequireAuth roles={["patient"]} />,
+    children: [
+      {
+        path: "/portal",
+        element: <PanelLayout navItems={portalNavItems} />,
+        children: [
+          // "/portal" alone opens the profile.
+          { index: true, element: <Navigate to="profile" replace /> },
+          { path: "profile", element: <MyProfilePage /> },
+          { path: "reports", element: <MyReportsPage /> },
+          { path: "reports/:id", element: <MyReportDetailsPage /> },
         ],
       },
     ],

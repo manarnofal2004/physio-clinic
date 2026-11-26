@@ -21,14 +21,23 @@ const sizeText = (bytes: number) =>
   bytes < 1024 * 1024 ? `${Math.round(bytes / 1024)} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 
 // A small preview: the image itself (fetched with the login token) or a PDF icon.
-export const AttachmentThumb = ({ file, size = 56 }: { file: Attachment; size?: number }) => {
+export const AttachmentThumb = ({
+  file,
+  size = 56,
+  load = fetchFileUrl,
+}: {
+  file: Attachment;
+  size?: number;
+  // How to get the file: staff pages use /uploads, the patient portal /me/files.
+  load?: (id: string) => Promise<string>;
+}) => {
   const [url, setUrl] = useState<string | null>(null);
   const isImage = file.mimeType.startsWith("image/");
   useEffect(() => {
     if (!isImage) return;
     let link: string | null = null;
     let alive = true;
-    void fetchFileUrl(file.id).then((u) => {
+    void load(file.id).then((u) => {
       if (alive) setUrl((link = u));
       else URL.revokeObjectURL(u);
     });
@@ -36,7 +45,7 @@ export const AttachmentThumb = ({ file, size = 56 }: { file: Attachment; size?: 
       alive = false;
       if (link) URL.revokeObjectURL(link);
     };
-  }, [file.id, isImage]);
+  }, [file.id, isImage, load]);
 
   return (
     <Box
