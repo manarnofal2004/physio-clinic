@@ -42,14 +42,14 @@ On a 1366×768 laptop the cards, both charts and the calendar fit the first scre
 
 ## Data and API
 
-| Call                                                   | React Query key                      | Notes                                                                 |
-| ------------------------------------------------------ | ------------------------------------ | --------------------------------------------------------------------- |
-| `GET /dashboard/stats`                                 | `["dashboard","stats"]`              | All numbers and chart data (`DashboardStats`)                         |
-| `GET /therapists?limit=100`                            | `["therapists","admin"]`             | For "on duty now" and the session list; only with `reservations.view` |
-| `GET /reservations?from&to&limit=100&sort=scheduledAt` | `["reservations","month","YYYY-MM"]` | The calendar month; waiting and confirmed sessions only               |
-| `GET /therapists/:id/photo?v=photoId`                  | `["therapists","photo",id,photoId]`  | Photo as a blob (it needs the login); a new photo has a new id        |
+| Call                                              | React Query key                      | Notes                                                                                                               |
+| ------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| `GET /dashboard/stats`                            | `["dashboard","stats"]`              | All numbers and chart data (`DashboardStats`)                                                                       |
+| `GET /therapists?limit=100`                       | `["therapists","admin"]`             | For "on duty now" and the session list; only with `reservations.view`                                               |
+| `GET /reservations?from&to&status&page&limit=100` | `["reservations","month","YYYY-MM"]` | The calendar month: waiting and confirmed asked for separately, page by page, so nothing is cut off in a busy month |
+| `GET /therapists/:id/photo?v=photoId`             | `["therapists","photo",id,photoId]`  | Photo as a blob (it needs the login); a new photo has a new id                                                      |
 
-The server counts only the patients in the user's scope. Writing, editing or deleting a report refreshes the dashboard.
+The server counts only the patients in the user's scope. Writing, editing or deleting a report refreshes the dashboard, and the numbers and the calendar refresh every minute, so a dashboard left open all day stays right.
 
 ## How it works
 
@@ -59,15 +59,16 @@ The server counts only the patients in the user's scope. Writing, editing or del
 - **Charts use MUI X Charts** (`@mui/x-charts`): a `LineChart` with a fading olive fill and a `monotoneX` curve that never overshoots the real numbers; a `PieChart` ring with gaps between slices. Every chart has tooltips and its own keyboard access; the curve also has a hidden data table.
 - **Colour is never the only clue:** a palette check showed red and honey look alike to many colour-blind readers, so each progress state has its own row with an arrow icon, its name, count and share.
 - **Calendar** (`DateCalendar` from MUI X): Fridays and Saturdays are disabled; days with sessions have a honey dot; choosing a day lists its sessions with time (clinic time), patient, physiotherapist (photo and name) and a "Waiting" or "Confirmed" label. On wide screens it stays in view while the page scrolls.
+- **Recent patients:** each name opens the patient's page (for users with `patients.view`).
 - **Physiotherapist photos:** the admin adds them on the physiotherapists page (JPEG, PNG or WebP up to 2 MB); the server keeps them in their own GridFS bucket.
 
 ## States
 
-| State       | Shown                                                                             |
-| ----------- | --------------------------------------------------------------------------------- |
-| Loading     | Spinner (the calendar has its own)                                                |
-| Server down | "We couldn't load the dashboard." with Try again                                  |
-| No data     | Each block shows its own sentence; numbers show 0; a day without sessions says so |
+| State       | Shown                                                                                                       |
+| ----------- | ----------------------------------------------------------------------------------------------------------- |
+| Loading     | Spinner (the calendar has its own)                                                                          |
+| Server down | "We couldn't load the dashboard." with Try again; the calendar has its own "We couldn't load the sessions." |
+| No data     | Each block shows its own sentence; numbers show 0; a day without sessions says so                           |
 
 ## Languages, responsive, accessibility
 
@@ -76,5 +77,4 @@ The server counts only the patients in the user's scope. Writing, editing or del
 
 ## Known limitations
 
-- "Add a patient" leads to the patients page, which is not built yet.
-- The recent patients are not clickable until the patient details page exists.
+- Clicking a session in the calendar does nothing yet; it will open the reservation once the reservations page is built.

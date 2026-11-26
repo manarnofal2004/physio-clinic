@@ -1,10 +1,10 @@
 # 3. Login
 
-|          |                                                                                 |
-| -------- | ------------------------------------------------------------------------------- |
-| Route    | `/login`                                                                        |
-| Access   | Public; logged-in users are sent to their home page                             |
-| Built by | Bayan: form, validation, session handling (tasks 2.5, 2.6). Manar: page design. |
+|          |                                                                                                             |
+| -------- | ----------------------------------------------------------------------------------------------------------- |
+| Route    | `/login`                                                                                                    |
+| Access   | Public; logged-in users are sent to their home page                                                         |
+| Built by | Bayan: form, validation, session handling (tasks 2.5, 2.6). Manar: page design, sign in with Google (2.12). |
 
 ## Purpose
 
@@ -12,14 +12,15 @@ Staff and patients with accounts created by the clinic sign in. Visitors who onl
 
 ## Files
 
-| File                             | Role                                                                       | By    |
-| -------------------------------- | -------------------------------------------------------------------------- | ----- |
-| `features/auth/LoginPage.tsx`    | Form logic (Bayan); "open door" layout (Manar)                             | Both  |
-| `features/auth/loginSchema.ts`   | Zod: valid email, password required                                        | Bayan |
-| `features/auth/AuthProvider.tsx` | `login`, `logout`, current user, session restore                           | Bayan |
-| `features/auth/api.ts`           | `POST /auth/login`, `GET /auth/me`                                         | Bayan |
-| `features/auth/homePath.ts`      | Where each role lands: admin `/admin`, therapist `/therapist`, patient `/` | Bayan |
-| `lib/authToken.ts`               | Token in `localStorage`                                                    | Bayan |
+| File                             | Role                                                                                                  | By    |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------- | ----- |
+| `features/auth/LoginPage.tsx`    | Form logic (Bayan); "open door" layout (Manar)                                                        | Both  |
+| `features/auth/loginSchema.ts`   | Zod: valid email, password required                                                                   | Bayan |
+| `features/auth/AuthProvider.tsx` | `login`, `loginWithGoogle`, `logout`, current user, session restore; both logins share `startSession` | Both  |
+| `features/auth/GoogleButton.tsx` | Loads Google's script once and draws its button in the page language and colour mode                  | Manar |
+| `features/auth/api.ts`           | `POST /auth/login`, `POST /auth/google`, `GET /auth/me`                                               | Both  |
+| `features/auth/homePath.ts`      | Where each role lands: admin `/admin`, therapist `/therapist`, patient `/`                            | Bayan |
+| `lib/authToken.ts`               | Token in `localStorage`                                                                               | Bayan |
 
 ## Flow
 
@@ -29,15 +30,23 @@ Staff and patients with accounts created by the clinic sign in. Visitors who onl
 4. On page refresh `AuthProvider` reads the token and calls `/auth/me` to restore the session.
 5. Any later `UNAUTHORIZED` response logs the user out (token expired or account turned off).
 
+## Sign in with Google
+
+- Under the form, after an "or" line, Google's own button ("Continue with Google").
+- Google gives the page an ID token; the page sends it to `POST /auth/google`. The server checks it against our client ID (`VITE_GOOGLE_CLIENT_ID` on the page, `GOOGLE_CLIENT_ID` on the server) and finds the account with that email.
+- **No new accounts:** only emails that already have a clinic account can sign in (otherwise `NO_ACCOUNT`). The admin still creates every account.
+- The answer is the same as a normal login, so the same JWT session starts (`startSession`).
+- Without a client ID the button is hidden and nothing else changes.
+
 ## Errors
 
-`INVALID_CREDENTIALS`, `ACCOUNT_DISABLED`, `TOO_MANY_REQUESTS`, `NETWORK_ERROR` and others map to translated messages in an alert above the form.
+`INVALID_CREDENTIALS`, `ACCOUNT_DISABLED`, `NO_ACCOUNT` (Google email without an account), `TOO_MANY_REQUESTS`, `NETWORK_ERROR` and others map to translated messages in an alert above the form.
 
 ## Design
 
 - A full-screen photo of the clinic's open door (made for a 16:9 screen; mirrored in Arabic so the door stays clear of the form).
 - The form sits on a torn-paper sheet with the logo, a handwritten "Welcome back", the italic title and a link to booking.
-- `object-position` keeps the door's arch whole on short wide screens; tighter spacing below 700 px height.
+- `object-position` keeps the door's arch whole on short wide screens; tighter spacing below 800 px and 700 px height, so the form and the Google button fit a laptop screen.
 
 ## Languages, responsive, accessibility
 

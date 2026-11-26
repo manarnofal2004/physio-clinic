@@ -35,7 +35,7 @@ After every change the users, therapists and patients queries refresh (an accoun
 
 ## How it works
 
-- **Table** (`DataTable`): avatar with initials, name, email (left-to-right), role chip, a one-line access summary ("7 privileges · All patients", "Their own record only", "Everything"), the "Can log in" switch and, for therapists, a key button to change access.
+- **Table** (`DataTable`): avatar (a physiotherapist's photo, otherwise initials), name, email (left-to-right), role chip, a one-line access summary ("7 privileges · All patients", "Their own record only", "Everything"), the "Can log in" switch and, for therapists, a key button to change access.
 - **Filters:** search (debounced 350 ms), role, status; server-side paging (10 per page by default).
 - **Create account:** choose physiotherapist or patient; pick the profile or record (only those without an account are offered; picking fills the name); email, password (min 8). Therapists also get privileges and a scope (default: see patients and see reports, all patients).
 - **Privileges** are grouped as Patients, Medical reports, Reservations, Other. **Scope** is "All patients" or "Only chosen patients" with a searchable multi-select that keeps names of chosen patients while searching.
